@@ -94,9 +94,6 @@ const Customer = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const key = 'updatable';
 
-    const showCreateModal = () => {
-        setIsCreateModalVisible(true);
-    }
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
@@ -258,112 +255,204 @@ const Customer = () => {
             })
     };
 
+    const createFormList = (
+        <Form
+            form={formCreate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onCreateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Tên khách hàng"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Tên công ty"
+                name="company"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên công ty!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Mã số thuế"
+                name="tax"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập mã số thuế!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Địa chỉ"
+                name="address"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa chỉ!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                    {
+                        type: "email",
+                    }
+                ]}
+            >
+                <Input />
+            </Form.Item>
+        </Form>
+    )
+
+    const updateFormList = (
+        <Form
+            form={formUpdate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onUpdateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Mã khách hàng"
+                name="id"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}
+            >
+                <Input disabled={true} />
+            </Form.Item>
+            <Form.Item
+                label="Tên khách hàng"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Tên công ty"
+                name="company"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên công ty!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Mã số thuế"
+                name="tax"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập mã số thuế!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Địa chỉ"
+                name="address"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa chỉ!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                    {
+                        type: "email",
+                    }
+                ]}
+            >
+                <Input />
+            </Form.Item>
+        </Form>
+    )
     return (
         <>
             {contextHolder}
-            <Flex justify="flex-end" align="center">
-                <Button
-                    style={{
-                        marginBottom: "16px",
-                    }}
-                    type="default"
-                    onClick={() => showCreateModal()}
-                >
-                    <PlusOutlined />
-                </Button>
-            </Flex>
             <CreateModal
                 object="khách hàng"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
             >
-                <Form
-                    form={formCreate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onCreateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Tên khách hàng"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tên công ty"
-                        name="company"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên công ty!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Mã số thuế"
-                        name="tax"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập mã số thuế!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Địa chỉ"
-                        name="address"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập địa chỉ!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                type: "email",
-                            }
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                {createFormList}
             </CreateModal>
             <UpdateModal
                 object="khách hàng"
@@ -371,103 +460,7 @@ const Customer = () => {
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}
             >
-                <Form
-                    form={formUpdate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onUpdateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Mã khách hàng"
-                        name="id"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                    >
-                        <Input disabled={true} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tên khách hàng"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tên công ty"
-                        name="company"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên công ty!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Mã số thuế"
-                        name="tax"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập mã số thuế!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Địa chỉ"
-                        name="address"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập địa chỉ!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                type: "email",
-                            }
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                {updateFormList}
             </UpdateModal>
             <LoadTable
                 columns={columns}

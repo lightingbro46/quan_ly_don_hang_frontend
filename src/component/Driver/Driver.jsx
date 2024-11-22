@@ -94,9 +94,6 @@ const Driver = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const key = 'updatable';
 
-    const showCreateModal = () => {
-        setIsCreateModalVisible(true);
-    }
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
@@ -138,7 +135,7 @@ const Driver = () => {
                 <Space size="middle">
                     {(status == 1) && (
                         <>
-                            <Badge dot status="success" title="Đang làm việc"/>
+                            <Badge dot status="success" title="Đang làm việc" />
                             <span>Đang làm việc</span>
                         </>
                     )}
@@ -263,84 +260,164 @@ const Driver = () => {
             })
     };
 
+    const CreateFormList = (
+        <Form
+            form={formCreate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onCreateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Tên tài xế"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Giới tính"
+                name="gender"
+
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn giới tính!",
+                    },
+                ]}
+            >
+                <Select
+                    options={[
+                        { value: 1, label: "Nam" },
+                        { value: 2, label: "Nữ" },
+                    ]}
+                    placeholder="Vui lòng chọn giới tính"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+        </Form>)
+
+    const UpdateFormList = (
+        <Form
+            form={formUpdate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onUpdateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Mã tài xế"
+                name="id"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}
+            >
+                <Input disabled={true} />
+            </Form.Item>
+            <Form.Item
+                label="Tên tài xế"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Giới tính"
+                name="gender"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn giới tính!",
+                    },
+                ]}
+            >
+                <Select
+                    options={[
+                        { value: 1, label: "Nam" },
+                        { value: 2, label: "Nữ" },
+                    ]}
+                    placeholder="Vui lòng chọn giới tính"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Trạng thái"
+                name="status"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn trạng thái!",
+                    },
+                ]}
+            >
+                <Select
+                    options={[
+                        { value: 1, label: "Đang làm việc" },
+                        { value: 2, label: "Nghỉ việc" },
+                    ]}
+                    placeholder="Vui lòng chọn trạng thái"
+                />
+            </Form.Item>
+        </Form>
+    )
     return (
         <>
             {contextHolder}
-            <Flex justify="flex-end" align="center">
-                <Button
-                    style={{
-                        marginBottom: "16px",
-                    }}
-                    type="default"
-                    onClick={() => showCreateModal()}
-                >
-                    <PlusOutlined />
-                </Button>
-            </Flex>
             <CreateModal
                 object="tài xế"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
             >
-                <Form
-                    form={formCreate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onCreateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Tên tài xế"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Giới tính"
-                        name="gender"
-
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn giới tính!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={[
-                                { value: 1, label: "Nam" },
-                                { value: 2, label: "Nữ" },
-                            ]}
-                            placeholder="Vui lòng chọn giới tính"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                {CreateFormList}
             </CreateModal>
             <UpdateModal
                 object="tài xế"
@@ -348,92 +425,7 @@ const Driver = () => {
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}
             >
-                <Form
-                    form={formUpdate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onUpdateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Mã tài xế"
-                        name="id"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                    >
-                        <Input disabled={true} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tên tài xế"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Giới tính"
-                        name="gender"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn giới tính!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={[
-                                { value: 1, label: "Nam" },
-                                { value: 2, label: "Nữ" },
-                            ]}
-                            placeholder="Vui lòng chọn giới tính"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Trạng thái"
-                        name="status"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn trạng thái!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={[
-                                { value: 1, label: "Đang làm việc" },
-                                { value: 2, label: "Nghỉ việc" },
-                            ]}
-                            placeholder="Vui lòng chọn trạng thái"
-                        />
-                    </Form.Item>
-                </Form>
+                {UpdateFormList}
             </UpdateModal>
             <LoadTable
                 columns={columns}

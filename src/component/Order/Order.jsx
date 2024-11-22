@@ -158,12 +158,9 @@ const Order = () => {
     const [formUpdate] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
     const key = 'updatable';
-
+    
     const [optionsTruckCat, setOptionsTruckCat] = useState([]);
 
-    const showCreateModal = () => {
-        setIsCreateModalVisible(true);
-    }
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
@@ -436,147 +433,143 @@ const Order = () => {
     //         })
     // }, []);
 
+    const createFormList = (
+        <Form
+            form={formCreate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onCreateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Khách hàng"
+                name="customer"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn khách hàng!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Loại xe"
+                name="catId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn loại xe!",
+                    },
+                ]}
+            >
+                <Select
+                    options={optionsTruckCat}
+                    placeholder="Vui lòng chọn loại xe"
+                />
+            </Form.Item>
+        </Form>
+    )
+
+    const updateFormList = (
+        <Form
+            form={formUpdate}
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            onFinish={onUpdateSubmit}
+            autoComplete="off"
+        >
+            <Form.Item
+                label="Mã xe tải"
+                name="id"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}
+            >
+                <Input disabled={true} />
+            </Form.Item>
+            <Form.Item
+                label="Biển số xe"
+                name="licensePlate"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập biển số xe!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Loại xe"
+                name="catId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn loại xe!",
+                    },
+                ]}
+            >
+                <Select
+                    options={optionsTruckCat}
+                    placeholder="Vui lòng chọn loại xe"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Trạng thái"
+                name="status"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn trạng thái!",
+                    },
+                ]}
+            >
+                <Select
+                    options={[
+                        { value: 1, label: "Đang làm việc" },
+                        { value: 2, label: "Bảo dưỡng, loại bỏ" },
+                    ]}
+                    placeholder="Vui lòng chọn trạng thái"
+                />
+            </Form.Item>
+        </Form>
+    )
     return (
         <>
             {contextHolder}
-            <Flex justify="flex-end" align="center">
-                <Button
-                    style={{
-                        marginBottom: "16px",
-                    }}
-                    type="default"
-                    onClick={() => showCreateModal()}
-                >
-                    <PlusOutlined />
-                </Button>
-            </Flex>
             <CreateModal
                 object="đơn hàng"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
             >
-                <Form
-                    form={formCreate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onCreateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Khách hàng"
-                        name="customer"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn khách hàng!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Loại xe"
-                        name="catId"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn loại xe!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={optionsTruckCat}
-                            placeholder="Vui lòng chọn loại xe"
-                        />
-                    </Form.Item>
-                </Form>
+                {createFormList}
             </CreateModal>
-            {/* <UpdateModal
+            <UpdateModal
                 object="xe tải"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}
             >
-                <Form
-                    form={formUpdate}
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    style={{
-                        maxWidth: 600,
-                    }}
-                    onFinish={onUpdateSubmit}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Mã xe tải"
-                        name="id"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                    >
-                        <Input disabled={true} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Biển số xe"
-                        name="licensePlate"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập biển số xe!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Loại xe"
-                        name="catId"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn loại xe!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={optionsTruckCat}
-                            placeholder="Vui lòng chọn loại xe"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Trạng thái"
-                        name="status"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn trạng thái!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            options={[
-                                { value: 1, label: "Đang làm việc" },
-                                { value: 2, label: "Bảo dưỡng, loại bỏ" },
-                            ]}
-                            placeholder="Vui lòng chọn trạng thái"
-                        />
-                    </Form.Item>
-                </Form>
-            </UpdateModal> */}
+                {updateFormList}
+            </UpdateModal>
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}
