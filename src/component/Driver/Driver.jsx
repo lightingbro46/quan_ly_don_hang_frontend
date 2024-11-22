@@ -336,7 +336,6 @@ const Driver = () => {
     )
     return (
         <>
-            {contextHolder}
             <CreateModal
                 object="tài xế"
                 isModalVisible={isCreateModalVisible}

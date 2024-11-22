@@ -1,7 +1,5 @@
-import { message } from "antd";
 import qs from "qs";
 
-const {messageApi, co}
 const apiSearch = ({ url, method = "GET", queryParams, bodyParams }) => {
     return new Promise((resolve, reject) => {
         let fetchUrl = url;

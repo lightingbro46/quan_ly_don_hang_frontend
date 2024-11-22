@@ -322,7 +322,6 @@ const Truck = () => {
 
     return (
         <>
-            {contextHolder}
             <CreateModal
                 object="tài xế"
                 isModalVisible={isCreateModalVisible}
