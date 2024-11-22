@@ -1,84 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { Space, Badge, Flex, Button, Form, Input, Select, message } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"
+import React, { useState } from "react";
+import { Space, Form, Input, message } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
+import { apiSearch } from "../Common/Utils";
 
-const loadFunction = (query) => {
-    return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/customers/list?${query}`)
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else throw new Error("Invalid response");
-            })
-            .then(res => resolve(res))
-            .catch(e => reject(e));
-    })
+const loadFunction = (queryParams) => {
+    return apiSearch({
+        url: `http://localhost:3000/api/customers/list`,
+        queryParams
+    });
 }
 
 const getFunction = (id) => {
-    return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/customers/detail?id=${id}`)
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else throw new Error("Invalid response");
-            })
-            .then(res => resolve(res))
-            .catch(e => reject(e));
-    })
+    return apiSearch({
+        url: `http://localhost:3000/api/customers/detail`,
+        queryParams: { id }
+    });
 }
 
 const createFunction = (values) => {
-    return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/customers/add`, {
-            method: "POST",
-            body: JSON.stringify(values)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else throw new Error("Invalid response");
-            })
-            .then(res => resolve(res))
-            .catch(e => reject(e));
-    })
+    return apiSearch({
+        url: `http://localhost:3000/api/customers/add`,
+        method: "POST",
+        bodyParams: values
+    });
 }
 
 const updateFunction = (values) => {
-    return new Promise((resolve, reject) => {
-        const id = values.id;
-        fetch(`http://localhost:3000/api/customers/update?id=${id}`, {
-            method: "POST",
-            body: JSON.stringify(values)
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                } else {
-                    throw new Error("Invalid response")
-                }
-
-            })
-            .then(res => resolve(res))
-            .catch(e => reject(e));
-    })
+    return apiSearch({
+        url: `http://localhost:3000/api/customers/update`,
+        method: "POST",
+        queryParams: { id: values.id },
+        bodyParams: values
+    });
 }
 
 const deleteFunction = (id) => {
-    return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/customers/delete?id=${id}`)
-            .then(res => {
-                if (res.ok)
-                    return resolve()
-                else
-                    throw new Error("Invalid response");
-            })
-            .catch(e => reject(e));
-    })
+    return apiSearch({
+        url: `http://localhost:3000/api/customers/delete`,
+        queryParams: { id: values.id },
+    });
 }
 
 const Customer = () => {
@@ -91,8 +55,6 @@ const Customer = () => {
 
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage();
-    const key = 'updatable';
 
     const showUpdateModal = (record) => {
         console.log(record)
@@ -174,84 +136,48 @@ const Customer = () => {
 
     const onCreateSubmit = (values) => {
         console.log("Success:", values);
-        messageApi.open({
-            key,
-            type: 'loading',
-            content: `Thêm mới...`,
-        });
+        message.loading(`Thêm mới...`);
         createFunction(values)
             .then((res) => {
-                messageApi.open({
-                    key,
-                    type: 'success',
-                    content: `Thêm mới thành công!`,
-                });
+                message.success(`Thêm mới thành công!`);
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
                 triggerReload();
             })
             .catch(e => {
                 console.log(e);
-                messageApi.open({
-                    key,
-                    type: 'error',
-                    content: `Thêm mới thất bại`,
-                });
+                message.error(`Thêm mới thất bại`);
             })
     };
 
     const onUpdateSubmit = (values) => {
         console.log("Success:", values);
-        messageApi.open({
-            key,
-            type: 'loading',
-            content: `Cập nhật...`,
-        });
+        message.loading(`Cập nhật...`);
         updateFunction(values)
             .then((res) => {
-                messageApi.open({
-                    key,
-                    type: 'success',
-                    content: `Cập nhật thành công!`,
-                });
+                message.success(`Cập nhật thành công!`);
                 formUpdate.resetFields();
                 setIsUpdateModalVisible(false);
                 triggerReload();
             })
             .catch(e => {
                 console.log(e);
-                messageApi.open({
-                    key,
-                    type: 'error',
-                    content: `Cập nhật thất bại`,
-                });
+                message.error(`Cập nhật thất bại`);
             })
     };
 
     const onDeleteSubmit = (id) => {
         console.log("Success:", id);
-        messageApi.open({
-            key,
-            type: 'loading',
-            content: `Xoá...`,
-        });
+        message.loading(`Xoá...`);
         deleteFunction(id)
             .then((res) => {
-                messageApi.open({
-                    key,
-                    type: 'success',
-                    content: `Xoá thành công!`,
-                });
+                message.success(`Xoá thành công!`);
                 setIsDeleteModalVisible(false);
                 triggerReload();
             })
             .catch(e => {
                 console.log(e);
-                messageApi.open({
-                    key,
-                    type: 'error',
-                    content: `Xoá thất bại`,
-                });
+                message.error(`Xoá thất bại`);
             })
     };
 
@@ -445,7 +371,6 @@ const Customer = () => {
     )
     return (
         <>
-            {contextHolder}
             <CreateModal
                 object="khách hàng"
                 isModalVisible={isCreateModalVisible}

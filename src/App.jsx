@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Layout, theme } from "antd";
+import { Breadcrumb, Layout, theme, message, ConfigProvider } from "antd";
 
 import "./App.css";
 
@@ -21,52 +21,54 @@ const App = () => {
   } = theme.useToken();
 
   return (
-    <Layout
-      style={{
-        minWidth: "100vw",
-        minHeight: "100vh",
-      }}
-    >
-      <SiderBar current={current} setCurrent={setCurrent} />
-      <Layout>
-        <HeaderBar />
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-          }}
-        >
-          <Breadcrumb
+    <ConfigProvider message={{ maxCount: 1 }}>
+      <Layout
+        style={{
+          minWidth: "100vw",
+          minHeight: "100vh",
+        }}
+      >
+        <SiderBar current={current} setCurrent={setCurrent} />
+        <Layout>
+          <HeaderBar />
+          <Content
             style={{
-              margin: "16px 0",
-            }}
-            items={[
-              {
-                href: "",
-                title: <HomeOutlined />,
-              },
-              {
-                href: "",
-                title: MenuItems.filter((val) => val.key == current)[0]["label"],
-              },
-            ]}
-          />
-          <div
-            style={{
-              padding: "24px",
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              margin: "24px 16px 0",
+              overflow: "initial",
             }}
           >
-            { current == "Driver" && <Driver />}
-            { current == "Customer" && <Customer />}
-            { current == "Truck" && <Truck />}
-            { current == "Order" && <Order />}
-            {/* { current == "Cost" && <Cost />} */}
-          </div>
-        </Content>
+            <Breadcrumb
+              style={{
+                margin: "16px 0",
+              }}
+              items={[
+                {
+                  href: "",
+                  title: <HomeOutlined />,
+                },
+                {
+                  href: "",
+                  title: MenuItems.filter((val) => val.key == current)[0]["label"],
+                },
+              ]}
+            />
+            <div
+              style={{
+                padding: "24px",
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {current == "Driver" && <Driver messageApi={messageApi} />}
+              {current == "Customer" && <Customer messageApi={messageApi} />}
+              {current == "Truck" && <Truck messageApi={messageApi} />}
+              {current == "Order" && <Order messageApi={messageApi} />}
+              {/* { current == "Cost" && <Cost messageApi={messageApi}/>} */}
+            </div>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 };
 export default App;
