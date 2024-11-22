@@ -3,7 +3,7 @@ import { Space, Badge, Flex, Button, Form, Input, Select, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
-import DeleteModal from "../Common/DeleteModal";
+import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 
 const loadFunction = (query) => {
@@ -84,10 +84,7 @@ const deleteFunction = (id) => {
 const Driver = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-
     const [initUpdateModalData, setInitUpdateModalData] = useState({});
-    const [deleteModalData, setDeleteModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -106,10 +103,7 @@ const Driver = () => {
         setInitUpdateModalData(record);
         setIsUpdateModalVisible(true);
     }
-    const showDeleteModal = (record) => {
-        setDeleteModalData(record);
-        setIsDeleteModalVisible(true);
-    }
+ 
     const columns = [
         {
             title: "ID",
@@ -153,14 +147,21 @@ const Driver = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => {
-                        showUpdateModal(record)
-                    }}>
+                    <a onClick={() => showUpdateModal(record)}>
                         <EditOutlined />
                     </a>
-                    <a onClick={() =>
-                        showDeleteModal(record)
-                    }>
+                    <a onClick={() => showDeleteConfirm({
+                        object: "tài xế",
+                        data: record,
+                        labelKeys: [{
+                            label: "Mã tài xế",
+                            key: "id"
+                        }, {
+                            label: "Tên tài xế",
+                            key: "name"
+                        }],
+                        onDeleteSubmit: onDeleteSubmit
+                    })}>
                         <DeleteOutlined />
                     </a>
                 </Space>
@@ -424,15 +425,6 @@ const Driver = () => {
                     </Form.Item>
                 </Form>
             </UpdateModal>
-            <DeleteModal
-                object="tài xế"
-                data={deleteModalData}
-                keyId="id"
-                keyName="name"
-                onDeleteSubmit={onDeleteSubmit}
-                isModalVisible={isDeleteModalVisible}
-                setIsModalVisible={setIsDeleteModalVisible}
-            />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}

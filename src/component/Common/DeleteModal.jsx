@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Space } from "antd";
+import { Modal } from "antd";
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const { confirm } = Modal;
 
-export const showDeleteConfirm = (object, data, keys) => {
+const showDeleteConfirm = ({object, data, labelKeys, onDeleteSubmit}) => {
     confirm({
-        title: `Bạn muốn thực hiện xoá ${object}?`,
+        title: `Bạn có muốn thực hiện xoá ${object}?`,
         icon: <ExclamationCircleFilled />,
-        content: <Space wrap>
-            {keys.map(val => {
-                return 
+        content: <>
+            {labelKeys.map(val => {
+                return  <p>{`${val["label"]}: ${data[val["key"]]}`}</p>
             })}
-            {(keyId && data[keyId]) && <p>{`Mã ${object}: ${data[keyId]}`}</p>}
-            {(keyName && data[keyName]) && <p>{`Tên ${object}: ${data[keyName]}`}</p>}
-        </Space>,
+        </>,
         okText: 'Xoá',
         okType: 'danger',
         cancelText: 'Huỷ',
         onOk() {
-            onDeleteSubmit(data[keyId]);
+            onDeleteSubmit(data[labelKeys[0]["key"]]);
         },
         onCancel() {
             console.log('Cancel');
@@ -27,33 +25,4 @@ export const showDeleteConfirm = (object, data, keys) => {
     });
 };
 
-const DeleteModal = ({ object, data, keyId, keyName, isModalVisible, setIsModalVisible, onDeleteSubmit }) => {
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleOk = () => {
-        onDeleteSubmit(data[keyId]);
-    };
-
-    return (
-        <Modal
-            title={`Xoá ${object} `}
-            open={isModalVisible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            okText="Xoá"
-            cancelText="Huỷ"
-        >
-            <div style={{
-                padding: "0 32px"
-            }}>
-                {data[keyId] && (<p>{`Mã ${object}: ${data[keyId]}`}</p>)}
-                {data[keyName] && (<p>{`Tên ${object}: ${data[keyName]}`}</p>)}
-            </div>
-
-        </Modal>
-    )
-}
-
-export default DeleteModal;
+export default showDeleteConfirm;
