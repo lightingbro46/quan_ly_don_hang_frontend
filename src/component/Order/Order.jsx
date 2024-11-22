@@ -81,9 +81,61 @@ const deleteFunction = (id) => {
     })
 }
 
-const loadOptionFunction = (query) => {
+const loadOptionTruckCatFunction = (query) => {
     return new Promise((resolve, reject) => {
         fetch(`http://localhost:3000/api/truck_cats/list?${query}`)
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else throw new Error("Invalid response");
+            })
+            .then(res => resolve(res))
+            .catch(e => reject(e));
+    })
+}
+
+const loadOptionTruckFunction = (query) => {
+    return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/trucks/list?${query}`)
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else throw new Error("Invalid response");
+            })
+            .then(res => resolve(res))
+            .catch(e => reject(e));
+    })
+}
+
+const loadOptionDriverFunction = (query) => {
+    return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/drivers/list?${query}`)
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else throw new Error("Invalid response");
+            })
+            .then(res => resolve(res))
+            .catch(e => reject(e));
+    })
+}
+
+const loadOptionCostFunction = (query) => {
+    return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/costs/list?${query}`)
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else throw new Error("Invalid response");
+            })
+            .then(res => resolve(res))
+            .catch(e => reject(e));
+    })
+}
+
+const loadOptionCustomerFunction = (query) => {
+    return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/costs/list?${query}`)
             .then(res => {
                 if (res.ok)
                     return res.json();
@@ -107,7 +159,7 @@ const Order = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const key = 'updatable';
 
-    const [options, setOptions] = useState([]);
+    const [optionsTruckCat, setOptionsTruckCat] = useState([]);
 
     const showCreateModal = () => {
         setIsCreateModalVisible(true);
@@ -125,12 +177,14 @@ const Order = () => {
             dataIndex: "id",
             key: "id",
             width: "5%",
+            fixed: 'left',
         },
         {
-            title: "Mã khách hàng",
-            dataIndex: "customer",
-            key: "customer",
+            title: "Khách hàng",
+            dataIndex: "customerName",
+            key: "customerName",
             width: "10%",
+            fixed: 'left',
         },
         {
             title: "Điểm nhận hàng",
@@ -139,14 +193,14 @@ const Order = () => {
             width: "15%",
         },
         {
-            title: "Thời gian nhận hàng",
-            dataIndex: "startDate",
+            title: "Điểm trả hàng",
+            dataIndex: "arrival",
             key: "arrival",
             width: "10%",
         },
         {
-            title: "Điểm trả hàng",
-            dataIndex: "arrival",
+            title: "Thời gian nhận hàng",
+            dataIndex: "startDate",
             key: "arrival",
             width: "10%",
         },
@@ -169,27 +223,35 @@ const Order = () => {
             width: "10%",
         },
         {
-            title: "Mã xe tải",
-            dataIndex: "truck",
-            key: "truck",
+            title: "Xe tải",
+            dataIndex: "truckLicensePlate",
+            key: "truckLicensePlate",
             width: "10%",
         },
         {
-            title: "Mã tài xế",
-            dataIndex: "driver",
-            key: "driver",
+            title: "Tài xế",
+            dataIndex: "driverName",
+            key: "driverName",
             width: "10%",
         },
         {
             title: "Giá thành",
             dataIndex: "pricing",
             key: "pricing",
+            render: (value => `${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+            }).format(value)}`),
             width: "10%",
         },
         {
             title: "Chi phí",
             dataIndex: "cost",
             key: "cost",
+            render: (value => `${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+            }).format(value)}`),
             width: "10%",
         },
         {
@@ -200,25 +262,25 @@ const Order = () => {
                 <Space size="middle">
                     {(status == 1) && (
                         <>
-                            <Badge dot color="yellow" />
+                            <Badge dot status="default" />
                             <span>Đã tiếp nhận</span>
                         </>
                     )}
                     {(status == 2) && (
                         <>
-                            <Badge dot color="green" />
+                            <Badge dot status="processing" />
                             <span>Đang vận chuyển</span>
                         </>
                     )}
                     {(status == 3) && (
                         <>
-                            <Badge dot color="green" />
+                            <Badge dot status="success" />
                             <span>Đã trả hàng</span>
                         </>
                     )}
                     {(status == 4) && (
                         <>
-                            <Badge dot color="red" />
+                            <Badge dot status="error" />
                             <span>Đã huỷ</span>
                         </>
                     )}
@@ -232,8 +294,18 @@ const Order = () => {
             key: "payment",
             render: (status) => (
                 <Space size="middle">
-                    <Badge dot color={status == 1 ? "red" : "green"} />
-                    <span>{status == 1 ? "Chưa thanh toán" : "Đã thanh toán"}</span>
+                    {(status == 1) && (
+                        <>
+                            <Badge dot status="processing" />
+                            <span>Chưa thanh toán</span>
+                        </>
+                    )}
+                    {(status == 2) && (
+                        <>
+                            <Badge dot status="success" />
+                            <span>Đã thanh toán</span>
+                        </>
+                    )}
                 </Space>
             ),
             width: "10%",
@@ -260,6 +332,7 @@ const Order = () => {
                 </Space >
             ),
             width: "10%",
+            fixed: 'right',
         },
     ]
 
@@ -346,18 +419,22 @@ const Order = () => {
             })
     };
 
-    const fetchData = () => {
-        return new Promise((resolve, reject) => {
-            loadOptionFunction()
-                .then((res) => {
-                    setOptions(res.map(val => { return { value: val.id, label: val.name } }));
-                    resolve(loadFunction());
-                })
-                .catch(e => {
-                    reject(e);
-                })
-        })
-    }
+    // useEffect(() => {
+    //     loadOptionTruckCatFunction()
+    //         .then(res => {
+    //             setOptionsTruckCat(res.map(val => { return { value: val.id, label: val.name } }));
+    //         })
+    //         .catch(e => {
+    //             console.log(e);
+    //         })
+    //     loadOptionCostFunction()
+    //         .then(res => {
+    //             setOptionsCost(res.map(val => { return { value: val.id, label: val.name } }));
+    //         })
+    //         .catch(e => {
+    //             console.log(e);
+    //         })
+    // }, []);
 
     return (
         <>
@@ -416,13 +493,13 @@ const Order = () => {
                         ]}
                     >
                         <Select
-                            options={options}
+                            options={optionsTruckCat}
                             placeholder="Vui lòng chọn loại xe"
                         />
                     </Form.Item>
                 </Form>
             </CreateModal>
-            <UpdateModal
+            {/* <UpdateModal
                 object="xe tải"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
@@ -476,7 +553,7 @@ const Order = () => {
                         ]}
                     >
                         <Select
-                            options={options}
+                            options={optionsTruckCat}
                             placeholder="Vui lòng chọn loại xe"
                         />
                     </Form.Item>
@@ -499,10 +576,10 @@ const Order = () => {
                         />
                     </Form.Item>
                 </Form>
-            </UpdateModal>
+            </UpdateModal> */}
             <LoadTable
                 columns={columns}
-                loadFunction={fetchData}
+                loadFunction={loadFunction}
                 reload={reload}
             />
         </>

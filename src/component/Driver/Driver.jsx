@@ -103,7 +103,7 @@ const Driver = () => {
         setInitUpdateModalData(record);
         setIsUpdateModalVisible(true);
     }
- 
+
     const columns = [
         {
             title: "ID",
@@ -136,8 +136,18 @@ const Driver = () => {
             key: "status",
             render: (status) => (
                 <Space size="middle">
-                    <Badge dot color={status == 1 ? "green" : "red"} />
-                    <span>{status == 1 ? "Đang làm việc" : "Nghỉ việc"}</span>
+                    {(status == 1) && (
+                        <>
+                            <Badge dot status="success" title="Đang làm việc"/>
+                            <span>Đang làm việc</span>
+                        </>
+                    )}
+                    {(status == 2) && (
+                        <>
+                            <Badge dot status="error" />
+                            <span>Nghỉ việc</span>
+                        </>
+                    )}
                 </Space>
             ),
             width: "20%",

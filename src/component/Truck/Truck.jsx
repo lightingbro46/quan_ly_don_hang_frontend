@@ -148,8 +148,18 @@ const Truck = () => {
             key: "status",
             render: (status) => (
                 <Space size="middle">
-                    <Badge dot color={status == 1 ? "green" : "red"} />
-                    <span>{status == 1 ? "Bình thường" : "Bảo dưỡng, loại bỏ"}</span>
+                    {(status == 1) && (
+                        <>
+                            <Badge dot status="success" />
+                            <span>Đang hoạt động</span>
+                        </>
+                    )}
+                    {(status == 2) && (
+                        <>
+                            <Badge dot status="error" />
+                            <span>Bảo dưỡng, loại bỏ</span>
+                        </>
+                    )}
                 </Space>
             ),
             width: "20%",
@@ -264,19 +274,6 @@ const Truck = () => {
                 });
             })
     };
-
-    const fetchData = () => {
-        return new Promise((resolve, reject) => {
-            loadOptionTruckCatFunction()
-                .then((res) => {
-                    setOptionsTruckCat(res.map(val => { return { value: val.id, label: val.name } }));
-                    resolve(loadFunction());
-                })
-                .catch(e => {
-                    reject(e);
-                })
-        })
-    }
 
     useEffect(() => {
         loadOptionTruckCatFunction()

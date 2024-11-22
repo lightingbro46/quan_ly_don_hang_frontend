@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Layout, theme, Avatar, Flex } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
+import avatar from "../../assets/avatar.svg";
+
 const { Header } = Layout;
 
 const HeaderBar = () => {
@@ -27,10 +29,10 @@ const HeaderBar = () => {
                 <Avatar
                     style={{
                         backgroundColor: "#87d068",
-                        width: "32px",
-                        height: "32px",
+                        width: "48px",
+                        height: "48px",
                     }}
-                    icon={<UserOutlined />}
+                    src={avatar}
                     alt="user avatar"
                 />
                 <Flex
