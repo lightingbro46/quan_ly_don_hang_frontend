@@ -3,7 +3,7 @@ import { Layout, Menu } from "antd";
 import {
     ProjectOutlined,
     SnippetsOutlined,
-    FileOutlined,
+    PushpinOutlined,
     TeamOutlined,
     TruckOutlined,
     UserOutlined,
@@ -17,7 +17,7 @@ export const MenuItems = [
     { key: "Customer", label: "Quản lý khách hàng", icon: <UserOutlined />, children: undefined },
     { key: "Driver", label: "Quản lý tài xế", icon: <TeamOutlined />, children: undefined },
     { key: "Truck", label: "Quản lý xe tải", icon: <TruckOutlined />, children: undefined },
-    { key: "Cost", label: "Đinh mức chi phí", icon: <FileOutlined />, children: undefined },
+    { key: "Cost", label: "Đinh mức chi phí", icon: <PushpinOutlined />, children: undefined },
 ]
 
 const { Sider } = Layout;

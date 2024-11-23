@@ -5,7 +5,7 @@ import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
-import { apiSearch } from "../Common/Utils";
+import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const loadFunction = (queryParams) => {
     return apiSearch({
@@ -80,6 +80,12 @@ const Truck = () => {
             width: "5%",
         },
         {
+            title: "Tên xe",
+            dataIndex: "name",
+            key: "name",
+            width: "20%",
+        },
+        {
             title: "Biển số xe",
             dataIndex: "licensePlate",
             key: "licensePlate",
@@ -128,9 +134,12 @@ const Truck = () => {
                     <a onClick={() => showDeleteConfirm({
                         object: "xe tải",
                         data: record,
-                        labelKeys: [{
+                        labelInKeys: [{
                             label: "Mã xe tải",
                             key: "id"
+                        },{
+                            label: "Tên xe",
+                            key: "name"
                         }, {
                             label: "Biển số xe",
                             key: "licensePlate"
@@ -146,56 +155,34 @@ const Truck = () => {
     ]
 
     const onCreateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Thêm mới...`);
-        createFunction(values)
-            .then((res) => {
-                message.success(`Thêm mới thành công!`);
+        handleActionCallback(createFunction, values)
+            .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Thêm mới thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onUpdateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Cập nhật...`);
-        updateFunction(values)
-            .then((res) => {
-                message.success(`Cập nhật thành công!`);
-                formUpdate.resetFields();
+        handleActionCallback(updateFunction, values)
+            .then(() => {
                 setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Cập nhật thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onDeleteSubmit = (id) => {
-        console.log("Success:", id);
-        message.loading(`Xoá...`);
-        deleteFunction(id)
-            .then((res) => {
-                message.success(`Xoá thành công!`);
-                setIsDeleteModalVisible(false);
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Xoá thất bại`);
-            })
+            }).catch(e => { })
     };
 
     useEffect(() => {
         loadOptionTruckCatFunction()
             .then(res => {
-                setOptionsTruckCat(res.map(val => { return { value: val.id, label: val.name } }));
+                setOptionsTruckCat(res.map(val => ({ value: val.id, label: val.name })));
             })
             .catch(e => {
                 console.log(e);
@@ -217,6 +204,18 @@ const Truck = () => {
             onFinish={onCreateSubmit}
             autoComplete="off"
         >
+            <Form.Item
+                label="Tên xe"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên xe!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
             <Form.Item
                 label="Biển số xe"
                 name="licensePlate"
@@ -270,7 +269,19 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input disabled={true} />
+                <Input disabled />
+            </Form.Item>
+            <Form.Item
+                label="Tên xe"
+                name="name"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tên xe!",
+                    },
+                ]}
+            >
+                <Input />
             </Form.Item>
             <Form.Item
                 label="Biển số xe"

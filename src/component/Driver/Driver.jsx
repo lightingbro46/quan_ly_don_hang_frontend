@@ -5,7 +5,7 @@ import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
-import { apiSearch } from "../Common/Utils";
+import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const loadFunction = (queryParams) => {
     return apiSearch({
@@ -122,7 +122,7 @@ const Driver = () => {
                     <a onClick={() => showDeleteConfirm({
                         object: "tài xế",
                         data: record,
-                        labelKeys: [{
+                        labelInKeys: [{
                             label: "Mã tài xế",
                             key: "id"
                         }, {
@@ -140,50 +140,28 @@ const Driver = () => {
     ]
 
     const onCreateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Thêm mới...`);
-        createFunction(values)
-            .then((res) => {
-                message.success(`Thêm mới thành công!`);
+        handleActionCallback(createFunction, values)
+            .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Thêm mới thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onUpdateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Cập nhật...`);
-        updateFunction(values)
-            .then((res) => {
-                message.success(`Cập nhật thành công!`);
-                formUpdate.resetFields();
+        handleActionCallback(updateFunction, values)
+            .then(() => {
                 setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Cập nhật thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onDeleteSubmit = (id) => {
-        console.log("Success:", id);
-        message.loading(`Xoá...`);
-        deleteFunction(id)
-            .then((res) => {
-                message.success(`Xoá thành công!`);
-                setIsDeleteModalVisible(false);
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Xoá thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const CreateFormList = (
@@ -270,7 +248,7 @@ const Driver = () => {
                     },
                 ]}
             >
-                <Input disabled={true} />
+                <Input disabled />
             </Form.Item>
             <Form.Item
                 label="Tên tài xế"

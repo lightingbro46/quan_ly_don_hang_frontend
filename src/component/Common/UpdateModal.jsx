@@ -20,6 +20,7 @@ const UpdateModal = ({ object, isModalVisible, setIsModalVisible, form, children
             onCancel={handleCancel}
             okText={`Cập nhật`}
             cancelText="Huỷ"
+            centered 
         >
             {children}
         </Modal>

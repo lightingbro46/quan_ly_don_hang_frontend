@@ -4,20 +4,18 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const { confirm } = Modal;
 
-const showDeleteConfirm = ({object, data, labelKeys, onDeleteSubmit}) => {
+const showDeleteConfirm = ({ object, data, labelInKeys, onDeleteSubmit }) => {
     confirm({
         title: `Bạn có muốn thực hiện xoá ${object}?`,
         icon: <ExclamationCircleFilled />,
         content: <>
-            {labelKeys.map(val => {
-                return  <p>{`${val["label"]}: ${data[val["key"]]}`}</p>
-            })}
+            {labelInKeys.map(val => <p>{`${val["label"]}: ${data[val["key"]]}`}</p>)}
         </>,
         okText: 'Xoá',
         okType: 'danger',
         cancelText: 'Huỷ',
         onOk() {
-            onDeleteSubmit(data[labelKeys[0]["key"]]);
+            onDeleteSubmit(data[labelInKeys[0]["key"]]);
         },
         onCancel() {
             console.log('Cancel');

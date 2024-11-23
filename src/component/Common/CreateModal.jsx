@@ -36,6 +36,7 @@ const CreateModal = ({ object, isModalVisible, setIsModalVisible, form, children
                 onCancel={handleCancel}
                 okText={`Thêm mới`}
                 cancelText="Huỷ"
+                centered 
             >
                 {children}
             </Modal>

@@ -17,4 +17,28 @@ const apiSearch = ({ url, method = "GET", queryParams, bodyParams }) => {
     })
 }
 
-export { apiSearch };
+const handleActionCallback = (actionFunction, inputData) => {
+    console.log("Input data:", inputData);
+    return new Promise((resolve, reject) => {
+        if (actionFunction) {
+            message.loading(`Đang xử lý...`);
+            actionFunction(inputData)
+                .then((res) => {
+                    message.success(`Thao tác thành công!`);
+                    resolve();
+                })
+                .catch(e => {
+                    console.log(e);
+                    message.error(`Thao tác thất bại`);
+                    reject(e);
+                })
+        } else {
+            resolve();
+        }
+    })
+}
+
+export {
+    apiSearch,
+    handleActionCallback,
+};

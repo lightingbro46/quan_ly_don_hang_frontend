@@ -5,7 +5,9 @@ import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
-import { apiSearch } from "../Common/Utils";
+import SearchInput from "../Common/SearchInput";
+import { apiSearch, handleActionCallback } from "../Common/Utils";
+
 
 const loadFunction = (queryParams) => {
     return apiSearch({
@@ -73,7 +75,7 @@ const loadOptionCostFunction = (queryParams) => {
     })
 }
 
-const loadOptionCustomerFunction = (query) => {
+const loadOptionCustomerFunction = (queryParams) => {
     return apiSearch({
         url: "http://localhost:3000/api/customers/list",
         queryParams
@@ -92,6 +94,10 @@ const Order = () => {
     const [formUpdate] = Form.useForm();
 
     const [optionsTruckCat, setOptionsTruckCat] = useState([]);
+    const [optionsTruck, setOptionsTruck] = useState([]);
+    const [optionsCost, setOptionsCost] = useState([]);
+    const [optionsCustomer, setOptionsCustomer] = useState([]);
+    const [optionsDriver, setOptionsDriver] = useState([]);
 
     const showUpdateModal = (record) => {
         console.log(record)
@@ -250,7 +256,7 @@ const Order = () => {
                     <a onClick={() => showDeleteConfirm({
                         object: "đơn hàng",
                         data: record,
-                        labelKeys: [{
+                        labelInKeys: [{
                             label: "Mã đơn hàng",
                             key: "id"
                         }],
@@ -266,68 +272,29 @@ const Order = () => {
     ]
 
     const onCreateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Thêm mới...`);
-        createFunction(values)
-            .then((res) => {
-                message.success(`Thêm mới thành công!`);
+        handleActionCallback(createFunction, values)
+            .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Thêm mới thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onUpdateSubmit = (values) => {
-        console.log("Success:", values);
-        message.loading(`Cập nhật...`);
-        updateFunction(values)
-            .then((res) => {
-                message.success(`Cập nhật thành công!`);
-                formUpdate.resetFields();
+        handleActionCallback(updateFunction, values)
+            .then(() => {
                 setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Cập nhật thất bại`);
-            })
+            }).catch(e => { })
     };
 
     const onDeleteSubmit = (id) => {
-        console.log("Success:", id);
-        message.loading(`Xoá...`);
-        deleteFunction(id)
-            .then((res) => {
-                message.success(`Xoá thành công!`);
-                setIsDeleteModalVisible(false);
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
                 triggerReload();
-            })
-            .catch(e => {
-                console.log(e);
-                message.error(`Xoá thất bại`);
-            })
+            }).catch(e => { })
     };
-
-    // useEffect(() => {
-    //     loadOptionTruckCatFunction()
-    //         .then(res => {
-    //             setOptionsTruckCat(res.map(val => { return { value: val.id, label: val.name } }));
-    //         })
-    //         .catch(e => {
-    //             console.log(e);
-    //         })
-    //     loadOptionCostFunction()
-    //         .then(res => {
-    //             setOptionsCost(res.map(val => { return { value: val.id, label: val.name } }));
-    //         })
-    //         .catch(e => {
-    //             console.log(e);
-    //         })
-    // }, []);
 
     const createFormList = (
         <Form
@@ -346,11 +313,92 @@ const Order = () => {
         >
             <Form.Item
                 label="Khách hàng"
-                name="customer"
+                name="customerId"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn khách hàng!",
+                    },
+                ]}
+            >
+                <SearchInput
+                    loadFunction={loadOptionCustomerFunction}
+                    labelInKeys={['id', "name"]}
+                    placeholder="Vui lòng chọn khách hàng"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Địa điểm nhận hàng"
+                name="departure"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa điểm nhận hàng!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Địa điểm trả hàng"
+                name="arrival"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa điểm trả hàng!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Tuyến đường"
+                name="costId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn tuyến đường!",
+                    },
+                ]}
+            >
+                <SearchInput
+                    loadFunction={loadOptionCostFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["province", "street"]}
+                    placeholder="Vui lòng chọn tuyến đường"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Loại vật liệu"
+                name="material"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập loại vật liệu!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Khối lượng (Tấn)"
+                name="weight"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập khối lượng vật liệu!",
+                    },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Thời gian vận chuyển"
+                name="time"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
             >
@@ -366,10 +414,70 @@ const Order = () => {
                     },
                 ]}
             >
-                <Select
-                    options={optionsTruckCat}
+                <SearchInput
+                    loadFunction={loadOptionTruckCatFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["name"]}
                     placeholder="Vui lòng chọn loại xe"
                 />
+            </Form.Item>
+            <Form.Item
+                label="Xe tải"
+                name="truckId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn xe tải!",
+                    },
+                ]}
+            >
+                <SearchInput
+                    loadFunction={loadOptionTruckFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["name"]}
+                    placeholder="Vui lòng chọn xe tải"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Tài xế"
+                name="driverId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn tài xế!",
+                    },
+                ]}
+            >
+                <SearchInput
+                    loadFunction={loadOptionTruckFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["id", "name"]}
+                    placeholder="Vui lòng chọn tài xế"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Chi phí cầu đường"
+                name="costId"
+                rules={[
+                    {
+                        required: true,
+                        message: "Chi phí được ước lượng dựa trên tuyến đường và loại xe!",
+                    },
+                ]}
+            >
+                <Input disabled placeholder="Chi phí được ước lượng dựa trên tuyến đường và loại xe" />
+            </Form.Item>
+            <Form.Item
+                label="Chi phí dầu máy"
+                name="oil"
+                rules={[
+                    {
+                        required: true,
+                        message: "Chi phí được ước lượng dựa trên tuyến đường và loại xe!",
+                    },
+                ]}
+            >
+                <Input disabled placeholder="Chi phí được ước lượng dựa trên tuyến đường và loại xe" />
             </Form.Item>
         </Form>
     )
@@ -398,7 +506,7 @@ const Order = () => {
                     },
                 ]}
             >
-                <Input disabled={true} />
+                <Input disabled />
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
