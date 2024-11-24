@@ -26,7 +26,7 @@ const CreateModal = ({ object, isModalVisible, setIsModalVisible, form, children
                     type="default"
                     onClick={() => showCreateModal()}
                 >
-                    <PlusOutlined />
+                    <PlusOutlined /><span>Thêm mới</span>
                 </Button>
             </Flex>
             <Modal

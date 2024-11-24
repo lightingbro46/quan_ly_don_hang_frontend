@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Flex, Card } from "antd";
 
-const Cost = () => {
+const Report = () => {
     return (
         <>
         </>
     );
 }
 
-export default Cost;
+export default Report;

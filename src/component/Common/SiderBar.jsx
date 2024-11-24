@@ -7,6 +7,8 @@ import {
     TeamOutlined,
     TruckOutlined,
     UserOutlined,
+    BarChartOutlined,
+    ContactsOutlined
 } from "@ant-design/icons";
 
 import logo from "../../assets/react.svg";
@@ -14,16 +16,18 @@ import logo from "../../assets/react.svg";
 export const MenuItems = [
     { key: "Dashboard", label: "Dashboard", icon: <ProjectOutlined />, children: undefined },
     { key: "Order", label: "Quản lý đơn hàng", icon: <SnippetsOutlined />, children: undefined },
-    { key: "Customer", label: "Quản lý khách hàng", icon: <UserOutlined />, children: undefined },
+    { key: "Customer", label: "Quản lý khách hàng", icon: <ContactsOutlined />, children: undefined },
     { key: "Driver", label: "Quản lý tài xế", icon: <TeamOutlined />, children: undefined },
     { key: "Truck", label: "Quản lý xe tải", icon: <TruckOutlined />, children: undefined },
     { key: "Cost", label: "Đinh mức chi phí", icon: <PushpinOutlined />, children: undefined },
+    { key: "Report", label: "Báo cáo", icon: <BarChartOutlined />, children: undefined },
+    { key: "User", label: "Quản lý người dùng", icon: <UserOutlined />, children: undefined },
 ]
 
 const { Sider } = Layout;
 
 const SiderBar = ({ current, setCurrent }) => {
-  const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
     const onClick = (e) => {
         setCurrent(e.key);

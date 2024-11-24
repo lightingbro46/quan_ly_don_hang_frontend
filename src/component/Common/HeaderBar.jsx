@@ -6,7 +6,7 @@ import avatar from "../../assets/avatar.svg";
 
 const { Header } = Layout;
 
-const HeaderBar = () => {
+const HeaderBar = ({profile}) => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -52,7 +52,7 @@ const HeaderBar = () => {
                             padding: "0 16px",
                         }}
                     >
-                        Nguyễn Công Nghĩa
+                        {profile.username}
                     </p>
                     <p
                         style={{
@@ -61,7 +61,7 @@ const HeaderBar = () => {
                             fontWeight: "bold",
                         }}
                     >
-                        Admin
+                        {profile.is_admin ? "Admin" : ""}
                     </p>
                 </Flex>
             </Flex>
