@@ -19,7 +19,7 @@ message.config({
 
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [current, setCurrent] = useState(MenuItems[0].key);
+  const [current, setCurrent] = useState(MenuItems[4].key);
 
   return (
     <Layout

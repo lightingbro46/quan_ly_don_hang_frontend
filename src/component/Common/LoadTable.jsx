@@ -145,6 +145,10 @@ const LoadTable = ({ columns, loadFunction, reload }) => {
                     },
                 });
             })
+            .catch(e => {
+                setData([]);
+                setLoading(false);
+            })
     }
 
     useEffect(fetchData, [

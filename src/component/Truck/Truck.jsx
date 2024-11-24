@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Space, Badge, Form, Input, Select, message } from "antd";
+import { Space, Badge, Form, Input, Select } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
@@ -87,13 +87,13 @@ const Truck = () => {
         },
         {
             title: "Biển số xe",
-            dataIndex: "licensePlate",
-            key: "licensePlate",
+            dataIndex: "license_plate",
+            key: "license_plate",
             width: "15%",
         },
         {
             title: "Loại xe",
-            dataIndex: "catId",
+            dataIndex: "cat_id",
             key: "catId",
             render: (catId) => {
                 let search = optionsTruckCat.filter(val => val.value == catId);
@@ -137,12 +137,12 @@ const Truck = () => {
                         labelInKeys: [{
                             label: "Mã xe tải",
                             key: "id"
-                        },{
+                        }, {
                             label: "Tên xe",
                             key: "name"
                         }, {
                             label: "Biển số xe",
-                            key: "licensePlate"
+                            key: "license_plate"
                         }],
                         onDeleteSubmit: onDeleteSubmit
                     })}>
@@ -160,7 +160,7 @@ const Truck = () => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
                 triggerReload();
-            }).catch(e => { })
+            }).catch(e => { console.log(e) })
     };
 
     const onUpdateSubmit = (values) => {
@@ -169,23 +169,24 @@ const Truck = () => {
                 setIsUpdateModalVisible(false);
                 formUpdate.resetFields();
                 triggerReload();
-            }).catch(e => { })
+            }).catch(e => { console.log(e) })
     };
 
     const onDeleteSubmit = (id) => {
         handleActionCallback(deleteFunction, id)
             .then(() => {
                 triggerReload();
-            }).catch(e => { })
+            }).catch(e => { console.log(e) })
     };
 
     useEffect(() => {
         loadOptionTruckCatFunction()
             .then(res => {
-                setOptionsTruckCat(res.map(val => ({ value: val.id, label: val.name })));
+                setOptionsTruckCat(res.results.map(val => ({ value: val.id, label: val.name })));
             })
             .catch(e => {
                 console.log(e);
+                setOptionsTruckCat([]);
             })
     }, []);
 
@@ -218,7 +219,7 @@ const Truck = () => {
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
-                name="licensePlate"
+                name="license_plate"
                 rules={[
                     {
                         required: true,
@@ -230,7 +231,7 @@ const Truck = () => {
             </Form.Item>
             <Form.Item
                 label="Loại xe"
-                name="catId"
+                name="cat_id"
                 rules={[
                     {
                         required: true,
@@ -285,7 +286,7 @@ const Truck = () => {
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
-                name="licensePlate"
+                name="license_plate"
                 rules={[
                     {
                         required: true,
@@ -297,7 +298,7 @@ const Truck = () => {
             </Form.Item>
             <Form.Item
                 label="Loại xe"
-                name="catId"
+                name="cat_id"
                 rules={[
                     {
                         required: true,
