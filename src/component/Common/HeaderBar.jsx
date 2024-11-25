@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Layout, theme, Avatar, Flex } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
-import avatar from "../../assets/avatar.svg";
+import avatar from "../../assets/images/avatar.svg";
 
 const { Header } = Layout;
 
@@ -52,7 +52,7 @@ const HeaderBar = ({profile}) => {
                             padding: "0 16px",
                         }}
                     >
-                        {profile.username}
+                        {profile.fullname}
                     </p>
                     <p
                         style={{

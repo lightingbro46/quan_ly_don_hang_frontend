@@ -11,7 +11,7 @@ import {
     ContactsOutlined
 } from "@ant-design/icons";
 
-import logo from "../../assets/react.svg";
+import logo from "../../assets/images/react.svg";
 
 export const MenuItems = [
     { key: "Dashboard", label: "Dashboard", icon: <ProjectOutlined />, children: undefined },

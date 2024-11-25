@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, Typography, message, Flex } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, message, Flex, Image } from 'antd';
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-
+import logo from "../../assets/images/react.svg"
 const { Title } = Typography;
 
 const loginFunction = (values) => {
@@ -36,7 +36,9 @@ const LoginPage = ({ setProfile }) => {
             justify="center"
             align="center"
         >
-            <div
+
+            <Flex
+                vertical
                 style={{
                     width: '100%',
                     maxWidth: '400px',
@@ -46,8 +48,11 @@ const LoginPage = ({ setProfile }) => {
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                 }}
             >
+                <Flex justify="center">
+                    <Image src={logo} alt="logo image" width={80} preview={false} />
+                </Flex>
                 <Title level={3} style={{ textAlign: 'center', marginBottom: '24px' }}>
-                    Đăng nhập hệ thống
+                    Đăng nhập
                 </Title>
                 <Form
                     form={form}
@@ -86,7 +91,7 @@ const LoginPage = ({ setProfile }) => {
                         </Button>
                     </Form.Item>
                 </Form>
-            </div>
+            </Flex>
         </Flex>
     );
 }

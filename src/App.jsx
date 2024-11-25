@@ -24,10 +24,11 @@ message.config({
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
   const [current, setCurrent] = useState(MenuItems[0].key);
-  const [profile, setProfile] = useState({
-    fullname: "Admin",
-    is_admin: true,
-  });
+  // const [profile, setProfile] = useState({
+  //   fullname: "Nguyễn Văn A",
+  //   is_admin: true,
+  // });
+  const [profile, setProfile] = useState();
 
   return (
     <>
