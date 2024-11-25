@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Space, Badge, Form, Input, Select } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Space, Form, Input, Select, Tooltip, Tag } from "antd";
+import {
+    EditOutlined,
+    DeleteOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
+import { truck_data } from "../mock";
 
 const loadFunction = (queryParams) => {
+    return new Promise(resolve => resolve(truck_data))
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
         queryParams
@@ -108,16 +117,19 @@ const Truck = () => {
             render: (status) => (
                 <Space size="middle">
                     {(status == 1) && (
-                        <>
-                            <Badge dot status="success" />
-                            <span>Đang hoạt động</span>
-                        </>
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Sẵn sàng
+                        </Tag>
                     )}
                     {(status == 2) && (
-                        <>
-                            <Badge dot status="error" />
-                            <span>Bảo dưỡng, loại bỏ</span>
-                        </>
+                        <Tag icon={<SyncOutlined spin />} color="processing">
+                            Đang hoạt động
+                        </Tag>
+                    )}
+                    {(status == 3) && (
+                        <Tag icon={<MinusCircleOutlined />} color="error">
+                            Bảo dưỡng
+                        </Tag>
                     )}
                 </Space>
             ),
@@ -128,26 +140,30 @@ const Truck = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => showUpdateModal(record)}>
-                        <EditOutlined />
-                    </a>
-                    <a onClick={() => showDeleteConfirm({
-                        object: "xe tải",
-                        data: record,
-                        labelInKeys: [{
-                            label: "Mã xe tải",
-                            key: "id"
-                        }, {
-                            label: "Tên xe",
-                            key: "name"
-                        }, {
-                            label: "Biển số xe",
-                            key: "license_plate"
-                        }],
-                        onDeleteSubmit: onDeleteSubmit
-                    })}>
-                        <DeleteOutlined />
-                    </a>
+                    <Tooltip placement="topLeft" title="Cập nhật">
+                        <a onClick={() => showUpdateModal(record)}>
+                            <EditOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xoá">
+                        <a onClick={() => showDeleteConfirm({
+                            object: "xe tải",
+                            data: record,
+                            labelInKeys: [{
+                                label: "Mã xe tải",
+                                key: "id"
+                            }, {
+                                label: "Tên xe",
+                                key: "name"
+                            }, {
+                                label: "Biển số xe",
+                                key: "license_plate"
+                            }],
+                            onDeleteSubmit: onDeleteSubmit
+                        })}>
+                            <DeleteOutlined />
+                        </a>
+                    </Tooltip>
                 </Space>
             ),
             width: "10%",

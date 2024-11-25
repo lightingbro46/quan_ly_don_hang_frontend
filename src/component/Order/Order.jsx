@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Space, Badge, Form, Input, Select, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Space, Form, Input, Select, Tooltip, Tag, DatePicker } from "antd";
+import {
+    EditOutlined,
+    DeleteOutlined,
+    PrinterOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from "@ant-design/icons"
+import dayjs from "dayjs";
+
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import SearchInput from "../Common/SearchInput";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
+import { order_data } from "../mock";
 
+const { RangePicker } = DatePicker;
 
 const loadFunction = (queryParams) => {
+    return new Promise((resolve, reject) => {
+        resolve(order_data);
+    })
     return apiSearch({
         url: 'http://localhost:3000/api/orders/list',
         queryParams
@@ -82,6 +97,10 @@ const loadOptionCustomerFunction = (queryParams) => {
     })
 }
 
+const printInvoice = (value) => {
+
+}
+
 const Order = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
@@ -116,8 +135,8 @@ const Order = () => {
         },
         {
             title: "Khách hàng",
-            dataIndex: "customerName",
-            key: "customerName",
+            dataIndex: "customer_name",
+            key: "customer_name",
             width: "10%",
             fixed: 'left',
         },
@@ -135,18 +154,20 @@ const Order = () => {
         },
         {
             title: "Thời gian nhận hàng",
-            dataIndex: "startDate",
+            dataIndex: "start_date",
             key: "arrival",
             width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY')
         },
         {
             title: "Thời gian trả hàng",
-            dataIndex: "endDate",
+            dataIndex: "end_date",
             key: "arrival",
             width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY')
         },
         {
-            title: "Hàng hoá",
+            title: "Mặt hàng",
             dataIndex: "material",
             key: "material",
             width: "10%",
@@ -159,14 +180,14 @@ const Order = () => {
         },
         {
             title: "Xe tải",
-            dataIndex: "truckLicensePlate",
-            key: "truckLicensePlate",
+            dataIndex: "truck_license_plate",
+            key: "truck_license_plate",
             width: "10%",
         },
         {
             title: "Tài xế",
-            dataIndex: "driverName",
-            key: "driverName",
+            dataIndex: "driver_name",
+            key: "driver_name",
             width: "10%",
         },
         {
@@ -181,8 +202,8 @@ const Order = () => {
         },
         {
             title: "Chi phí",
-            dataIndex: "cost",
-            key: "cost",
+            dataIndex: "tolls",
+            key: "tolls",
             render: (value => `${new Intl.NumberFormat('vi-VN', {
                 style: 'currency',
                 currency: 'VND',
@@ -190,34 +211,50 @@ const Order = () => {
             width: "10%",
         },
         {
-            title: "Trạng thái vận chuyển",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Space size="middle">
+                <Space size="small">
                     {(status == 1) && (
-                        <>
-                            <Badge dot status="default" />
-                            <span>Đã tiếp nhận</span>
-                        </>
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Đã tiếp nhận
+                        </Tag>
                     )}
                     {(status == 2) && (
-                        <>
-                            <Badge dot status="processing" />
-                            <span>Đang vận chuyển</span>
-                        </>
+                        <Tag icon={<MinusCircleOutlined />} color="error">
+                            Đã huỷ
+                        </Tag>
+                    )}
+                </Space>
+            ),
+            width: "10%",
+        },
+        {
+            title: "Trạng thái vận chuyển",
+            dataIndex: "deliver_status",
+            key: "deliver_status",
+            render: (status) => (
+                <Space size="small">
+                    {(status == 1) && (
+                        <Tag icon={<ClockCircleOutlined />} color="default">
+                            Chờ vận chuyển
+                        </Tag>
+                    )}
+                    {(status == 2) && (
+                        <Tag icon={<SyncOutlined spin />} color="processing">
+                            Đang vận chuyển
+                        </Tag>
                     )}
                     {(status == 3) && (
-                        <>
-                            <Badge dot status="success" />
-                            <span>Đã trả hàng</span>
-                        </>
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Đã trả hàng
+                        </Tag>
                     )}
                     {(status == 4) && (
-                        <>
-                            <Badge dot status="error" />
-                            <span>Đã huỷ</span>
-                        </>
+                        <Tag icon={<MinusCircleOutlined />} color="error">
+                            Đã huỷ
+                        </Tag>
                     )}
                 </Space>
             ),
@@ -225,21 +262,19 @@ const Order = () => {
         },
         {
             title: "Trạng thái thanh toán",
-            dataIndex: "payment",
-            key: "payment",
+            dataIndex: "payment_status",
+            key: "payment_status",
             render: (status) => (
-                <Space size="middle">
+                <Space size="small">
                     {(status == 1) && (
-                        <>
-                            <Badge dot status="processing" />
-                            <span>Chưa thanh toán</span>
-                        </>
+                        <Tag icon={<ClockCircleOutlined />} color="processing">
+                            Chờ thanh toán
+                        </Tag>
                     )}
                     {(status == 2) && (
-                        <>
-                            <Badge dot status="success" />
-                            <span>Đã thanh toán</span>
-                        </>
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Đã thanh toán
+                        </Tag>
                     )}
                 </Space>
             ),
@@ -250,20 +285,29 @@ const Order = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => showUpdateModal(record)}>
-                        <EditOutlined />
-                    </a>
-                    <a onClick={() => showDeleteConfirm({
-                        object: "đơn hàng",
-                        data: record,
-                        labelInKeys: [{
-                            label: "Mã đơn hàng",
-                            key: "id"
-                        }],
-                        onDeleteSubmit: onDeleteSubmit
-                    })}>
-                        <DeleteOutlined />
-                    </a>
+                    <Tooltip placement="topLeft" title="Cập nhật">
+                        <a onClick={() => showUpdateModal(record)}>
+                            <EditOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xoá">
+                        <a onClick={() => showDeleteConfirm({
+                            object: "đơn hàng",
+                            data: record,
+                            labelInKeys: [{
+                                label: "Mã đơn hàng",
+                                key: "id"
+                            }],
+                            onDeleteSubmit: onDeleteSubmit
+                        })}>
+                            <DeleteOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="topRight" title="In hoá đơn">
+                        <a onClick={() => printInvoice(record)}>
+                            <PrinterOutlined />
+                        </a>
+                    </Tooltip>
                 </Space >
             ),
             width: "10%",
@@ -312,14 +356,15 @@ const Order = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Khách hàng"
-                name="customerId"
+                label="Tên khách hàng"
+                name="customer_id"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn khách hàng!",
                     },
                 ]}
+                //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
@@ -337,7 +382,7 @@ const Order = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa điểm nhận hàng" />
             </Form.Item>
             <Form.Item
                 label="Địa điểm trả hàng"
@@ -349,36 +394,37 @@ const Order = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa điểm trả hàng" />
             </Form.Item>
             <Form.Item
                 label="Tuyến đường"
-                name="costId"
+                name="cost_id"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn tuyến đường!",
                     },
                 ]}
+                //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
                     loadOptionsFirst={true}
-                    labelInKeys={["province", "street"]}
+                    labelInKeys={["id", "province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
             </Form.Item>
             <Form.Item
-                label="Loại vật liệu"
+                label="Mặt hàng"
                 name="material"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập loại vật liệu!",
+                        message: "Vui lòng nhập mặt hàng!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập mặt hàng" />
             </Form.Item>
             <Form.Item
                 label="Khối lượng (Tấn)"
@@ -390,57 +436,64 @@ const Order = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập khối lượng vật liệu" />
             </Form.Item>
             <Form.Item
                 label="Thời gian vận chuyển"
-                name="time"
+                name="deliver_time"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
+                //todo: render
             >
-                <Input />
+                <RangePicker
+                    format="DD/MM/YYYY"
+                    placeholder={["Ngày nhận hàng", "Ngày trả hàng"]}
+                    id={{ start: "start_date", end: "end_date" }}
+                />
             </Form.Item>
             <Form.Item
                 label="Loại xe"
-                name="catId"
+                name="cat_id"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn loại xe!",
                     },
                 ]}
+                //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckCatFunction}
                     loadOptionsFirst={true}
-                    labelInKeys={["name"]}
+                    labelInKeys={["id", "name"]}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
             <Form.Item
                 label="Xe tải"
-                name="truckId"
+                name="truck_id"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn xe tải!",
                     },
                 ]}
+                //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckFunction}
                     loadOptionsFirst={true}
-                    labelInKeys={["name"]}
+                    labelInKeys={["id", "license_plate"]}
                     placeholder="Vui lòng chọn xe tải"
                 />
             </Form.Item>
             <Form.Item
                 label="Tài xế"
-                name="driverId"
+                name="driver_id"
                 rules={[
                     {
                         required: true,
@@ -456,28 +509,28 @@ const Order = () => {
                 />
             </Form.Item>
             <Form.Item
-                label="Chi phí cầu đường"
-                name="costId"
+                label="Chi phí"
+                name="tolls"
                 rules={[
                     {
                         required: true,
-                        message: "Chi phí được ước lượng dựa trên tuyến đường và loại xe!",
+                        message: "Chi phí được tính dựa trên tuyến đường!",
                     },
                 ]}
             >
-                <Input disabled placeholder="Chi phí được ước lượng dựa trên tuyến đường và loại xe" />
+                <Input disabled placeholder="Chi phí được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
-                label="Chi phí dầu máy"
-                name="oil"
+                label="Giá thành"
+                name="pricing"
                 rules={[
                     {
                         required: true,
-                        message: "Chi phí được ước lượng dựa trên tuyến đường và loại xe!",
+                        message: "Giá thành được tính dựa trên tuyến đường!",
                     },
                 ]}
             >
-                <Input disabled placeholder="Chi phí được ước lượng dựa trên tuyến đường và loại xe" />
+                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
         </Form>
     )
@@ -498,7 +551,7 @@ const Order = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Mã xe tải"
+                label="Mã đơn hàng"
                 name="id"
                 rules={[
                     {
@@ -509,49 +562,181 @@ const Order = () => {
                 <Input disabled />
             </Form.Item>
             <Form.Item
-                label="Biển số xe"
-                name="licensePlate"
+                label="Tên khách hàng"
+                name="customer_id"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập biển số xe!",
+                        message: "Vui lòng chọn khách hàng!",
+                    },
+                ]}
+                //todo: render
+            >
+                <SearchInput
+                    loadFunction={loadOptionCustomerFunction}
+                    labelInKeys={['id', "name"]}
+                    placeholder="Vui lòng chọn khách hàng"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Địa điểm nhận hàng"
+                name="departure"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa điểm nhận hàng!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa điểm nhận hàng" />
+            </Form.Item>
+            <Form.Item
+                label="Địa điểm trả hàng"
+                name="arrival"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa điểm trả hàng!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập địa điểm trả hàng" />
+            </Form.Item>
+            <Form.Item
+                label="Tuyến đường"
+                name="cost_id"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn tuyến đường!",
+                    },
+                ]}
+                //todo: render
+            >
+                <SearchInput
+                    loadFunction={loadOptionCostFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["id", "province", "arrival"]}
+                    placeholder="Vui lòng chọn tuyến đường"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Mặt hàng"
+                name="material"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập mặt hàng!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập mặt hàng" />
+            </Form.Item>
+            <Form.Item
+                label="Khối lượng (Tấn)"
+                name="weight"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập khối lượng vật liệu!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập khối lượng vật liệu" />
+            </Form.Item>
+            <Form.Item
+                label="Thời gian vận chuyển"
+                name="deliver_time"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn thời gian vân chuyển!",
+                    },
+                ]}
+                //todo: render
+            >
+                <RangePicker
+                    format="DD/MM/YYYY"
+                    placeholder={["Ngày nhận hàng", "Ngày trả hàng"]}
+                    id={{ start: "start_date", end: "end_date" }}
+                />
             </Form.Item>
             <Form.Item
                 label="Loại xe"
-                name="catId"
+                name="cat_id"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn loại xe!",
                     },
                 ]}
+                //todo: render
             >
-                <Select
-                    options={optionsTruckCat}
+                <SearchInput
+                    loadFunction={loadOptionTruckCatFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["id", "name"]}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
             <Form.Item
-                label="Trạng thái"
-                name="status"
+                label="Xe tải"
+                name="truck_id"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng chọn trạng thái!",
+                        message: "Vui lòng chọn xe tải!",
+                    },
+                ]}
+                //todo: render
+            >
+                <SearchInput
+                    loadFunction={loadOptionTruckFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["id", "license_plate"]}
+                    placeholder="Vui lòng chọn xe tải"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Tài xế"
+                name="driver_id"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn tài xế!",
                     },
                 ]}
             >
-                <Select
-                    options={[
-                        { value: 1, label: "Đang làm việc" },
-                        { value: 2, label: "Bảo dưỡng, loại bỏ" },
-                    ]}
-                    placeholder="Vui lòng chọn trạng thái"
+                <SearchInput
+                    loadFunction={loadOptionTruckFunction}
+                    loadOptionsFirst={true}
+                    labelInKeys={["id", "name"]}
+                    placeholder="Vui lòng chọn tài xế"
                 />
+            </Form.Item>
+            <Form.Item
+                label="Chi phí"
+                name="tolls"
+                rules={[
+                    {
+                        required: true,
+                        message: "Chi phí được tính dựa trên tuyến đường!",
+                    },
+                ]}
+            >
+                <Input disabled placeholder="Chi phí được tính dựa trên tuyến đường" />
+            </Form.Item>
+            <Form.Item
+                label="Giá thành"
+                name="pricing"
+                rules={[
+                    {
+                        required: true,
+                        message: "Giá thành được tính dựa trên tuyến đường!",
+                    },
+                ]}
+            >
+                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
         </Form>
     )

@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { Space, Badge, Form, Input, Select, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Space,  Form, Input, Select, Tooltip, DatePicker, Tag } from "antd";
+import {
+    EditOutlined,
+    DeleteOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from "@ant-design/icons"
+import dayjs from "dayjs";
+
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
+import { driver_data } from "../mock";
 
 const loadFunction = (queryParams) => {
+    return new Promise(resolve => resolve(driver_data))
     return apiSearch({
         url: `http://localhost:3000/api/drivers/list`,
         queryParams
@@ -77,6 +88,13 @@ const Driver = () => {
             width: "15%",
         },
         {
+            title: "Ngày sinh",
+            dataIndex: "birthday",
+            key: "birthday",
+            render: (text) => dayjs(text).format('DD/MM/YYYY'),
+            width: "15%",
+        },
+        {
             title: "Giới tính",
             dataIndex: "gender",
             key: "gender",
@@ -85,8 +103,8 @@ const Driver = () => {
         },
         {
             title: "Số điện thoại",
-            dataIndex: "phone",
-            key: "phone",
+            dataIndex: "phone_number",
+            key: "phone_number",
             width: "20%",
         },
         {
@@ -94,18 +112,21 @@ const Driver = () => {
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Space size="middle">
+                <Space size="small">
                     {(status == 1) && (
-                        <>
-                            <Badge dot status="success" title="Đang làm việc" />
-                            <span>Đang làm việc</span>
-                        </>
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            Sẵn sàng
+                        </Tag>
                     )}
                     {(status == 2) && (
-                        <>
-                            <Badge dot status="error" />
-                            <span>Nghỉ việc</span>
-                        </>
+                        <Tag icon={<SyncOutlined spin />} color="processing">
+                            Đang làm việc
+                        </Tag>
+                    )}
+                    {(status == 3) && (
+                        <Tag icon={<MinusCircleOutlined />} color="error">
+                            Nghỉ việc
+                        </Tag>
                     )}
                 </Space>
             ),
@@ -116,23 +137,27 @@ const Driver = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => showUpdateModal(record)}>
-                        <EditOutlined />
-                    </a>
-                    <a onClick={() => showDeleteConfirm({
-                        object: "tài xế",
-                        data: record,
-                        labelInKeys: [{
-                            label: "Mã tài xế",
-                            key: "id"
-                        }, {
-                            label: "Tên tài xế",
-                            key: "name"
-                        }],
-                        onDeleteSubmit: onDeleteSubmit
-                    })}>
-                        <DeleteOutlined />
-                    </a>
+                    <Tooltip placement="topLeft" title="Cập nhật">
+                        <a onClick={() => showUpdateModal(record)}>
+                            <EditOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xoá">
+                        <a onClick={() => showDeleteConfirm({
+                            object: "tài xế",
+                            data: record,
+                            labelInKeys: [{
+                                label: "Mã tài xế",
+                                key: "id"
+                            }, {
+                                label: "Tên tài xế",
+                                key: "name"
+                            }],
+                            onDeleteSubmit: onDeleteSubmit
+                        })}>
+                            <DeleteOutlined />
+                        </a>
+                    </Tooltip>
                 </Space>
             ),
             width: "10%",
@@ -185,11 +210,23 @@ const Driver = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên!",
+                        message: "Vui lòng nhập tên tài xế!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên tài xế" />
+            </Form.Item>
+            <Form.Item
+                label="Ngày sinh"
+                name="birthday"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn ngày thàng năm sinh!",
+                    },
+                ]}
+            >
+                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày thàng năm sinh" />
             </Form.Item>
             <Form.Item
                 label="Giới tính"
@@ -212,7 +249,7 @@ const Driver = () => {
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -256,11 +293,23 @@ const Driver = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên!",
+                        message: "Vui lòng nhập tên tài xế!",
                     },
                 ]}
             >
                 <Input />
+            </Form.Item>
+            <Form.Item
+                label="Ngày sinh"
+                name="birthday"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn ngày thàng năm sinh!",
+                    },
+                ]}
+            >
+                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày thàng năm sinh" />
             </Form.Item>
             <Form.Item
                 label="Giới tính"
@@ -282,7 +331,7 @@ const Driver = () => {
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -304,8 +353,9 @@ const Driver = () => {
             >
                 <Select
                     options={[
-                        { value: 1, label: "Đang làm việc" },
-                        { value: 2, label: "Nghỉ việc" },
+                        { value: 1, label: "Sẵn sàng" },
+                        { value: 2, label: "Đang làm việc" },
+                        { value: 3, label: "Nghỉ việc" },
                     ]}
                     placeholder="Vui lòng chọn trạng thái"
                 />

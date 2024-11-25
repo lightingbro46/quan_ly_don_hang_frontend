@@ -8,20 +8,28 @@ import {
     TruckOutlined,
     UserOutlined,
     BarChartOutlined,
-    ContactsOutlined
+    ContactsOutlined,
+    FundOutlined,
+    GiftOutlined
 } from "@ant-design/icons";
 
 import logo from "../../assets/images/react.svg";
 
 export const MenuItems = [
     { key: "Dashboard", label: "Dashboard", icon: <ProjectOutlined />, children: undefined },
-    { key: "Order", label: "Quản lý đơn hàng", icon: <SnippetsOutlined />, children: undefined },
-    { key: "Customer", label: "Quản lý khách hàng", icon: <ContactsOutlined />, children: undefined },
-    { key: "Driver", label: "Quản lý tài xế", icon: <TeamOutlined />, children: undefined },
-    { key: "Truck", label: "Quản lý xe tải", icon: <TruckOutlined />, children: undefined },
-    { key: "Cost", label: "Đinh mức chi phí", icon: <PushpinOutlined />, children: undefined },
-    { key: "Report", label: "Báo cáo", icon: <BarChartOutlined />, children: undefined },
-    { key: "User", label: "Quản lý người dùng", icon: <UserOutlined />, children: undefined },
+    { key: "Order", label: "Đơn hàng", icon: <SnippetsOutlined />, children: undefined },
+    { key: "Customer", label: "Khách hàng", icon: <ContactsOutlined />, children: undefined },
+    { key: "Driver", label: "Đội xe", icon: <TeamOutlined />, children: undefined },
+    { key: "Truck", label: "Xe tải", icon: <TruckOutlined />, children: undefined },
+    { key: "User", label: "Nhân viên", icon: <UserOutlined />, children: undefined },
+    { key: "Cost", label: "Định mức", icon: <PushpinOutlined />, children: undefined },
+    {
+        key: "Report", label: "Báo cáo", icon: <BarChartOutlined />,
+        children: [
+            { key: 'Revenue', label: 'Doanh thu, chi phí', icon: <FundOutlined /> },
+            { key: 'Award', label: 'Khen thưởng', icon: <GiftOutlined /> },
+        ],
+    },
 ]
 
 const { Sider } = Layout;

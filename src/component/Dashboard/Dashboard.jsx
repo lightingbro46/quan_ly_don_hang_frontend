@@ -1,56 +1,127 @@
-import React, { useState } from "react";
-import { Flex, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { Flex, Card, Typography, Image, Divider } from "antd";
+import { BulbFilled, SelectOutlined } from "@ant-design/icons";
+import { handleActionCallback } from "../Common/Utils";
 
-const DashboardItems = [
+import logo from "../../assets/images/react.svg";
+import { dashboard_data } from "../mock";
+
+const { Title } = Typography;
+
+const items = [
     {
-        key: "customer",
-        lable: "Khách hàng",
+        name: "Customer",
+        key: "Customer",
+        label: ["Khách hàng"],
+        url: "http://localhost:3000/api/customers/list",
+        background: "#7320be"
     },
     {
-        key: "order",
-        lable: "Đơn hàng",
+        name: "Order",
+        key: "Order",
+        label: ["Đơn hàng"],
+        url: "http://localhost:3000/api/orders/list",
+        background: "#2b790e"
     },
     {
-        key: "user",
-        lable: "Nhân viên",
+        name: "User",
+        key: "User",
+        label: ["Nhân viên"],
+        url: "http://localhost:3000/api/users/list",
+        background: "#0f76e0"
     },
     {
+        name: "Driver",
         key: "Driver",
-        lable: "Tài xế",
+        label: ["Tài xế"],
+        url: "http://localhost:3000/api/drivers/list",
+        background: "#1cdff2"
     },
     {
+        name: "Truck",
         key: "Truck",
-        lable: "Xe tải",
+        label: ["Xe tải"],
+        url: "http://localhost:3000/api/trucks/list",
+        background: "#e99f17"
     },
     {
-        key: "truckUnavailabel",
-        lable: "Xe tải đang bảo dưỡng",
+        name: "UnavaiableTruck",
+        key: "Truck",
+        label: ["Xe tải", " đang bảo dưỡng"],
+        url: "http://localhost:3000/api/trucks/list?status=2",
+        background: "#dc5c11"
     },
 ]
-const Dashboard = ({ profile }) => {
-    return (
-        <Flex
-            wrap
-            gap="16px"
-            justify="space-between"
-            style={{
-                padding: '16px',
-                background: '#f0f2f5',
-            }}>
-            {DashboardItems.map((val, index) => {
-                <Card
-                    key={index}
-                    title={`Item ${index + 1}`}
-                    style={{
-                        flex: '1 1 calc(33.33% - 16px)', // Chia đều mỗi cột thành 1/3
-                        maxWidth: 'calc(33.33% - 16px)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    }}>
-                    {123456}
-                </Card>
-            })}
+const Dashboard = ({ setCurrent }) => {
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState({})
 
-        </Flex>
+    useEffect(() => {
+        setData(dashboard_data);
+        // items.forEach((value, index) => {
+        //     fetch(value.url)
+        //         .then(res => {
+        //             if (res.ok) return res.json();
+        //         })
+        //         .then(res => {
+        //             const { totalCount } = res;
+        //             setData(prevValue => {
+        //                 return {
+        //                     ...prevValue,
+        //                     [value.name]: totalCount
+        //                 }
+        //             })
+        //         })
+        //         .catch(e => { console.log(e) });
+        // })
+    }, [])
+
+    return (
+        <Card
+            loading={loading}
+        >
+            {items.map((value, index) => (
+                <Card.Grid
+                    key={index}
+                    style={{
+                        width: "33%",
+                        height: "25vh",
+                        margin: "2px",
+                        paddingInlineStart: "32px",
+                        paddingInlineEnd: "32px",
+                        textAlign: "start",
+                        backgroundColor: value.background,
+                        borderRadius: "20px"
+                        
+                    }}
+                    onClick={() => setCurrent(value.key)}
+                >
+                    <Flex
+                        vertical={false}
+                        justify="space-between"
+                        align="center"
+                    >
+                        <Flex vertical >
+                            <Title level={3} style={{color: "white"}}>
+                                {data[value.name] || 0}
+                            </Title>
+                            <Title level={4} style={{color: "white"}}>
+                                {value.label.map((line, index) => (
+                                    <React.Fragment key={index}>
+                                        {line}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
+                            </Title>
+                        </Flex>
+                        <Flex align="center" justify="center">
+                            <Image src={logo} alt="image" width={"64px"} preview={false} />
+                        </Flex>
+                    </Flex>
+                </Card.Grid>
+            ))
+            }
+        </Card >
     )
 }
 

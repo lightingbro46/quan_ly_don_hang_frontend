@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Space, Form, Input, message } from "antd";
+import { Space, Form, Input, Tooltip } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
@@ -111,23 +111,27 @@ const Customer = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => showUpdateModal(record)}>
-                        <EditOutlined />
-                    </a>
-                    <a onClick={() => showDeleteConfirm({
-                        object: "khách hàng",
-                        data: record,
-                        labelInKeys: [{
-                            label: "Mã khách hàng",
-                            key: "id"
-                        }, {
-                            label: "Tên khách hàng",
-                            key: "name"
-                        }],
-                        onDeleteSubmit: onDeleteSubmit
-                    })}>
-                        <DeleteOutlined />
-                    </a>
+                    <Tooltip placement="topLeft" title="Cập nhật">
+                        <a onClick={() => showUpdateModal(record)}>
+                            <EditOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xoá">
+                        <a onClick={() => showDeleteConfirm({
+                            object: "khách hàng",
+                            data: record,
+                            labelInKeys: [{
+                                label: "Mã khách hàng",
+                                key: "id"
+                            }, {
+                                label: "Tên khách hàng",
+                                key: "name"
+                            }],
+                            onDeleteSubmit: onDeleteSubmit
+                        })}>
+                            <DeleteOutlined />
+                        </a>
+                    </Tooltip>
                 </Space>
             ),
             width: "10%",
