@@ -42,18 +42,33 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
             fixed: 'left',
         },
         {
+            title: "Thời gian nhận hàng",
+            dataIndex: "start_date",
+            key: "arrival",
+            width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY'),
+            fixed: 'left',
+        },
+        {
+            title: "Thời gian trả hàng",
+            dataIndex: "end_date",
+            key: "arrival",
+            width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY'),
+            fixed: 'left',
+        },
+        {
             title: "Xe tải",
             dataIndex: "truck_license_plate",
             key: "truck_license_plate",
             width: "10%",
-            fixed: 'left',
         },
         {
             title: "Khách hàng",
             dataIndex: "customer_name",
             key: "customer_name",
             width: "10%",
-            fixed: 'left',
+            
         },
         {
             title: "Điểm nhận hàng",
@@ -66,20 +81,6 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
             dataIndex: "arrival",
             key: "arrival",
             width: "10%",
-        },
-        {
-            title: "Thời gian nhận hàng",
-            dataIndex: "start_date",
-            key: "arrival",
-            width: "10%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY')
-        },
-        {
-            title: "Thời gian trả hàng",
-            dataIndex: "end_date",
-            key: "arrival",
-            width: "10%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY')
         },
         {
             title: "Mặt hàng",

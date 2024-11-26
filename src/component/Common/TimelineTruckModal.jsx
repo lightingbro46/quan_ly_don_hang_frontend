@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import { apiSearch } from "./Utils";
 import LoadTable from "./LoadTable";
 
-import {timeline_truck, truck_data } from "../mock";
+import { timeline_truck, truck_data } from "../mock";
 
 const { RangePicker } = DatePicker;
 
@@ -42,18 +42,32 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
             fixed: 'left',
         },
         {
+            title: "Thời gian nhận hàng",
+            dataIndex: "start_date",
+            key: "arrival",
+            width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY'),
+            fixed: 'left',
+        },
+        {
+            title: "Thời gian trả hàng",
+            dataIndex: "end_date",
+            key: "arrival",
+            width: "10%",
+            render: (text) => dayjs(text).format('DD/MM/YYYY'),
+            fixed: 'left',
+        },
+        {
             title: "Tài xế",
             dataIndex: "driver_name",
             key: "driver_name",
             width: "10%",
-            fixed: 'left',
         },
         {
             title: "Khách hàng",
             dataIndex: "customer_name",
             key: "customer_name",
             width: "10%",
-            fixed: 'left',
         },
         {
             title: "Điểm nhận hàng",
@@ -66,20 +80,6 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
             dataIndex: "arrival",
             key: "arrival",
             width: "10%",
-        },
-        {
-            title: "Thời gian nhận hàng",
-            dataIndex: "start_date",
-            key: "arrival",
-            width: "10%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY')
-        },
-        {
-            title: "Thời gian trả hàng",
-            dataIndex: "end_date",
-            key: "arrival",
-            width: "10%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY')
         },
         {
             title: "Mặt hàng",
