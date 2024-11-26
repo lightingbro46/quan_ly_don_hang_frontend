@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Layout, theme, message } from "antd";
 
@@ -18,6 +18,7 @@ import Award from "./component/Report/Award";
 import User from "./component/User/User";
 import Cost from "./component/Cost/Cost";
 import LoginPage from "./component/Login/Login";
+import TimelineModal from "./component/Common/TimelineModal";
 
 message.config({
   maxCount: 1
@@ -25,7 +26,7 @@ message.config({
 
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [current, setCurrent] = useState(MenuItems[0].key);
+  const [current, setCurrent] = useState([MenuItems[0].key]);
   const [profile, setProfile] = useState({
     fullname: "Nguyễn Văn A",
     is_admin: true,
@@ -58,6 +59,7 @@ const App = () => {
 
   return (
     <>
+      <TimelineModal />
       {(!profile) && (<LoginPage setProfile={setProfile} />)}
       {(profile) && (
         <Layout

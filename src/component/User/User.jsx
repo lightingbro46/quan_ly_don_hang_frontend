@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Checkbox } from "antd";
 import {
     EditOutlined,
@@ -17,7 +17,7 @@ import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 import { user_data } from "../mock";
 const loadFunction = (queryParams) => {
-    return new Promise(resolve => resolve(user_data ))
+    return new Promise(resolve => resolve(user_data))
     return apiSearch({
         url: `http://localhost:3000/api/users/list`,
         queryParams
@@ -438,7 +438,7 @@ const User = () => {
     return (
         <>
             <CreateModal
-                object="nhân viên"
+                name="nhân viên"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -446,7 +446,7 @@ const User = () => {
                 {CreateFormList}
             </CreateModal>
             <UpdateModal
-                object="nhân viên"
+                name="nhân viên"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}

@@ -68,7 +68,7 @@ const user_data = {
             password: "123456",
         },
         {
-            id: 1,
+            id: 2,
             fullname: "Nguyễn Thị B",
             birthday: "1996-1-11",
             gender: 2,
@@ -78,7 +78,7 @@ const user_data = {
             start_date: "2023-2-10",
             end_data: "",
             status: 1,
-            is_admin: 1,
+            is_admin: 0,
             username: "user",
             password: "123456",
         }
@@ -145,6 +145,30 @@ const award_data = {
     }]
 }
 
+const timeline_driver = {
+    totalCount: 1,
+    results: [{
+        id: 1,
+        customer_id: "1",
+        customer_name: "Nguyễn Văn A",
+        departure: "Hải Phòng",
+        arrival: "Hà Nội",
+        start_date: "2024-11-1",
+        end_date: "2024-11-3",
+        material: "Vật liệu",
+        weight: "10",
+        driver_id: 1,
+        driver_name: "Nguyễn Văn A",
+        truck_id: 1,
+        truck_license_plate: "15U1-12233",
+        pricing: 1300000,
+        tolls: 200000,
+        status: 1,
+        deliver_status: 2,
+        payment_status: 1
+    }]
+}
+
 export {
     order_data,
     driver_data,
@@ -152,5 +176,6 @@ export {
     user_data,
     dashboard_data,
     revenue_data,
-    award_data
+    award_data,
+    timeline_driver
 }

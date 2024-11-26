@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Space, Form, Input, Tooltip } from "antd";
+import { useState } from "react";
+import { Space, Form, Input, Tooltip, InputNumber } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
@@ -184,11 +184,11 @@ const Customer = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên!",
+                        message: "Vui lòng nhập tên khách hàng!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên khách hàng" />
             </Form.Item>
             <Form.Item
                 label="Tên công ty"
@@ -200,7 +200,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên công ty" />
             </Form.Item>
             <Form.Item
                 label="Mã số thuế"
@@ -212,7 +212,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <InputNumber placeholder="Vui lòng nhập mã số thuế" />
             </Form.Item>
             <Form.Item
                 label="Địa chỉ"
@@ -224,7 +224,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa chỉ" />
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
@@ -236,7 +236,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập số điện thoại" />
             </Form.Item>
             <Form.Item
                 label="Email"
@@ -284,11 +284,11 @@ const Customer = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên!",
+                        message: "Vui lòng nhập tên khách hàng!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên khách hàng" />
             </Form.Item>
             <Form.Item
                 label="Tên công ty"
@@ -300,7 +300,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên công ty" />
             </Form.Item>
             <Form.Item
                 label="Mã số thuế"
@@ -312,7 +312,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <InputNumber placeholder="Vui lòng nhập mã số thuế" />
             </Form.Item>
             <Form.Item
                 label="Địa chỉ"
@@ -324,7 +324,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa chỉ" />
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
@@ -336,7 +336,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập địa chỉ" />
             </Form.Item>
             <Form.Item
                 label="Email"
@@ -354,7 +354,7 @@ const Customer = () => {
     return (
         <>
             <CreateModal
-                object="khách hàng"
+                name="khách hàng"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -362,7 +362,7 @@ const Customer = () => {
                 {createFormList}
             </CreateModal>
             <UpdateModal
-                object="khách hàng"
+                name="khách hàng"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}

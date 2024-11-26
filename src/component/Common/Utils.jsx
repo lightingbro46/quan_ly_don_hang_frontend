@@ -4,7 +4,7 @@ import qs from "qs";
 const apiSearch = ({ url, method = "GET", queryParams, bodyParams }) => {
     return new Promise((resolve, reject) => {
         let fetchUrl = url;
-        if (queryParams) {
+        if (queryParams && Object.keys(queryParams).length) {
             fetchUrl += ("?" + qs.stringify(queryParams));
         }
         let options = {

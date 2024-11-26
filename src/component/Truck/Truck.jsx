@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Space, Form, Input, Select, Tooltip, Tag } from "antd";
 import {
     EditOutlined,
@@ -351,7 +351,7 @@ const Truck = () => {
     return (
         <>
             <CreateModal
-                object="tài xế"
+                name="tài xế"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -359,7 +359,7 @@ const Truck = () => {
                 {createFormList}
             </CreateModal>
             <UpdateModal
-                object="xe tải"
+                name="xe tải"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}

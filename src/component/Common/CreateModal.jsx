@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Flex, Button } from "antd";
+import { useState, useEffect } from "react";
+import { Modal, Flex, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
-const CreateModal = ({ object, isModalVisible, setIsModalVisible, form, children }) => {
+const CreateModal = ({ name, isModalVisible, setIsModalVisible, form, children }) => {
     const showCreateModal = () => {
         setIsModalVisible(true);
     }
@@ -30,13 +30,13 @@ const CreateModal = ({ object, isModalVisible, setIsModalVisible, form, children
                 </Button>
             </Flex>
             <Modal
-                title={`Thêm mới ${object}`}
+                title={`Thêm mới ${name}`}
                 open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 okText={`Thêm mới`}
                 cancelText="Huỷ"
-                centered 
+                centered
             >
                 {children}
             </Modal>

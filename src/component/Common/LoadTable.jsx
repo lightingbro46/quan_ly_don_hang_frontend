@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button, Input, Space, Table } from "antd";
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseOutlined } from "@ant-design/icons";

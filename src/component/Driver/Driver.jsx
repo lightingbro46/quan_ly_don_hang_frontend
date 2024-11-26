@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Space,  Form, Input, Select, Tooltip, DatePicker, Tag } from "antd";
+import { useState } from "react";
+import { Space, Form, Input, Select, Tooltip, DatePicker, Tag } from "antd";
 import {
     EditOutlined,
     DeleteOutlined,
@@ -365,7 +365,7 @@ const Driver = () => {
     return (
         <>
             <CreateModal
-                object="tài xế"
+                name="tài xế"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -373,7 +373,7 @@ const Driver = () => {
                 {CreateFormList}
             </CreateModal>
             <UpdateModal
-                object="tài xế"
+                name="tài xế"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}

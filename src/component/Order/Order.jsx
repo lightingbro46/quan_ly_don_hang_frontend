@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Space, Form, Input, Select, Tooltip, Tag, DatePicker } from "antd";
 import {
     EditOutlined,
@@ -364,7 +364,7 @@ const Order = () => {
                         message: "Vui lòng chọn khách hàng!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
@@ -405,7 +405,7 @@ const Order = () => {
                         message: "Vui lòng chọn tuyến đường!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
@@ -432,11 +432,11 @@ const Order = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập khối lượng vật liệu!",
+                        message: "Vui lòng nhập khối lượng!",
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập khối lượng vật liệu" />
+                <Input placeholder="Vui lòng nhập khối lượng" />
             </Form.Item>
             <Form.Item
                 label="Thời gian vận chuyển"
@@ -447,7 +447,7 @@ const Order = () => {
                         message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <RangePicker
                     format="DD/MM/YYYY"
@@ -464,7 +464,7 @@ const Order = () => {
                         message: "Vui lòng chọn loại xe!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckCatFunction}
@@ -482,7 +482,7 @@ const Order = () => {
                         message: "Vui lòng chọn xe tải!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckFunction}
@@ -570,7 +570,7 @@ const Order = () => {
                         message: "Vui lòng chọn khách hàng!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
@@ -611,7 +611,7 @@ const Order = () => {
                         message: "Vui lòng chọn tuyến đường!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
@@ -638,11 +638,11 @@ const Order = () => {
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập khối lượng vật liệu!",
+                        message: "Vui lòng nhập khối lượng!",
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập khối lượng vật liệu" />
+                <Input placeholder="Vui lòng nhập khối lượng" />
             </Form.Item>
             <Form.Item
                 label="Thời gian vận chuyển"
@@ -653,7 +653,7 @@ const Order = () => {
                         message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <RangePicker
                     format="DD/MM/YYYY"
@@ -670,7 +670,7 @@ const Order = () => {
                         message: "Vui lòng chọn loại xe!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckCatFunction}
@@ -688,7 +688,7 @@ const Order = () => {
                         message: "Vui lòng chọn xe tải!",
                     },
                 ]}
-                //todo: render
+            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionTruckFunction}
@@ -743,7 +743,7 @@ const Order = () => {
     return (
         <>
             <CreateModal
-                object="đơn hàng"
+                name="đơn hàng"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -751,7 +751,7 @@ const Order = () => {
                 {createFormList}
             </CreateModal>
             <UpdateModal
-                object="đơn hàng"
+                name="đơn hàng"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}

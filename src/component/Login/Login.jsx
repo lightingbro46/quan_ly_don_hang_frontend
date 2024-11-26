@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Input, Button, Checkbox, Typography, message, Flex, Image } from 'antd';
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 import logo from "../../assets/images/react.svg"

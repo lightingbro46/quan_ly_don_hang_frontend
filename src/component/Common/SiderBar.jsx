@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Layout, Menu } from "antd";
 import {
     ProjectOutlined,
@@ -38,20 +38,10 @@ const SiderBar = ({ current, setCurrent }) => {
     const [collapsed, setCollapsed] = useState(false);
 
     const onClick = (e) => {
-        setCurrent(e.key);
+        setCurrent(e.keyPath.reverse());
     };
 
     return (<Sider
-        style={{
-            // overflow: "auto",
-            // height: "100vh",
-            // position: "fixed",
-            // insetInlineStart: 0,
-            // top: 0,
-            // bottom: 0,
-            // scrollbarWidth: "thin",
-            // scrollbarGutter: "stable",
-        }}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}

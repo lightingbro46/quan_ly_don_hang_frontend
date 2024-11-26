@@ -2,7 +2,7 @@ import React from "react";
 
 import { Modal } from "antd";
 
-const UpdateModal = ({ object, isModalVisible, setIsModalVisible, form, children }) => {
+const UpdateModal = ({ name, isModalVisible, setIsModalVisible, form, children }) => {
     const handleCancel = () => {
         setIsModalVisible(false);
         form.resetFields();
@@ -14,7 +14,7 @@ const UpdateModal = ({ object, isModalVisible, setIsModalVisible, form, children
 
     return (
         <Modal
-            title={`Cập nhật ${object}`}
+            title={`Cập nhật ${name}`}
             open={isModalVisible}
             onOk={handleOk}
             onCancel={handleCancel}

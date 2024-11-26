@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Select, Spin } from "antd";
 
 const SearchInput = ({ loadFunction, placeholder, labelInKeys, isSearch = true, loadOptionsFirst = false, value, onChange }) => {

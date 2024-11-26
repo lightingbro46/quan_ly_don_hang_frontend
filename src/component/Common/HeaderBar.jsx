@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Layout, theme, Avatar, Flex, Dropdown, Space, Button } from "antd";
 import { UserOutlined, DownOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 

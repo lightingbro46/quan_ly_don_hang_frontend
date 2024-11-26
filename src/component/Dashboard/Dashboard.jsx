@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Flex, Card, Typography, Image, Divider } from "antd";
-import { BulbFilled, SelectOutlined } from "@ant-design/icons";
+import { useEffect, useState, Fragment } from "react";
+import { Flex, Card, Typography, Image } from "antd";
+
 import { handleActionCallback } from "../Common/Utils";
 
 import logo from "../../assets/images/react.svg";
@@ -92,7 +92,7 @@ const Dashboard = ({ setCurrent }) => {
                         textAlign: "start",
                         backgroundColor: value.background,
                         borderRadius: "20px"
-                        
+
                     }}
                     onClick={() => setCurrent(value.key)}
                 >
@@ -102,15 +102,15 @@ const Dashboard = ({ setCurrent }) => {
                         align="center"
                     >
                         <Flex vertical >
-                            <Title level={3} style={{color: "white"}}>
+                            <Title level={3} style={{ color: "white" }}>
                                 {data[value.name] || 0}
                             </Title>
-                            <Title level={4} style={{color: "white"}}>
+                            <Title level={4} style={{ color: "white" }}>
                                 {value.label.map((line, index) => (
-                                    <React.Fragment key={index}>
+                                    <Fragment key={index}>
                                         {line}
                                         <br />
-                                    </React.Fragment>
+                                    </Fragment>
                                 ))}
                             </Title>
                         </Flex>

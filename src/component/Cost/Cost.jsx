@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Space, Badge, Form, Input, Select, Tooltip } from "antd";
+import { useState } from "react";
+import { Space, Form, Input, InputNumber, Tooltip } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
@@ -119,6 +119,12 @@ const Cost = () => {
                             labelInKeys: [{
                                 label: "Mã chi phí",
                                 key: "id"
+                            }, {
+                                label: "Tỉnh",
+                                key: "province"
+                            }, {
+                                label: "Tuyến đường",
+                                key: "arrival"
                             }],
                             onDeleteSubmit: onDeleteSubmit
                         })}>
@@ -181,7 +187,7 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tên tỉnh"/>
+                <Input placeholder="Vui lòng nhập tên tỉnh" />
             </Form.Item>
             <Form.Item
                 label="Tuyến đường"
@@ -193,7 +199,7 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tuyến đường"/>
+                <Input placeholder="Vui lòng nhập tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Báo giá"
@@ -205,7 +211,11 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập báo giá"/>
+                <InputNumber
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Vui lòng nhập báo giá" />
             </Form.Item>
             <Form.Item
                 label="Chi phí"
@@ -217,7 +227,11 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập chi phí"/>
+                <InputNumber
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Vui lòng nhập chi phí" />
             </Form.Item>
         </Form>
     );
@@ -257,7 +271,7 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tên tỉnh"/>
+                <Input placeholder="Vui lòng nhập tên tỉnh" />
             </Form.Item>
             <Form.Item
                 label="Tuyến đường"
@@ -269,7 +283,7 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tuyến đường"/>
+                <Input placeholder="Vui lòng nhập tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Báo giá"
@@ -281,7 +295,11 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập báo giá"/>
+                <InputNumber
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Vui lòng nhập báo giá" />
             </Form.Item>
             <Form.Item
                 label="Chi phí"
@@ -293,7 +311,11 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập chi phí"/>
+                <InputNumber
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Vui lòng nhập chi phí" />
             </Form.Item>
         </Form>
     );
@@ -301,7 +323,7 @@ const Cost = () => {
     return (
         <>
             <CreateModal
-                object="chi phí"
+                name="chi phí"
                 isModalVisible={isCreateModalVisible}
                 setIsModalVisible={setIsCreateModalVisible}
                 form={formCreate}
@@ -309,7 +331,7 @@ const Cost = () => {
                 {createFormList}
             </CreateModal>
             <UpdateModal
-                object="chi phí"
+                name="chi phí"
                 isModalVisible={isUpdateModalVisible}
                 setIsModalVisible={setIsUpdateModalVisible}
                 form={formUpdate}
