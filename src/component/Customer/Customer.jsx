@@ -65,7 +65,7 @@ const Customer = () => {
 
     const columns = [
         {
-            title: "ID",
+            title: "Mã khách hàng",
             dataIndex: "id",
             key: "id",
             width: "5%",

@@ -19,7 +19,7 @@ const Revenue = () => {
 
     const columns = [
         {
-            title: "ID",
+            title: "STT",
             dataIndex: "id",
             key: "id",
             width: "10%",

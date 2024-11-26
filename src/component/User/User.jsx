@@ -75,7 +75,7 @@ const User = () => {
 
     const columns = [
         {
-            title: "ID",
+            title: "Mã nhân viên",
             dataIndex: "id",
             key: "id",
             width: "5%",

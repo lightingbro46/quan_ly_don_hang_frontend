@@ -166,6 +166,68 @@ const timeline_driver = {
         status: 1,
         deliver_status: 2,
         payment_status: 1
+    },{
+        id: 2,
+        customer_id: "1",
+        customer_name: "Nguyễn Văn A",
+        departure: "Hải Phòng",
+        arrival: "Hà Nội",
+        start_date: "2024-11-1",
+        end_date: "2024-11-3",
+        material: "Vật liệu",
+        weight: "10",
+        driver_id: 1,
+        driver_name: "Nguyễn Văn A",
+        truck_id: 1,
+        truck_license_plate: "15U1-12233",
+        pricing: 1300000,
+        tolls: 200000,
+        status: 1,
+        deliver_status: 1,
+        payment_status: 1
+    }]
+}
+
+const timeline_truck = {
+    totalCount: 1,
+    results: [{
+        id: 1,
+        customer_id: "1",
+        customer_name: "Nguyễn Văn A",
+        departure: "Hải Phòng",
+        arrival: "Hà Nội",
+        start_date: "2024-11-1",
+        end_date: "2024-11-3",
+        material: "Vật liệu",
+        weight: "10",
+        driver_id: 1,
+        driver_name: "Nguyễn Văn A",
+        truck_id: 1,
+        truck_license_plate: "15U1-12233",
+        pricing: 1300000,
+        tolls: 200000,
+        status: 1,
+        deliver_status: 2,
+        payment_status: 1
+    },{
+        id: 2,
+        customer_id: "1",
+        customer_name: "Nguyễn Văn A",
+        departure: "Hải Phòng",
+        arrival: "Hà Nội",
+        start_date: "2024-11-1",
+        end_date: "2024-11-3",
+        material: "Vật liệu",
+        weight: "10",
+        driver_id: 1,
+        driver_name: "Nguyễn Văn A",
+        truck_id: 1,
+        truck_license_plate: "15U1-12233",
+        pricing: 1300000,
+        tolls: 200000,
+        status: 1,
+        deliver_status: 1,
+        payment_status: 1
     }]
 }
 
@@ -177,5 +239,6 @@ export {
     dashboard_data,
     revenue_data,
     award_data,
-    timeline_driver
+    timeline_driver,
+    timeline_truck
 }

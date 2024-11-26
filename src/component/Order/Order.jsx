@@ -127,7 +127,7 @@ const Order = () => {
 
     const columns = [
         {
-            title: "ID",
+            title: "Mã đơn hàng",
             dataIndex: "id",
             key: "id",
             width: "5%",

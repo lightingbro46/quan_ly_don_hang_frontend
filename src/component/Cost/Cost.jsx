@@ -65,7 +65,7 @@ const Cost = () => {
 
     const columns = [
         {
-            title: "ID",
+            title: "Mã chi phí",
             dataIndex: "id",
             key: "id",
             width: "5%",

@@ -7,6 +7,7 @@ import {
     ClockCircleOutlined,
     MinusCircleOutlined,
     SyncOutlined,
+    SolutionOutlined
 } from "@ant-design/icons"
 import dayjs from "dayjs";
 
@@ -14,6 +15,7 @@ import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
+import TimelineModal from "../Common/TimelineDriverModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 import { driver_data } from "../mock";
 
@@ -60,6 +62,8 @@ const Driver = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [isTimelineModalVisible, setIsTimelineModalVisible] = useState(false);
+    const [initTimelineModalData, setTimelineModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -74,9 +78,15 @@ const Driver = () => {
         setIsUpdateModalVisible(true);
     }
 
+    const showTimelineModal = (record) => {
+        console.log(record)
+        setTimelineModalData(record);
+        setIsTimelineModalVisible(true);
+    }
+
     const columns = [
         {
-            title: "ID",
+            title: "Mã tài xế",
             dataIndex: "id",
             key: "id",
             width: "5%",
@@ -156,6 +166,11 @@ const Driver = () => {
                             onDeleteSubmit: onDeleteSubmit
                         })}>
                             <DeleteOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="topRight" title="Lịch trình">
+                        <a onClick={() => showTimelineModal(record)}>
+                            <SolutionOutlined />
                         </a>
                     </Tooltip>
                 </Space>
@@ -380,6 +395,9 @@ const Driver = () => {
             >
                 {UpdateFormList}
             </UpdateModal>
+            <TimelineModal
+                isModalVisible={isTimelineModalVisible}
+                setIsModalVisible={setIsTimelineModalVisible} />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}

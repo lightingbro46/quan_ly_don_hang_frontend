@@ -18,7 +18,6 @@ import Award from "./component/Report/Award";
 import User from "./component/User/User";
 import Cost from "./component/Cost/Cost";
 import LoginPage from "./component/Login/Login";
-import TimelineModal from "./component/Common/TimelineModal";
 
 message.config({
   maxCount: 1
@@ -59,7 +58,6 @@ const App = () => {
 
   return (
     <>
-      <TimelineModal />
       {(!profile) && (<LoginPage setProfile={setProfile} />)}
       {(profile) && (
         <Layout

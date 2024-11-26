@@ -7,11 +7,13 @@ import {
     ClockCircleOutlined,
     MinusCircleOutlined,
     SyncOutlined,
+    TruckOutlined
 } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
+import TimelineModal from "../Common/TimelineTruckModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 import { truck_data } from "../mock";
 
@@ -65,6 +67,8 @@ const Truck = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [isTimelineModalVisible, setIsTimelineModalVisible] = useState(false);
+    const [initTimelineModalData, setTimelineModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -81,9 +85,15 @@ const Truck = () => {
         setIsUpdateModalVisible(true);
     }
 
+    const showTimelineModal = (record) => {
+        console.log(record)
+        setTimelineModalData(record);
+        setIsTimelineModalVisible(true);
+    }
+
     const columns = [
         {
-            title: "ID",
+            title: "Mã xe tải",
             dataIndex: "id",
             key: "id",
             width: "5%",
@@ -162,6 +172,11 @@ const Truck = () => {
                             onDeleteSubmit: onDeleteSubmit
                         })}>
                             <DeleteOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="topRight" title="Lịch trình">
+                        <a onClick={() => showTimelineModal(record)}>
+                            <TruckOutlined />
                         </a>
                     </Tooltip>
                 </Space>
@@ -366,6 +381,9 @@ const Truck = () => {
             >
                 {updateFormList}
             </UpdateModal>
+            <TimelineModal
+                isModalVisible={isTimelineModalVisible}
+                setIsModalVisible={setIsTimelineModalVisible} />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}

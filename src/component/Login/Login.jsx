@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, Input, Button, Checkbox, Typography, message, Flex, Image } from 'antd';
-import { apiSearch, handleActionCallback } from "../Common/Utils";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { apiSearch } from "../Common/Utils";
 import logo from "../../assets/images/react.svg"
 const { Title } = Typography;
 
@@ -9,6 +10,12 @@ const loginFunction = (values) => {
         url: "http://localhost:3000/api/users/login",
         method: "POST",
         bodyParams: values
+    })
+}
+const getFunction = (queryParams) => {
+    return apiSearch({
+        url: "http://localhost:3000/api/users/detail",
+        queryParams
     })
 }
 const LoginPage = ({ setProfile }) => {
@@ -68,7 +75,7 @@ const LoginPage = ({ setProfile }) => {
                             { required: true, message: 'Vui lòng nhập tài khoản!' },
                         ]}
                     >
-                        <Input placeholder="Vui lòng nhập tài khoản" />
+                        <Input prefix={<UserOutlined />} placeholder="tài khoản" />
                     </Form.Item>
 
                     <Form.Item
@@ -78,7 +85,7 @@ const LoginPage = ({ setProfile }) => {
                             { required: true, message: 'Vui lòng nhập mật khẩu!' },
                         ]}
                     >
-                        <Input.Password placeholder="Vui lòng nhập mật khẩu" />
+                        <Input.Password prefix={<LockOutlined />} placeholder="Vui lòng nhập mật khẩu" />
                     </Form.Item>
 
                     <Form.Item name="remember" valuePropName="checked">
