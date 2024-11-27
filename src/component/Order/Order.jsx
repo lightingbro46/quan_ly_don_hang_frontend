@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { Space, Form, Input, Select, Tooltip, Tag, DatePicker } from "antd";
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PrinterOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
-} from "@ant-design/icons"
+import { EditOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
 import CreateModal from "../Common/CreateModal";
@@ -17,14 +9,10 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import SearchInput from "../Common/SearchInput";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-import { order_data } from "../mock";
 
 const { RangePicker } = DatePicker;
 
 const loadFunction = (queryParams) => {
-    return new Promise((resolve, reject) => {
-        resolve(order_data);
-    })
     return apiSearch({
         url: 'http://localhost:3000/api/orders/list',
         queryParams
@@ -101,10 +89,48 @@ const printInvoice = (value) => {
 
 }
 
+const orderStatusOptions = [
+    {
+        value: 1,
+        label: "Đã tiếp nhận"
+    },
+    {
+        value: 2,
+        label: "Đang lấy hàng"
+    },
+    {
+        value: 3,
+        label: "Đang vận chuyển"
+    },
+    {
+        value: 4,
+        label: "Đã trả hàng"
+    },
+    {
+        value: 5,
+        label: "Đã huỷ đơn"
+    }
+]
+
+const paymentStatusOptions = [
+    {
+        value: 1,
+        label: "Chờ thanh toán"
+    },
+    {
+        value: 2,
+        label: "Đã thanh toán"
+    },
+    {
+        value: 3,
+        label: "Đã hoàn tiền"
+    }
+]
+
 const Order = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -118,16 +144,51 @@ const Order = () => {
     const [optionsCustomer, setOptionsCustomer] = useState([]);
     const [optionsDriver, setOptionsDriver] = useState([]);
 
+    const showCreateModal = () => {
+        setInputModalData({});
+        setIsCreateModalVisible(true);
+    }
+
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
 
+    const onValuesChange = (value) => {
+
+    }
+
+    const onCreateSubmit = (values) => {
+        handleActionCallback(createFunction, values)
+            .then(() => {
+                setIsCreateModalVisible(false);
+                formCreate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onUpdateSubmit = (values) => {
+        handleActionCallback(updateFunction, values)
+            .then(() => {
+                setInputModalData({});
+                setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onDeleteSubmit = (id) => {
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
+                triggerReload();
+            }).catch(e => { })
+    };
+
     const columns = [
         {
-            title: "Mã đơn hàng",
+            title: "ID",
             dataIndex: "id",
             key: "id",
             width: "5%",
@@ -150,7 +211,7 @@ const Order = () => {
             title: "Điểm trả hàng",
             dataIndex: "arrival",
             key: "arrival",
-            width: "10%",
+            width: "15%",
         },
         {
             title: "Thời gian nhận hàng",
@@ -215,70 +276,62 @@ const Order = () => {
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Đã tiếp nhận
+                <>
+                    {(status == orderStatusOptions[0]["value"]) && (
+                        <Tag color="default">
+                            {orderStatusOptions[0]["label"]}
                         </Tag>
                     )}
-                    {(status == 2) && (
-                        <Tag icon={<MinusCircleOutlined />} color="error">
-                            Đã huỷ
+                    {(status == orderStatusOptions[1]["value"]) && (
+                        <Tag color="processing">
+                            {orderStatusOptions[1]["label"]}
                         </Tag>
                     )}
-                </Space>
+                    {(status == orderStatusOptions[2]["value"]) && (
+                        <Tag color="processing">
+                            {orderStatusOptions[2]["label"]}
+                        </Tag>
+                    )}
+                    {(status == orderStatusOptions[3]["value"]) && (
+                        <Tag color="success">
+                            {orderStatusOptions[3]["label"]}
+                        </Tag>
+                    )}
+                    {(status == orderStatusOptions[4]["value"]) && (
+                        <Tag color="error">
+                            {orderStatusOptions[4]["label"]}
+                        </Tag>
+                    )}
+                </>
             ),
-            width: "10%",
+            width: "5%",
+            align: 'center',
         },
         {
-            title: "Trạng thái vận chuyển",
-            dataIndex: "deliver_status",
-            key: "deliver_status",
-            render: (status) => (
-                <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<ClockCircleOutlined />} color="default">
-                            Chờ vận chuyển
-                        </Tag>
-                    )}
-                    {(status == 2) && (
-                        <Tag icon={<SyncOutlined spin />} color="processing">
-                            Đang vận chuyển
-                        </Tag>
-                    )}
-                    {(status == 3) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Đã trả hàng
-                        </Tag>
-                    )}
-                    {(status == 4) && (
-                        <Tag icon={<MinusCircleOutlined />} color="error">
-                            Đã huỷ
-                        </Tag>
-                    )}
-                </Space>
-            ),
-            width: "10%",
-        },
-        {
-            title: "Trạng thái thanh toán",
+            title: "Thanh toán",
             dataIndex: "payment_status",
             key: "payment_status",
             render: (status) => (
-                <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<ClockCircleOutlined />} color="processing">
-                            Chờ thanh toán
+                <>
+                    {(status == paymentStatusOptions[0]["value"]) && (
+                        <Tag color="processing">
+                            {paymentStatusOptions[0]["label"]}
                         </Tag>
                     )}
-                    {(status == 2) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Đã thanh toán
+                    {(status == paymentStatusOptions[1]["value"]) && (
+                        <Tag color="success">
+                            {paymentStatusOptions[1]["label"]}
                         </Tag>
                     )}
-                </Space>
+                    {(status == paymentStatusOptions[2]["value"]) && (
+                        <Tag color="default">
+                            {paymentStatusOptions[2]["label"]}
+                        </Tag>
+                    )}
+                </>
             ),
-            width: "10%",
+            width: "5%",
+            align: 'center',
         },
         {
             title: "Thao tác",
@@ -310,35 +363,11 @@ const Order = () => {
                     </Tooltip>
                 </Space >
             ),
-            width: "10%",
+            width: "15%",
+            align: 'center',
             fixed: 'right',
         },
     ]
-
-    const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
-            .then(() => {
-                setIsCreateModalVisible(false);
-                formCreate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
-            .then(() => {
-                setIsUpdateModalVisible(false);
-                formUpdate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
-            .then(() => {
-                triggerReload();
-            }).catch(e => { })
-    };
 
     const createFormList = (
         <Form
@@ -353,6 +382,7 @@ const Order = () => {
                 maxWidth: 600,
             }}
             onFinish={onCreateSubmit}
+            onValuesChange={onValuesChange}
             autoComplete="off"
         >
             <Form.Item
@@ -532,6 +562,18 @@ const Order = () => {
             >
                 <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
+            <Form.Item
+                label="Thanh toán"
+                name="payment_status"
+                rules={[
+                    {
+                        required: true,
+                        message: "Giá thành được tính dựa trên tuyến đường!",
+                    },
+                ]}
+            >
+                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
+            </Form.Item>
         </Form>
     )
 
@@ -548,10 +590,11 @@ const Order = () => {
                 maxWidth: 600,
             }}
             onFinish={onUpdateSubmit}
+            onValuesChange={onValuesChange}
             autoComplete="off"
         >
             <Form.Item
-                label="Mã đơn hàng"
+                label="ID"
                 name="id"
                 rules={[
                     {

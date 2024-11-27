@@ -138,6 +138,12 @@ const User = () => {
             fixed: 'left',
         },
         {
+            title: "CCCD",
+            dataIndex: "identification",
+            key: "identification",
+            width: "15%",
+        },
+        {
             title: "Ngày sinh",
             dataIndex: "birthday",
             key: "birthday",

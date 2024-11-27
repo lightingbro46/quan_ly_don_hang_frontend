@@ -108,6 +108,12 @@ const Customer = () => {
             fixed: 'left',
         },
         {
+            title: "CCCD",
+            dataIndex: "identification",
+            key: "identification",
+            width: "15%",
+        },
+        {
             title: "Tên công ty",
             dataIndex: "company",
             key: "company",
