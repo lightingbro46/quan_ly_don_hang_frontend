@@ -41,7 +41,7 @@ const updateFunction = (values) => {
 const deleteFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/customers/delete`,
-        queryParams: { id: values.id },
+        queryParams: { id },
     });
 }
 
