@@ -6,7 +6,7 @@ const { confirm } = Modal;
 
 const showDeleteConfirm = ({ object, data, labelInKeys, onDeleteSubmit }) => {
     confirm({
-        title: `Bạn có muốn thực hiện xoá ${object}?`,
+        title: `Bạn có muốn thực hiện xoá thông tin ${object}?`,
         icon: <ExclamationCircleFilled />,
         content: <>
             {labelInKeys.map((val, idx) => <p key={idx}>{`${val["label"]}: ${data[val["key"]]}`}</p>)}

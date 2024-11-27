@@ -32,7 +32,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    setCurrent([MenuItems[0].key]);
+    setCurrent([MenuItems[4].key]);
   }, [profile]);
   // useEffect(() => {
   //   let items = [{

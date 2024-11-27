@@ -1,24 +1,15 @@
 import { useEffect, useState } from "react";
-import { Space, Form, Input, Select, Tooltip, Tag } from "antd";
-import {
-    EditOutlined,
-    DeleteOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
-    TruckOutlined
-} from "@ant-design/icons"
+import { Space, Form, Input, Select, Tooltip, Tag, Flex, Button } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined, TruckOutlined } from "@ant-design/icons"
+
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineTruckModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-import { truck_data } from "../mock";
 
 const loadFunction = (queryParams) => {
-    return new Promise(resolve => resolve(truck_data))
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
         queryParams
@@ -63,12 +54,18 @@ const loadOptionTruckCatFunction = (queryParams) => {
     });
 }
 
+const truckStatusOptions = [
+    { value: 1, label: "Sẵn sàng" },
+    { value: 2, label: "Đang vận chuyển" },
+    { value: 3, label: "Bảo dưỡng" },
+]
+
 const Truck = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
     const [isTimelineModalVisible, setIsTimelineModalVisible] = useState(false);
-    const [initTimelineModalData, setTimelineModalData] = useState({});
+    const [inputModalData, setInputModalData] = useState({});
+    const [truckCatOptions, setTruckCatOptions] = useState([]);
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -76,74 +73,121 @@ const Truck = () => {
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
 
-    const [optionsTruckCat, setOptionsTruckCat] = useState([]);
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    }
 
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
 
     const showTimelineModal = (record) => {
         console.log(record)
-        setTimelineModalData(record);
+        setInputModalData(record);
         setIsTimelineModalVisible(true);
     }
 
+    const onCreateSubmit = (values) => {
+        handleActionCallback(createFunction, values)
+            .then(() => {
+                setIsCreateModalVisible(false);
+                formCreate.resetFields();
+                triggerReload();
+            }).catch(e => { console.log(e) })
+    };
+
+    const onUpdateSubmit = (values) => {
+        handleActionCallback(updateFunction, values)
+            .then(() => {
+                setInputModalData({});
+                setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
+                triggerReload();
+            }).catch(e => { console.log(e) })
+    };
+
+    const onDeleteSubmit = (id) => {
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
+                triggerReload();
+            }).catch(e => { console.log(e) })
+    };
+
+    const onTimelineClose = () => {
+        setInputModalData({})
+    }
+
+    useEffect(() => {
+        loadOptionTruckCatFunction()
+            .then(res => {
+                setTruckCatOptions(res.results.map(val => ({ value: val.id, label: val.name })));
+            })
+            .catch(e => {
+                console.log(e);
+                setTruckCatOptions([]);
+            })
+    }, []);
+
     const columns = [
         {
-            title: "Mã xe tải",
+            title: "ID",
             dataIndex: "id",
             key: "id",
             width: "5%",
+            fixed: 'left',
         },
         {
-            title: "Tên xe",
+            title: "Tên xe tải",
             dataIndex: "name",
             key: "name",
-            width: "20%",
+            width: "25%",
+            fixed: 'left',
         },
         {
             title: "Biển số xe",
             dataIndex: "license_plate",
             key: "license_plate",
-            width: "15%",
+            width: "20%",
+            fixed: 'left',
         },
         {
             title: "Loại xe",
             dataIndex: "cat_id",
             key: "catId",
             render: (catId) => {
-                let search = optionsTruckCat.filter(val => val.value == catId);
+                let search = truckCatOptions.filter(val => val.value == catId);
                 return search.length > 0 ? search[0]['label'] : "";
             },
-            width: "10%",
+            width: "20%",
         },
         {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Space size="middle">
-                    {(status == 1) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Sẵn sàng
+                <>
+                    {(status == truckStatusOptions[0]["value"]) && (
+                        <Tag color="success">
+                            {truckStatusOptions[0]["label"]}
                         </Tag>
                     )}
-                    {(status == 2) && (
-                        <Tag icon={<SyncOutlined spin />} color="processing">
-                            Đang hoạt động
+                    {(status == truckStatusOptions[1]["value"]) && (
+                        <Tag color="processing">
+                            {truckStatusOptions[1]["label"]}
                         </Tag>
                     )}
-                    {(status == 3) && (
-                        <Tag icon={<MinusCircleOutlined />} color="error">
-                            Bảo dưỡng
+                    {(status == truckStatusOptions[2]["value"]) && (
+                        <Tag color="error">
+                            {truckStatusOptions[2]["label"]}
                         </Tag>
                     )}
-                </Space>
+                </>
             ),
-            width: "20%",
+            width: "15%",
+            align: 'center'
         },
         {
             title: "Thao tác",
@@ -174,52 +218,18 @@ const Truck = () => {
                             <DeleteOutlined />
                         </a>
                     </Tooltip>
-                    <Tooltip placement="topRight" title="Lịch trình">
+                    <Tooltip placement="topRight" title="Lịch trình hoạt động">
                         <a onClick={() => showTimelineModal(record)}>
                             <TruckOutlined />
                         </a>
                     </Tooltip>
                 </Space>
             ),
-            width: "10%",
+            width: "15%",
+            align: 'center',
+            fixed: 'right',
         },
     ]
-
-    const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
-            .then(() => {
-                setIsCreateModalVisible(false);
-                formCreate.resetFields();
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
-
-    const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
-            .then(() => {
-                setIsUpdateModalVisible(false);
-                formUpdate.resetFields();
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
-
-    const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
-            .then(() => {
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
-
-    useEffect(() => {
-        loadOptionTruckCatFunction()
-            .then(res => {
-                setOptionsTruckCat(res.results.map(val => ({ value: val.id, label: val.name })));
-            })
-            .catch(e => {
-                console.log(e);
-                setOptionsTruckCat([]);
-            })
-    }, []);
 
     const createFormList = (
         <Form
@@ -237,16 +247,16 @@ const Truck = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Tên xe"
+                label="Tên xe tải"
                 name="name"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên xe!",
+                        message: "Vui lòng nhập tên xe tải!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên xe tải"/>
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
@@ -258,7 +268,7 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập biển số xe"/>
             </Form.Item>
             <Form.Item
                 label="Loại xe"
@@ -271,12 +281,13 @@ const Truck = () => {
                 ]}
             >
                 <Select
-                    options={optionsTruckCat}
+                    options={truckCatOptions}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
         </Form>
     );
+
     const updateFormList = (
         <Form
             form={formUpdate}
@@ -293,7 +304,7 @@ const Truck = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Mã xe tải"
+                label="ID"
                 name="id"
                 rules={[
                     {
@@ -304,16 +315,16 @@ const Truck = () => {
                 <Input disabled />
             </Form.Item>
             <Form.Item
-                label="Tên xe"
+                label="Tên xe tải"
                 name="name"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng nhập tên xe!",
+                        message: "Vui lòng nhập tên xe tải!",
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập tên xe tải"/>
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
@@ -325,7 +336,7 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập biển số xe" />
             </Form.Item>
             <Form.Item
                 label="Loại xe"
@@ -338,7 +349,7 @@ const Truck = () => {
                 ]}
             >
                 <Select
-                    options={optionsTruckCat}
+                    options={truckCatOptions}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
@@ -353,10 +364,7 @@ const Truck = () => {
                 ]}
             >
                 <Select
-                    options={[
-                        { value: 1, label: "Bình thường" },
-                        { value: 2, label: "Bảo dưỡng, loại bỏ" },
-                    ]}
+                    options={truckStatusOptions}
                     placeholder="Vui lòng chọn trạng thái"
                 />
             </Form.Item>
@@ -365,6 +373,17 @@ const Truck = () => {
 
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="tài xế"
                 isModalVisible={isCreateModalVisible}
@@ -383,7 +402,10 @@ const Truck = () => {
             </UpdateModal>
             <TimelineModal
                 isModalVisible={isTimelineModalVisible}
-                setIsModalVisible={setIsTimelineModalVisible} />
+                setIsModalVisible={setIsTimelineModalVisible}
+                data={inputModalData}
+                onTimelineClose={onTimelineClose}
+            />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}

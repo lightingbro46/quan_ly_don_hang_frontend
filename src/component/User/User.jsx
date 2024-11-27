@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Checkbox } from "antd";
-import { EditOutlined, DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons"
+import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Checkbox, Flex, Button } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined, CheckCircleOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
 import CreateModal from "../Common/CreateModal";
@@ -60,13 +60,17 @@ const userStatusOptions = [
 const User = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [updateModalData, setUpdateModalData] = useState();
+    const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
 
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
+
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    }
 
     const showUpdateModal = (record) => {
         console.log(record)
@@ -76,20 +80,47 @@ const User = () => {
             record["end_date"] = dayjs(record["end_date"]);
         }
         formUpdate.setFieldsValue(record);
-        setUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
 
     const onUpdateChange = (change) => {
         console.log(change)
-        setUpdateModalData(preValues => {
+        setInputModalData(preValues => {
             let current = { ...preValues, ...change };
             if (current["status"] != userStatusOptions[1]["value"]) {
                 current["end_date"] = null;
+                formUpdate.setFieldValue("end_date", null);
             }
             return current;
         })
     }
+
+    const onCreateSubmit = (values) => {
+        handleActionCallback(createFunction, values)
+            .then(() => {
+                setIsCreateModalVisible(false);
+                formCreate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onUpdateSubmit = (values) => {
+        handleActionCallback(updateFunction, values)
+            .then(() => {
+                setInputModalData({});
+                setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onDeleteSubmit = (id) => {
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
+                triggerReload();
+            }).catch(e => { })
+    };
 
     const columns = [
         {
@@ -151,7 +182,7 @@ const User = () => {
             dataIndex: "status",
             key: "status",
             render: (status, record) => (
-                <Space size="small">
+                <>
                     {(status == userStatusOptions[0]["value"]) && (
                         <Tooltip placement="top" title={`Từ ngày ${dayjs(record["start_date"]).format('DD/MM/YYYY')}`}>
                             <Tag color="success">
@@ -166,7 +197,7 @@ const User = () => {
                             </Tag>
                         </Tooltip>
                     )}
-                </Space>
+                </>
             ),
             width: "5%",
             align: 'center'
@@ -204,31 +235,6 @@ const User = () => {
             fixed: 'right',
         },
     ]
-
-    const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
-            .then(() => {
-                setIsCreateModalVisible(false);
-                formCreate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
-            .then(() => {
-                setIsUpdateModalVisible(false);
-                formUpdate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
-            .then(() => {
-                triggerReload();
-            }).catch(e => { })
-    };
 
     const CreateFormList = (
         <Form
@@ -378,7 +384,8 @@ const User = () => {
             >
                 <Input.Password placeholder="Vui lòng nhập mật khẩu" />
             </Form.Item>
-        </Form>)
+        </Form>
+    )
 
     const UpdateFormList = (
         <Form
@@ -514,11 +521,11 @@ const User = () => {
                 name="end_date"
                 rules={[
                     {
-                        required: true,
+                        required: inputModalData["status"] == userStatusOptions[1]["value"],
                         message: "Vui lòng chọn ngày nghỉ việc!",
                     },
                 ]}
-                hidden={!updateModalData || updateModalData["status"] != userStatusOptions[1]["value"]}
+                hidden={inputModalData["status"] != userStatusOptions[1]["value"]}
             >
                 <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày nghỉ việc" />
             </Form.Item>
@@ -567,6 +574,17 @@ const User = () => {
 
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="nhân viên"
                 isModalVisible={isCreateModalVisible}

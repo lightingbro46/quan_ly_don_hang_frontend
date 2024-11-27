@@ -1,14 +1,6 @@
 import { useState } from "react";
-import { Space, Form, Input, Select, Tooltip, DatePicker, Tag } from "antd";
-import {
-    EditOutlined,
-    DeleteOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
-    SolutionOutlined
-} from "@ant-design/icons"
+import { Space, Form, Input, Select, Tooltip, DatePicker, Tag, Button, Flex } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined, SolutionOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
 import CreateModal from "../Common/CreateModal";
@@ -17,10 +9,8 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineDriverModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-import { driver_data } from "../mock";
 
 const loadFunction = (queryParams) => {
-    return new Promise(resolve => resolve(driver_data))
     return apiSearch({
         url: `http://localhost:3000/api/drivers/list`,
         queryParams
@@ -58,12 +48,26 @@ const deleteFunction = (id) => {
     });
 }
 
+const driverStatusOptions = [
+    {
+        value: 1,
+        label: "Sẵn sàng"
+    },
+    {
+        value: 2,
+        label: "Đang vận chuyển"
+    },
+    {
+        value: 3,
+        label: "Đã nghỉ việc"
+    }
+]
+
 const Driver = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
     const [isTimelineModalVisible, setIsTimelineModalVisible] = useState(false);
-    const [initTimelineModalData, setTimelineModalData] = useState({});
+    const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -71,38 +75,77 @@ const Driver = () => {
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
 
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    }
+
     const showUpdateModal = (record) => {
         console.log(record)
+        record["birthday"] = dayjs(record["birthday"]);
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
 
     const showTimelineModal = (record) => {
         console.log(record)
-        setTimelineModalData(record);
+        record["birthday"] = dayjs(record["birthday"]);
+        setInputModalData(record);
         setIsTimelineModalVisible(true);
     }
 
+
+    const onCreateSubmit = (values) => {
+        handleActionCallback(createFunction, values)
+            .then(() => {
+                setIsCreateModalVisible(false);
+                formCreate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onUpdateSubmit = (values) => {
+        handleActionCallback(updateFunction, values)
+            .then(() => {
+                setInputModalData({})
+                setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onDeleteSubmit = (id) => {
+        handleActionCallback(deleteFunction, id)
+            .then(() => {
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onTimelineClose = (id) => {
+        setInputModalData({});
+    };
+
     const columns = [
         {
-            title: "Mã tài xế",
+            title: "ID",
             dataIndex: "id",
             key: "id",
             width: "5%",
+            fixed: 'left',
         },
         {
             title: "Tên tài xế",
             dataIndex: "name",
             key: "name",
             width: "15%",
+            fixed: 'left',
         },
         {
             title: "Ngày sinh",
             dataIndex: "birthday",
             key: "birthday",
             render: (text) => dayjs(text).format('DD/MM/YYYY'),
-            width: "15%",
+            width: "10%",
         },
         {
             title: "Giới tính",
@@ -122,25 +165,26 @@ const Driver = () => {
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Sẵn sàng
+                <>
+                    {(status == driverStatusOptions[0]["value"]) && (
+                        <Tag color="success">
+                            {driverStatusOptions[0]["label"]}
                         </Tag>
                     )}
-                    {(status == 2) && (
-                        <Tag icon={<SyncOutlined spin />} color="processing">
-                            Đang làm việc
+                    {(status == driverStatusOptions[1]["value"]) && (
+                        <Tag color="processing">
+                            {driverStatusOptions[1]["label"]}
                         </Tag>
                     )}
-                    {(status == 3) && (
-                        <Tag icon={<MinusCircleOutlined />} color="error">
-                            Nghỉ việc
+                    {(status == driverStatusOptions[2]["value"]) && (
+                        <Tag color="error">
+                            {driverStatusOptions[2]["label"]}
                         </Tag>
                     )}
-                </Space>
+                </>
             ),
-            width: "20%",
+            width: "5%",
+            align: 'center'
         },
         {
             title: "Thao tác",
@@ -168,41 +212,18 @@ const Driver = () => {
                             <DeleteOutlined />
                         </a>
                     </Tooltip>
-                    <Tooltip placement="topRight" title="Lịch trình">
+                    <Tooltip placement="topRight" title="Lịch trình hoạt động">
                         <a onClick={() => showTimelineModal(record)}>
                             <SolutionOutlined />
                         </a>
                     </Tooltip>
                 </Space>
             ),
-            width: "10%",
+            width: "15%",
+            align: 'center',
+            fixed: 'right',
         },
     ]
-
-    const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
-            .then(() => {
-                setIsCreateModalVisible(false);
-                formCreate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
-            .then(() => {
-                setIsUpdateModalVisible(false);
-                formUpdate.resetFields();
-                triggerReload();
-            }).catch(e => { })
-    };
-
-    const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
-            .then(() => {
-                triggerReload();
-            }).catch(e => { })
-    };
 
     const CreateFormList = (
         <Form
@@ -232,16 +253,28 @@ const Driver = () => {
                 <Input placeholder="Vui lòng nhập tên tài xế" />
             </Form.Item>
             <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
+            </Form.Item>
+            <Form.Item
                 label="Ngày sinh"
                 name="birthday"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng chọn ngày thàng năm sinh!",
+                        message: "Vui lòng chọn ngày sinh!",
                     },
                 ]}
             >
-                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày thàng năm sinh" />
+                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày sinh" />
             </Form.Item>
             <Form.Item
                 label="Giới tính"
@@ -274,7 +307,8 @@ const Driver = () => {
             >
                 <Input />
             </Form.Item>
-        </Form>)
+        </Form>
+    )
 
     const UpdateFormList = (
         <Form
@@ -292,7 +326,7 @@ const Driver = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Mã tài xế"
+                label="ID"
                 name="id"
                 rules={[
                     {
@@ -315,16 +349,28 @@ const Driver = () => {
                 <Input />
             </Form.Item>
             <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
+            </Form.Item>
+            <Form.Item
                 label="Ngày sinh"
                 name="birthday"
                 rules={[
                     {
                         required: true,
-                        message: "Vui lòng chọn ngày thàng năm sinh!",
+                        message: "Vui lòng chọn ngày sinh!",
                     },
                 ]}
             >
-                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày thàng năm sinh" />
+                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày sinh" />
             </Form.Item>
             <Form.Item
                 label="Giới tính"
@@ -367,11 +413,7 @@ const Driver = () => {
                 ]}
             >
                 <Select
-                    options={[
-                        { value: 1, label: "Sẵn sàng" },
-                        { value: 2, label: "Đang làm việc" },
-                        { value: 3, label: "Nghỉ việc" },
-                    ]}
+                    options={driverStatusOptions}
                     placeholder="Vui lòng chọn trạng thái"
                 />
             </Form.Item>
@@ -379,6 +421,17 @@ const Driver = () => {
     )
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="tài xế"
                 isModalVisible={isCreateModalVisible}
@@ -397,7 +450,10 @@ const Driver = () => {
             </UpdateModal>
             <TimelineModal
                 isModalVisible={isTimelineModalVisible}
-                setIsModalVisible={setIsTimelineModalVisible} />
+                setIsModalVisible={setIsTimelineModalVisible}
+                data={inputModalData}
+                onTimelineClose={onTimelineClose}
+            />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}
