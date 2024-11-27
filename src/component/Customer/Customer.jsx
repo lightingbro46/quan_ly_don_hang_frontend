@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Space, Form, Input, Tooltip, InputNumber } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Space, Form, Input, Tooltip, Flex, Button } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
@@ -48,7 +48,7 @@ const deleteFunction = (id) => {
 const Customer = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -56,87 +56,16 @@ const Customer = () => {
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
 
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    }
+
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
-
-    const columns = [
-        {
-            title: "Mã khách hàng",
-            dataIndex: "id",
-            key: "id",
-            width: "5%",
-        },
-        {
-            title: "Tên khách hàng",
-            dataIndex: "name",
-            key: "name",
-            width: "15%",
-        },
-        {
-            title: "Tên công ty",
-            dataIndex: "company",
-            key: "company",
-            width: "15%",
-        },
-        {
-            title: "Mã số thuế",
-            dataIndex: "tax",
-            key: "tax",
-            width: "10%",
-        },
-        {
-            title: "Địa chỉ",
-            dataIndex: "address",
-            key: "address",
-            width: "15%",
-        },
-        {
-            title: "Số điện thoại",
-            dataIndex: "phone",
-            key: "phone",
-            width: "10%",
-        },
-        {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-            width: "20%",
-        },
-        {
-            title: "Thao tác",
-            key: "action",
-            render: (_, record) => (
-                <Space size="middle">
-                    <Tooltip placement="topLeft" title="Cập nhật">
-                        <a onClick={() => showUpdateModal(record)}>
-                            <EditOutlined />
-                        </a>
-                    </Tooltip>
-                    <Tooltip placement="top" title="Xoá">
-                        <a onClick={() => showDeleteConfirm({
-                            object: "khách hàng",
-                            data: record,
-                            labelInKeys: [{
-                                label: "Mã khách hàng",
-                                key: "id"
-                            }, {
-                                label: "Tên khách hàng",
-                                key: "name"
-                            }],
-                            onDeleteSubmit: onDeleteSubmit
-                        })}>
-                            <DeleteOutlined />
-                        </a>
-                    </Tooltip>
-                </Space>
-            ),
-            width: "10%",
-        },
-    ]
 
     const onCreateSubmit = (values) => {
         handleActionCallback(createFunction, values)
@@ -162,6 +91,85 @@ const Customer = () => {
                 triggerReload();
             }).catch(e => { })
     };
+
+    const columns = [
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: "id",
+            width: "5%",
+            fixed: 'left',
+        },
+        {
+            title: "Tên khách hàng",
+            dataIndex: "name",
+            key: "name",
+            width: "15%",
+            fixed: 'left',
+        },
+        {
+            title: "Tên công ty",
+            dataIndex: "company",
+            key: "company",
+            width: "15%",
+        },
+        {
+            title: "Mã số thuế",
+            dataIndex: "tax",
+            key: "tax",
+            width: "10%",
+        },
+        {
+            title: "Địa chỉ",
+            dataIndex: "address",
+            key: "address",
+            width: "15%",
+        },
+        {
+            title: "Số điện thoại",
+            dataIndex: "phone_number",
+            key: "phone_number",
+            width: "10%",
+        },
+        {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+            width: "15%",
+        },
+        {
+            title: "Thao tác",
+            key: "action",
+            render: (_, record) => (
+                <Space size="middle">
+                    <Tooltip placement="topLeft" title="Cập nhật">
+                        <a onClick={() => showUpdateModal(record)}>
+                            <EditOutlined />
+                        </a>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xoá">
+                        <a onClick={() => showDeleteConfirm({
+                            object: "khách hàng",
+                            data: record,
+                            labelInKeys: [{
+                                label: "ID",
+                                key: "id"
+                            }, {
+                                label: "Tên khách hàng",
+                                key: "name"
+                            }],
+                            onDeleteSubmit: onDeleteSubmit
+                        })}>
+                            <DeleteOutlined />
+                        </a>
+                    </Tooltip>
+                </Space>
+            ),
+            width: "15%",
+            align: 'center',
+            fixed: 'right',
+        },
+    ]
 
     const createFormList = (
         <Form
@@ -191,6 +199,18 @@ const Customer = () => {
                 <Input placeholder="Vui lòng nhập tên khách hàng" />
             </Form.Item>
             <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
+            </Form.Item>
+            <Form.Item
                 label="Tên công ty"
                 name="company"
                 rules={[
@@ -212,7 +232,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <InputNumber placeholder="Vui lòng nhập mã số thuế" />
+                <Input placeholder="Vui lòng nhập mã số thuế" />
             </Form.Item>
             <Form.Item
                 label="Địa chỉ"
@@ -228,7 +248,7 @@ const Customer = () => {
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -247,7 +267,7 @@ const Customer = () => {
                     }
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập email" />
             </Form.Item>
         </Form>
     )
@@ -268,7 +288,7 @@ const Customer = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Mã khách hàng"
+                label="ID"
                 name="id"
                 rules={[
                     {
@@ -291,6 +311,18 @@ const Customer = () => {
                 <Input placeholder="Vui lòng nhập tên khách hàng" />
             </Form.Item>
             <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
+            </Form.Item>
+            <Form.Item
                 label="Tên công ty"
                 name="company"
                 rules={[
@@ -312,7 +344,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <InputNumber placeholder="Vui lòng nhập mã số thuế" />
+                <Input placeholder="Vui lòng nhập mã số thuế" />
             </Form.Item>
             <Form.Item
                 label="Địa chỉ"
@@ -328,7 +360,7 @@ const Customer = () => {
             </Form.Item>
             <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -336,7 +368,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập địa chỉ" />
+                <Input placeholder="Vui lòng nhập số điện thoại" />
             </Form.Item>
             <Form.Item
                 label="Email"
@@ -347,12 +379,23 @@ const Customer = () => {
                     }
                 ]}
             >
-                <Input />
+                <Input placeholder="Vui lòng nhập email" />
             </Form.Item>
         </Form>
     )
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="khách hàng"
                 isModalVisible={isCreateModalVisible}

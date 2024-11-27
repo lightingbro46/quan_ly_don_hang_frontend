@@ -204,7 +204,7 @@ const Truck = () => {
                             object: "xe tải",
                             data: record,
                             labelInKeys: [{
-                                label: "Mã xe tải",
+                                label: "ID",
                                 key: "id"
                             }, {
                                 label: "Tên xe",

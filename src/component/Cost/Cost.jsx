@@ -120,7 +120,7 @@ const Cost = () => {
                             object: "chi phí",
                             data: record,
                             labelInKeys: [{
-                                label: "Mã chi phí",
+                                label: "ID",
                                 key: "id"
                             }, {
                                 label: "Tỉnh",

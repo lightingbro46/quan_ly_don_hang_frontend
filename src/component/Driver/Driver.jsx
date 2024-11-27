@@ -201,7 +201,7 @@ const Driver = () => {
                             object: "tài xế",
                             data: record,
                             labelInKeys: [{
-                                label: "Mã tài xế",
+                                label: "ID",
                                 key: "id"
                             }, {
                                 label: "Tên tài xế",

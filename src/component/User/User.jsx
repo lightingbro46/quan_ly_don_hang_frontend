@@ -217,7 +217,7 @@ const User = () => {
                             object: "nhân viên",
                             data: record,
                             labelInKeys: [{
-                                label: "Mã nhân viên",
+                                label: "ID",
                                 key: "id"
                             }, {
                                 label: "Tên nhân viên",
