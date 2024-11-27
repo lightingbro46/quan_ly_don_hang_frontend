@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Checkbox } from "antd";
-import {
-    EditOutlined,
-    DeleteOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
-} from "@ant-design/icons"
+import { EditOutlined, DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
 import CreateModal from "../Common/CreateModal";
@@ -15,9 +8,8 @@ import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-import { user_data } from "../mock";
+
 const loadFunction = (queryParams) => {
-    return new Promise(resolve => resolve(user_data))
     return apiSearch({
         url: `http://localhost:3000/api/users/list`,
         queryParams
@@ -55,10 +47,20 @@ const deleteFunction = (id) => {
     });
 }
 
+const userStatusOptions = [
+    {
+        value: 1,
+        label: "Đang làm việc"
+    },
+    {
+        value: 2,
+        label: "Đã nghỉ việc"
+    }
+]
 const User = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [updateModalData, setUpdateModalData] = useState();
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -68,29 +70,47 @@ const User = () => {
 
     const showUpdateModal = (record) => {
         console.log(record)
+        record["birthday"] = dayjs(record["birthday"]);
+        record["start_date"] = dayjs(record["start_date"]);
+        if (record["end_date"]) {
+            record["end_date"] = dayjs(record["end_date"]);
+        }
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setUpdateModalData(record);
         setIsUpdateModalVisible(true);
+    }
+
+    const onUpdateChange = (change) => {
+        console.log(change)
+        setUpdateModalData(preValues => {
+            let current = { ...preValues, ...change };
+            if (current["status"] != userStatusOptions[1]["value"]) {
+                current["end_date"] = null;
+            }
+            return current;
+        })
     }
 
     const columns = [
         {
-            title: "Mã nhân viên",
+            title: "ID",
             dataIndex: "id",
             key: "id",
             width: "5%",
+            fixed: 'left',
         },
         {
             title: "Tên nhân viên",
             dataIndex: "fullname",
             key: "fullname",
             width: "15%",
+            fixed: 'left',
         },
         {
             title: "Ngày sinh",
             dataIndex: "birthday",
             key: "birthday",
-            width: "15%",
+            width: "10%",
             render: (text) => dayjs(text).format('DD/MM/YYYY'),
         },
         {
@@ -116,54 +136,40 @@ const User = () => {
             title: "Số điện thoại",
             dataIndex: "phone_number",
             key: "phone_number",
-            width: "20%",
+            width: "10%",
         },
         {
-            title: "Ngày vào làm",
-            dataIndex: "start_date",
-            key: "start_date",
-            width: "15%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY'),
-        },
-        {
-            title: "Ngày nghỉ việc",
-            dataIndex: "end_date",
-            key: "end_date",
-            width: "15%",
-            render: (text) => text ? dayjs(text).format('DD/MM/YYYY') : "",
-        },
-        {
-            title: "Quyền admin",
+            title: "Admin",
             dataIndex: "is_admin",
             key: "is_admin",
-            render: (status) => (
-                <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success" />
-                    )}
-                </Space>
-            ),
-            width: "15%",
+            render: (status) => ((status == 1) && (<CheckCircleOutlined style={{ fontSize: "16px" }} />)),
+            width: "5%",
+            align: 'center'
         },
         {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (status) => (
+            render: (status, record) => (
                 <Space size="small">
-                    {(status == 1) && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Đang làm việc
-                        </Tag>
+                    {(status == userStatusOptions[0]["value"]) && (
+                        <Tooltip placement="top" title={`Từ ngày ${dayjs(record["start_date"]).format('DD/MM/YYYY')}`}>
+                            <Tag color="success">
+                                {userStatusOptions[0]["label"]}
+                            </Tag>
+                        </Tooltip>
                     )}
-                    {(status == 2) && (
-                        <Tag icon={<MinusCircleOutlined />} color="error">
-                            Nghỉ việc
-                        </Tag>
+                    {(status == userStatusOptions[1]["value"]) && (
+                        <Tooltip placement="top" title={`Từ ngày ${dayjs(record["end_date"]).format('DD/MM/YYYY')}`}>
+                            <Tag color="error">
+                                {userStatusOptions[1]["label"]}
+                            </Tag>
+                        </Tooltip>
                     )}
                 </Space>
             ),
-            width: "20%",
+            width: "5%",
+            align: 'center'
         },
         {
             title: "Thao tác",
@@ -193,7 +199,9 @@ const User = () => {
                     </Tooltip>
                 </Space>
             ),
-            width: "10%",
+            width: "15%",
+            align: 'center',
+            fixed: 'right',
         },
     ]
 
@@ -239,7 +247,7 @@ const User = () => {
         >
             <Form.Item
                 label="Tên nhân viên"
-                name="name"
+                name="fullname"
                 rules={[
                     {
                         required: true,
@@ -248,6 +256,18 @@ const User = () => {
                 ]}
             >
                 <Input placeholder="Vui lòng nhập tên nhân viên" />
+            </Form.Item>
+            <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
             </Form.Item>
             <Form.Item
                 label="Ngày sinh"
@@ -292,8 +312,20 @@ const User = () => {
                 <Input placeholder="Vui lòng nhập chức vụ" />
             </Form.Item>
             <Form.Item
+                label="Địa chỉ"
+                name="address"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa chỉ!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập địa chỉ" />
+            </Form.Item>
+            <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -318,8 +350,33 @@ const User = () => {
             <Form.Item
                 label={null}
                 name="is_admin"
+                valuePropName="checked"
             >
                 <Checkbox defaultChecked={false}>Quyền admin</Checkbox>
+            </Form.Item>
+            <Form.Item
+                label="Username"
+                name="username"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tài khoản!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập tài khoản" />
+            </Form.Item>
+            <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập mật khẩu!",
+                    },
+                ]}
+            >
+                <Input.Password placeholder="Vui lòng nhập mật khẩu" />
             </Form.Item>
         </Form>)
 
@@ -336,10 +393,11 @@ const User = () => {
                 maxWidth: 600,
             }}
             onFinish={onUpdateSubmit}
+            onValuesChange={onUpdateChange}
             autoComplete="off"
         >
             <Form.Item
-                label="Mã nhân viên"
+                label="ID"
                 name="id"
                 rules={[
                     {
@@ -351,7 +409,7 @@ const User = () => {
             </Form.Item>
             <Form.Item
                 label="Tên nhân viên"
-                name="name"
+                name="fullname"
                 rules={[
                     {
                         required: true,
@@ -360,6 +418,18 @@ const User = () => {
                 ]}
             >
                 <Input placeholder="Vui lòng nhập tên nhân viên" />
+            </Form.Item>
+            <Form.Item
+                label="Số CCCD"
+                name="identification"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập số CCCD!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập số CCCD" />
             </Form.Item>
             <Form.Item
                 label="Ngày sinh"
@@ -404,8 +474,20 @@ const User = () => {
                 <Input placeholder="Vui lòng nhập chức vụ" />
             </Form.Item>
             <Form.Item
+                label="Địa chỉ"
+                name="address"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập địa chỉ!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập địa chỉ" />
+            </Form.Item>
+            <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="phone_number"
                 rules={[
                     {
                         required: true,
@@ -428,13 +510,61 @@ const User = () => {
                 <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày vào làm" />
             </Form.Item>
             <Form.Item
+                label="Ngày nghỉ việc"
+                name="end_date"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng chọn ngày nghỉ việc!",
+                    },
+                ]}
+                hidden={!updateModalData || updateModalData["status"] != userStatusOptions[1]["value"]}
+            >
+                <DatePicker format="DD/MM/YYYY" placeholder="Vui lòng chọn ngày nghỉ việc" />
+            </Form.Item>
+            <Form.Item
                 label={null}
                 name="is_admin"
+                valuePropName="checked"
             >
-                <Checkbox defaultChecked={false}>Quyền admin</Checkbox>
+                <Checkbox>Quyền admin</Checkbox>
+            </Form.Item>
+            <Form.Item
+                label="Username"
+                name="username"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập tài khoản!",
+                    },
+                ]}
+            >
+                <Input placeholder="Vui lòng nhập tài khoản" />
+            </Form.Item>
+            <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                    {
+                        required: true,
+                        message: "Vui lòng nhập mật khẩu!",
+                    },
+                ]}
+            >
+                <Input.Password placeholder="Vui lòng nhập mật khẩu" />
+            </Form.Item>
+            <Form.Item
+                label="Trạng thái"
+                name="status"
+            >
+                <Select
+                    options={userStatusOptions}
+                    placeholder="Vui lòng chọn trạng thái"
+                />
             </Form.Item>
         </Form>
     )
+
     return (
         <>
             <CreateModal

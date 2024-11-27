@@ -9,7 +9,7 @@ const showDeleteConfirm = ({ object, data, labelInKeys, onDeleteSubmit }) => {
         title: `Bạn có muốn thực hiện xoá ${object}?`,
         icon: <ExclamationCircleFilled />,
         content: <>
-            {labelInKeys.map(val => <p>{`${val["label"]}: ${data[val["key"]]}`}</p>)}
+            {labelInKeys.map((val, idx) => <p key={idx}>{`${val["label"]}: ${data[val["key"]]}`}</p>)}
         </>,
         okText: 'Xoá',
         okType: 'danger',

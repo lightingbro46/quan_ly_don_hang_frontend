@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doanh thu và Lợi nhuận</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="revenueChart" width="800" height="400"></canvas>
+
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        const data = {
+            labels: ['Quý 3/2016', 'Quý 3/2017', 'Quý 3/2018', 'Quý 3/2019', 'Quý 3/2020'],
+            datasets: [
+                {
+                    label: 'Doanh thu thuần (triệu)',
+                    data: [3.11, 505.14, 4.85, 395.79, 1315.90],
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    type: 'line',
+                    tension: 0.3,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Lợi nhuận gộp (triệu)',
+                    data: [2.29, 187.66, 2.44, 160.54, 638.29],
+                    backgroundColor: 'red',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Lợi nhuận sau thuế (triệu)',
+                    data: [10.54, 114.33, 104.83, 251.2, 438.93],
+                    backgroundColor: 'gray',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }
+            ]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Doanh thu và Lợi nhuận'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Triệu đồng'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Quý'
+                        }
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>

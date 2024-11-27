@@ -70,22 +70,22 @@ const LoginPage = ({ setProfile }) => {
                 >
                     <Form.Item
                         name="username"
-                        label="Tài khoản"
+                        // label="Username"
                         rules={[
                             { required: true, message: 'Vui lòng nhập tài khoản!' },
                         ]}
                     >
-                        <Input prefix={<UserOutlined />} placeholder="tài khoản" />
+                        <Input prefix={<UserOutlined />} placeholder="Username" />
                     </Form.Item>
 
                     <Form.Item
                         name="password"
-                        label="Mật khẩu"
+                        // label="Password"
                         rules={[
                             { required: true, message: 'Vui lòng nhập mật khẩu!' },
                         ]}
                     >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Vui lòng nhập mật khẩu" />
+                        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
                     </Form.Item>
 
                     <Form.Item name="remember" valuePropName="checked">

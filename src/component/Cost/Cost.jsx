@@ -65,22 +65,25 @@ const Cost = () => {
 
     const columns = [
         {
-            title: "Mã chi phí",
+            title: "ID",
             dataIndex: "id",
             key: "id",
             width: "5%",
+            fixed: "left"
         },
         {
             title: "Tỉnh",
             dataIndex: "province",
             key: "province",
             width: "20%",
+            fixed: "left"
         },
         {
             title: "Tuyến đường",
             dataIndex: "arrival",
             key: "arrival",
-            width: "30%",
+            width: "35%",
+            fixed: "left"
         },
         {
             title: "Báo giá",
@@ -90,7 +93,7 @@ const Cost = () => {
                 style: 'currency',
                 currency: 'VND',
             }).format(value)}`),
-            width: "20%",
+            width: "15%",
         },
         {
             title: "Chi phí",
@@ -100,7 +103,7 @@ const Cost = () => {
                 style: 'currency',
                 currency: 'VND',
             }).format(value)}`),
-            width: "20%",
+            width: "15%",
         },
         {
             title: "Thao tác",
@@ -133,7 +136,8 @@ const Cost = () => {
                     </Tooltip>
                 </Space>
             ),
-            width: "10%",
+            width: "15%",
+            fixed: "right"
         },
     ]
 
@@ -235,6 +239,7 @@ const Cost = () => {
             </Form.Item>
         </Form>
     );
+    
     const updateFormList = (
         <Form
             form={formUpdate}
@@ -251,7 +256,7 @@ const Cost = () => {
             autoComplete="off"
         >
             <Form.Item
-                label="Mã chi phí"
+                label="ID"
                 name="id"
                 rules={[
                     {

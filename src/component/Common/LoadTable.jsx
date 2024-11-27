@@ -185,6 +185,7 @@ const LoadTable = ({ columns, loadFunction, reload }) => {
             scroll={{
                 x: 'max-content',
             }}
+            bordered
         />
     )
 }

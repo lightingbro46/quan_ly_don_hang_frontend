@@ -31,6 +31,9 @@ const App = () => {
     is_admin: true,
   });
 
+  useEffect(() => {
+    setCurrent([MenuItems[0].key]);
+  }, [profile]);
   // useEffect(() => {
   //   let items = [{
   //     href: "",

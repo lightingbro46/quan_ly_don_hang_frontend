@@ -14,7 +14,7 @@ const UpdateModal = ({ name, isModalVisible, setIsModalVisible, form, children }
 
     return (
         <Modal
-            title={`Cập nhật ${name}`}
+            title={`Cập nhật thông tin ${name}`}
             open={isModalVisible}
             onOk={handleOk}
             onCancel={handleCancel}
