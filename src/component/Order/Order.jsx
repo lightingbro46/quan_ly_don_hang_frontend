@@ -129,7 +129,7 @@ const paymentStatusOptions = [
     }
 ]
 
-const Order = () => {
+const Order = ({ profile }) => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [inputModalData, setInputModalData] = useState({});
@@ -159,6 +159,7 @@ const Order = () => {
     }
 
     const showUpdateModal = (record) => {
+        record.deliver_time = [dayjs(record.start_date), dayjs(record.end_date)];
         console.log(record)
         formUpdate.setFieldsValue(record);
         setInputModalData(record);
@@ -170,19 +171,31 @@ const Order = () => {
         if (value["deliver_time"]) {
             setInputModalData(pre => ({
                 ...pre,
-                start_date: value["deliver_time"][0],
-                end_date: value["deliver_time"][1]
+                start_date: dayjs(value["deliver_time"][0]).format("YYYY-MM-DD"),
+                end_date: dayjs(value["deliver_time"][1]).format("YYYY-MM-DD")
             }))
-        } else if (value["cost"]) {
-                formCreate.setFieldsValue({
-                    pricing: value["cost"]["pricing"],
-                    tolls: value["cost"]["tolls"]
+        } else if (value["cost_id"]) {
+            loadOptionCostFunction({ id: value["cost_id"] })
+                .then((res) => {
+                    let data = res["results"][0];
+                    formCreate.setFieldsValue({
+                        pricing: new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(data["pricing"]),
+                        tolls: new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(data["tolls"]),
+                        payment_status: paymentStatusOptions[0]["value"],
+                    })
+                    setInputModalData(pre => ({
+                        ...pre,
+                        pricing: data["pricing"],
+                        tolls: data["tolls"],
+                        payment_status: paymentStatusOptions[0]["value"]
+                    }))
                 })
-            setInputModalData(pre => ({
-                ...pre,
-                pricing: value["cost"]["pricing"],
-                tolls: value["cost"]["tolls"]
-            }))
         } else if (value["cat_id"]) {
             setInputModalData(pre => ({
                 ...pre,
@@ -194,23 +207,34 @@ const Order = () => {
     }
 
     const onUpdateValuesChange = (value) => {
-        console.log("Change", value)
         if (value["deliver_time"]) {
             setInputModalData(pre => ({
                 ...pre,
-                start_date: value["deliver_time"][0],
-                end_date: value["deliver_time"][1]
+                start_date: dayjs(value["deliver_time"][0]).format("YYYY-MM-DD"),
+                end_date: dayjs(value["deliver_time"][1]).format("YYYY-MM-DD")
             }))
         } else if (value["cost_id"]) {
-            formUpdate.setFieldsValue({
-                pricing: value["cost"]["pricing"],
-                tolls: value["cost"]["tolls"]
-            })
-            setInputModalData(pre => ({
-                ...pre,
-                pricing: value["cost"]["pricing"],
-                tolls: value["cost"]["tolls"]
-            }))
+            loadOptionCostFunction({ id: value["cost_id"] })
+                .then((res) => {
+                    let data = res["results"][0];
+                    formUpdate.setFieldsValue({
+                        pricing: new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(data["pricing"]),
+                        tolls: new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(data["tolls"]),
+                        payment_status: paymentStatusOptions[0]["value"]
+                    })
+                    setInputModalData(pre => ({
+                        ...pre,
+                        pricing: data["pricing"],
+                        tolls: data["tolls"],
+                        payment_status: paymentStatusOptions[0]["value"]
+                    }))
+                })
         } else if (value["cat_id"]) {
             setInputModalData(pre => ({
                 ...pre,
@@ -222,6 +246,9 @@ const Order = () => {
     }
 
     const onCreateSubmit = (values) => {
+        values.start_date = dayjs(values["deliver_time"][0]).format("YYYY-MM-DD");
+        values.end_date = dayjs(values["deliver_time"][1]).format("YYYY-MM-DD");
+        values.user_id = profile.id;
         handleActionCallback(createFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
@@ -458,7 +485,7 @@ const Order = () => {
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
-                    labelInKeys={['id', "name"]}
+                    labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
             </Form.Item>
@@ -488,7 +515,7 @@ const Order = () => {
             </Form.Item>
             <Form.Item
                 label="Tuyến đường"
-                name="cost"
+                name="cost_id"
                 rules={[
                     {
                         required: true,
@@ -498,7 +525,7 @@ const Order = () => {
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
-                    labelInKeys={["id", "province", "arrival"]}
+                    labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
             </Form.Item>
@@ -570,8 +597,12 @@ const Order = () => {
                 <SearchInput
                     defaultActiveFirstOption={true}
                     loadFunction={loadOptionTruckFunction}
-                    extraParams={{cat_id: inputModalData["cat_id"]}}
-                    labelInKeys={["id", "license_plate"]}
+                    extraParams={{
+                        cat_id: inputModalData["cat_id"],
+                        start_date: inputModalData["start_date"],
+                        end_date: inputModalData["end_date"],
+                    }}
+                    labelInKeys={["license_plate"]}
                     placeholder="Vui lòng chọn xe tải"
                 />
             </Form.Item>
@@ -586,9 +617,13 @@ const Order = () => {
                 ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionTruckFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "name"]}
+                    defaultActiveFirstOption={true}
+                    loadFunction={loadOptionDriverFunction}
+                    extraParams={{
+                        start_date: inputModalData["start_date"],
+                        end_date: inputModalData["end_date"],
+                    }}
+                    labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn tài xế"
                 />
             </Form.Item>
@@ -664,11 +699,10 @@ const Order = () => {
                         message: "Vui lòng chọn khách hàng!",
                     },
                 ]}
-            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
-                    labelInKeys={['id', "name"]}
+                    labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
             </Form.Item>
@@ -699,18 +733,16 @@ const Order = () => {
             <Form.Item
                 label="Tuyến đường"
                 name="cost_id"
-                rules={[
-                    {
-                        required: true,
-                        message: "Vui lòng chọn tuyến đường!",
-                    },
-                ]}
-            //todo: render
+            // rules={[
+            //     {
+            //         required: true,
+            //         message: "Vui lòng chọn tuyến đường!",
+            //     },
+            // ]}
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "province", "arrival"]}
+                    labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
             </Form.Item>
@@ -747,7 +779,6 @@ const Order = () => {
                         message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
-            //todo: render
             >
                 <RangePicker
                     format="DD/MM/YYYY"
@@ -758,13 +789,12 @@ const Order = () => {
             <Form.Item
                 label="Loại xe"
                 name="cat_id"
-                rules={[
-                    {
-                        required: true,
-                        message: "Vui lòng chọn loại xe!",
-                    },
-                ]}
-            //todo: render
+            // rules={[
+            //     {
+            //         required: true,
+            //         message: "Vui lòng chọn loại xe!",
+            //     },
+            // ]}
             >
                 <Select
                     options={truckCatsOptions}
@@ -780,12 +810,16 @@ const Order = () => {
                         message: "Vui lòng chọn xe tải!",
                     },
                 ]}
-            //todo: render
             >
                 <SearchInput
+                    defaultActiveFirstOption={true}
                     loadFunction={loadOptionTruckFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "license_plate"]}
+                    extraParams={{
+                        cat_id: inputModalData["cat_id"],
+                        start_date: inputModalData["start_date"],
+                        end_date: inputModalData["end_date"],
+                    }}
+                    labelInKeys={["license_plate"]}
                     placeholder="Vui lòng chọn xe tải"
                 />
             </Form.Item>
@@ -800,9 +834,13 @@ const Order = () => {
                 ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionTruckFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "name"]}
+                    defaultActiveFirstOption={true}
+                    loadFunction={loadOptionDriverFunction}
+                    extraParams={{
+                        start_date: inputModalData["start_date"],
+                        end_date: inputModalData["end_date"],
+                    }}
+                    labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn tài xế"
                 />
             </Form.Item>

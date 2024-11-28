@@ -27,6 +27,7 @@ const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
   const [current, setCurrent] = useState(MenuItems[0].key);
   const [profile, setProfile] = useState({
+    id: 1,
     fullname: "Nguyễn Văn A",
     is_admin: true,
   });

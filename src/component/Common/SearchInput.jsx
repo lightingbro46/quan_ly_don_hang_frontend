@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo } from "react";
 import { Select, Spin, Empty } from "antd";
 
-const SearchInput = ({ loadFunction, labelInKeys, value, onChange, ...props }) => {
+const SearchInput = ({ loadFunction, extraParams = {}, labelInKeys, value, onChange, ...props }) => {
     const [options, setOptions] = useState([]);
     const [fetching, setFetching] = useState(false);
 
@@ -17,7 +17,7 @@ const SearchInput = ({ loadFunction, labelInKeys, value, onChange, ...props }) =
         currentValue = string;
         console.log("curr", currentValue)
         const fetch = () => {
-            loadFunction({ q: string })
+            loadFunction({ q: string, ...extraParams })
                 .then(res => {
                     if (currentValue == string) {
                         console.log(res.results)
@@ -60,7 +60,7 @@ const SearchInput = ({ loadFunction, labelInKeys, value, onChange, ...props }) =
             filterOption={false}
             onSearch={handleSearch}
             onChange={handleChange}
-            notFoundContent={fetching ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            notFoundContent={fetching ? <Spin size="small" /> : null}
             options={options}
             {...props}
         />
