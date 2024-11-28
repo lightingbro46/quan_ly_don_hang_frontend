@@ -108,12 +108,6 @@ const Customer = () => {
             fixed: 'left',
         },
         {
-            title: "CCCD",
-            dataIndex: "identification",
-            key: "identification",
-            width: "15%",
-        },
-        {
             title: "Tên công ty",
             dataIndex: "company",
             key: "company",
@@ -203,18 +197,6 @@ const Customer = () => {
                 ]}
             >
                 <Input placeholder="Vui lòng nhập tên khách hàng" />
-            </Form.Item>
-            <Form.Item
-                label="Số CCCD"
-                name="identification"
-                rules={[
-                    {
-                        required: true,
-                        message: "Vui lòng nhập số CCCD!",
-                    },
-                ]}
-            >
-                <Input placeholder="Vui lòng nhập số CCCD" />
             </Form.Item>
             <Form.Item
                 label="Tên công ty"
@@ -315,18 +297,6 @@ const Customer = () => {
                 ]}
             >
                 <Input placeholder="Vui lòng nhập tên khách hàng" />
-            </Form.Item>
-            <Form.Item
-                label="Số CCCD"
-                name="identification"
-                rules={[
-                    {
-                        required: true,
-                        message: "Vui lòng nhập số CCCD!",
-                    },
-                ]}
-            >
-                <Input placeholder="Vui lòng nhập số CCCD" />
             </Form.Item>
             <Form.Item
                 label="Tên công ty"

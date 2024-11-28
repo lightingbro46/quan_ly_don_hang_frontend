@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Space, Form, Input, Select, Tooltip, Tag, DatePicker } from "antd";
+import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Flex, Button } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
@@ -57,17 +57,19 @@ const loadOptionTruckCatFunction = (queryParams) => {
     })
 }
 
-const loadOptionTruckFunction = (queryParams) => {
+const loadOptionTruckFunction = (bodyParams) => {
     return apiSearch({
-        url: "http://localhost:3000/api/trucks/list",
-        queryParams
+        url: "http://localhost:3000/api/trucks/available",
+        method: "POST",
+        bodyParams
     })
 }
 
-const loadOptionDriverFunction = (queryParams) => {
+const loadOptionDriverFunction = (bodyParams) => {
     return apiSearch({
-        url: "http://localhost:3000/api/drivers/list",
-        queryParams
+        url: "http://localhost:3000/api/drivers/available",
+        method: "POST",
+        bodyParams
     })
 }
 
@@ -138,11 +140,18 @@ const Order = () => {
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
 
-    const [optionsTruckCat, setOptionsTruckCat] = useState([]);
-    const [optionsTruck, setOptionsTruck] = useState([]);
-    const [optionsCost, setOptionsCost] = useState([]);
-    const [optionsCustomer, setOptionsCustomer] = useState([]);
-    const [optionsDriver, setOptionsDriver] = useState([]);
+    const [truckCatsOptions, setTruckCatOptions] = useState([]);
+
+    useEffect(() => {
+        loadOptionTruckCatFunction()
+            .then(res => {
+                setTruckCatOptions(res.results.map(val => ({ value: val["id"], label: val["name"] })));
+            })
+            .catch(e => {
+                console.log(e);
+                setTruckCatOptions([]);
+            })
+    }, [])
 
     const showCreateModal = () => {
         setInputModalData({});
@@ -156,8 +165,60 @@ const Order = () => {
         setIsUpdateModalVisible(true);
     }
 
-    const onValuesChange = (value) => {
+    const onCreateValuesChange = (value) => {
+        console.log("Change", value)
+        if (value["deliver_time"]) {
+            setInputModalData(pre => ({
+                ...pre,
+                start_date: value["deliver_time"][0],
+                end_date: value["deliver_time"][1]
+            }))
+        } else if (value["cost"]) {
+                formCreate.setFieldsValue({
+                    pricing: value["cost"]["pricing"],
+                    tolls: value["cost"]["tolls"]
+                })
+            setInputModalData(pre => ({
+                ...pre,
+                pricing: value["cost"]["pricing"],
+                tolls: value["cost"]["tolls"]
+            }))
+        } else if (value["cat_id"]) {
+            setInputModalData(pre => ({
+                ...pre,
+                cat_id: value["cat_id"]
+            }))
+        } else {
+            setInputModalData(pre => ({ ...pre, ...value }))
+        }
+    }
 
+    const onUpdateValuesChange = (value) => {
+        console.log("Change", value)
+        if (value["deliver_time"]) {
+            setInputModalData(pre => ({
+                ...pre,
+                start_date: value["deliver_time"][0],
+                end_date: value["deliver_time"][1]
+            }))
+        } else if (value["cost_id"]) {
+            formUpdate.setFieldsValue({
+                pricing: value["cost"]["pricing"],
+                tolls: value["cost"]["tolls"]
+            })
+            setInputModalData(pre => ({
+                ...pre,
+                pricing: value["cost"]["pricing"],
+                tolls: value["cost"]["tolls"]
+            }))
+        } else if (value["cat_id"]) {
+            setInputModalData(pre => ({
+                ...pre,
+                cat_id: value["cat_id"]
+            }))
+        } else {
+            setInputModalData(pre => ({ ...pre, ...value }))
+        }
     }
 
     const onCreateSubmit = (values) => {
@@ -379,10 +440,10 @@ const Order = () => {
                 span: 16,
             }}
             style={{
-                maxWidth: 600,
+                maxWidth: 800,
             }}
             onFinish={onCreateSubmit}
-            onValuesChange={onValuesChange}
+            onValuesChange={onCreateValuesChange}
             autoComplete="off"
         >
             <Form.Item
@@ -394,7 +455,6 @@ const Order = () => {
                         message: "Vui lòng chọn khách hàng!",
                     },
                 ]}
-            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCustomerFunction}
@@ -428,18 +488,16 @@ const Order = () => {
             </Form.Item>
             <Form.Item
                 label="Tuyến đường"
-                name="cost_id"
+                name="cost"
                 rules={[
                     {
                         required: true,
                         message: "Vui lòng chọn tuyến đường!",
                     },
                 ]}
-            //todo: render
             >
                 <SearchInput
                     loadFunction={loadOptionCostFunction}
-                    loadOptionsFirst={true}
                     labelInKeys={["id", "province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
@@ -477,7 +535,6 @@ const Order = () => {
                         message: "Vui lòng chọn thời gian vân chuyển!",
                     },
                 ]}
-            //todo: render
             >
                 <RangePicker
                     format="DD/MM/YYYY"
@@ -494,12 +551,9 @@ const Order = () => {
                         message: "Vui lòng chọn loại xe!",
                     },
                 ]}
-            //todo: render
             >
-                <SearchInput
-                    loadFunction={loadOptionTruckCatFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "name"]}
+                <Select
+                    options={truckCatsOptions}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
@@ -512,11 +566,11 @@ const Order = () => {
                         message: "Vui lòng chọn xe tải!",
                     },
                 ]}
-            //todo: render
             >
                 <SearchInput
+                    defaultActiveFirstOption={true}
                     loadFunction={loadOptionTruckFunction}
-                    loadOptionsFirst={true}
+                    extraParams={{cat_id: inputModalData["cat_id"]}}
                     labelInKeys={["id", "license_plate"]}
                     placeholder="Vui lòng chọn xe tải"
                 />
@@ -565,14 +619,11 @@ const Order = () => {
             <Form.Item
                 label="Thanh toán"
                 name="payment_status"
-                rules={[
-                    {
-                        required: true,
-                        message: "Giá thành được tính dựa trên tuyến đường!",
-                    },
-                ]}
             >
-                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
+                <Select
+                    options={paymentStatusOptions}
+                    placeholder="Vui lòng chọn trạng thái thanh toán"
+                />
             </Form.Item>
         </Form>
     )
@@ -590,7 +641,7 @@ const Order = () => {
                 maxWidth: 600,
             }}
             onFinish={onUpdateSubmit}
-            onValuesChange={onValuesChange}
+            onValuesChange={onUpdateValuesChange}
             autoComplete="off"
         >
             <Form.Item
@@ -715,10 +766,8 @@ const Order = () => {
                 ]}
             //todo: render
             >
-                <SearchInput
-                    loadFunction={loadOptionTruckCatFunction}
-                    loadOptionsFirst={true}
-                    labelInKeys={["id", "name"]}
+                <Select
+                    options={truckCatsOptions}
                     placeholder="Vui lòng chọn loại xe"
                 />
             </Form.Item>
@@ -781,10 +830,39 @@ const Order = () => {
             >
                 <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
+            <Form.Item
+                label="Trạng thái"
+                name="status"
+            >
+                <Select
+                    options={orderStatusOptions}
+                    placeholder="Vui lòng chọn trạng thái đơn hàng"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Thanh toán"
+                name="payment_status"
+            >
+                <Select
+                    options={paymentStatusOptions}
+                    placeholder="Vui lòng chọn trạng thái thanh toán"
+                />
+            </Form.Item>
         </Form>
     )
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="đơn hàng"
                 isModalVisible={isCreateModalVisible}

@@ -38,7 +38,7 @@ const SiderBar = ({ current, setCurrent }) => {
     const [collapsed, setCollapsed] = useState(false);
 
     const onClick = (e) => {
-        setCurrent(e.keyPath.reverse());
+        setCurrent(e.key);
     };
 
     return (<Sider

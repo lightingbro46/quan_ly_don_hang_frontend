@@ -25,14 +25,14 @@ message.config({
 
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [current, setCurrent] = useState([MenuItems[0].key]);
+  const [current, setCurrent] = useState(MenuItems[0].key);
   const [profile, setProfile] = useState({
     fullname: "Nguyễn Văn A",
     is_admin: true,
   });
 
   useEffect(() => {
-    setCurrent([MenuItems[2].key]);
+    setCurrent(MenuItems[1].key);
   }, [profile]);
   // useEffect(() => {
   //   let items = [{
@@ -91,15 +91,15 @@ const App = () => {
                   borderRadius: borderRadiusLG,
                 }}
               >
-                {current.includes("Dashboard") && <Dashboard setCurrent={setCurrent} />}
-                {current.includes("Driver") && <Driver />}
-                {current.includes("Customer") && <Customer />}
-                {current.includes("Truck") && <Truck />}
-                {current.includes("Order") && <Order />}
-                {current.includes("Cost") && <Cost />}
-                {current.includes("Revenue") && <Revenue />}
-                {current.includes("Award") && <Award />}
-                {current.includes("User") && <User />}
+                {current == "Dashboard" && <Dashboard setCurrent={setCurrent} profile={profile} />}
+                {current == "Driver" && <Driver />}
+                {current == "Customer" && <Customer />}
+                {current == "Truck" && <Truck />}
+                {current == "Order" && <Order profile={profile} />}
+                {current == "Cost" && <Cost />}
+                {current == "Revenue" && <Revenue />}
+                {current == "Award" && <Award />}
+                {current == "User" && <User />}
               </div>
             </Content>
           </Layout>

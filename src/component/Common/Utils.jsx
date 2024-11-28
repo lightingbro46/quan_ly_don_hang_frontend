@@ -42,7 +42,7 @@ const handleActionCallback = (actionFunction, inputData) => {
         actionFunction(inputData)
             .then((res) => {
                 message.success(`Thao tác thành công!`);
-                resolve();
+                resolve(res);
             })
             .catch(e => {
                 console.log(e);

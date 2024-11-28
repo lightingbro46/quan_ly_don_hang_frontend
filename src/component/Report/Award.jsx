@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Space, Flex, DatePicker, Tag } from "antd";
+import { Space, Flex, DatePicker, Tag, Typography, Button } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-
 import { award_data } from "../mock";
+
+const { Title } = Typography;
+const { RangePicker } = DatePicker;
 
 const loadFunction = (queryParams) => {
     return new Promise((resolve, reject) => resolve(award_data))
@@ -22,23 +24,24 @@ const Award = () => {
 
     const columns = [
         {
-            title: "Mã tài xế",
+            title: "ID",
             dataIndex: "id",
             key: "id",
-            width: "10%",
+            width: "5%",
+            fixed: "left",
         },
         {
             title: "Tên tài xế",
             dataIndex: "name",
             key: "name",
-            width: "20%",
+            width: "15%",
+            fixed: "left",
         },
         {
-            title: "Ngày sinh",
-            dataIndex: "birthday",
-            key: "birthday",
+            title: "CCCD",
+            dataIndex: "identification",
+            key: "identification",
             width: "10%",
-            render: (text) => dayjs(text).format('DD/MM/YYYY'),
         },
         {
             title: "Số chuyến đã vận chuyển",
@@ -59,17 +62,27 @@ const Award = () => {
             key: "is_award",
             width: "20%",
             render: ((_, record) => (
-                (record["delivers"] - 20 > 0) &&
-                (<Space size="small">
-                    <Tag icon={<CheckCircleOutlined />} color="success" />
-                </Space>)
+                (record["delivers"] - 20 > 0) && <CheckCircleOutlined style={{ fontSize: "16px" }} />
             )),
-            align: 'center'
+            align: 'center',
+            fixed: "right",
         }
     ]
 
     return (
         <>
+            <Title level={2} >Báo cáo khen thưởng tài xế</Title>
+            <Title level={5}>Khoảng thời gian:</Title>
+            <Space size={"middle"} style={{ marginBottom: 32 }}>
+                <RangePicker format="DD/MM/YYYY" placeholder={["Từ ngày", "Đến ngày"]} value={[dayjs("2024-10-1"), dayjs("2024-12-31")]} />
+                <Button type="primary">
+                    Xuất báo cáo
+                </Button>
+                <Button type="primary">
+                    In
+                </Button>
+            </Space>
+            <Space />
             <LoadTable
                 columns={columns}
                 loadFunction={loadFunction}

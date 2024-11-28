@@ -151,14 +151,14 @@ const Driver = () => {
             dataIndex: "birthday",
             key: "birthday",
             render: (text) => dayjs(text).format('DD/MM/YYYY'),
-            width: "10%",
+            width: "15%",
         },
         {
             title: "Giới tính",
             dataIndex: "gender",
             key: "gender",
             render: (gender) => `${gender == 1 ? "Nam" : "Nữ"}`,
-            width: "10%",
+            width: "15%",
         },
         {
             title: "Số điện thoại",
@@ -189,7 +189,7 @@ const Driver = () => {
                     )}
                 </>
             ),
-            width: "5%",
+            width: "15%",
             align: 'center'
         },
         {

@@ -123,7 +123,7 @@ const Truck = () => {
     useEffect(() => {
         loadOptionTruckCatFunction()
             .then(res => {
-                setTruckCatOptions(res.results.map(val => ({ value: val.id, label: val.name })));
+                setTruckCatOptions(res.results.map(val => ({ value: val["id"], label: val["name"] })));
             })
             .catch(e => {
                 console.log(e);

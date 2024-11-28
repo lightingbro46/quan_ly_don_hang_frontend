@@ -1,79 +1,73 @@
 import { useEffect, useState, Fragment } from "react";
 import { Flex, Card, Typography, Image } from "antd";
 
-import { handleActionCallback } from "../Common/Utils";
+import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 import logo from "../../assets/images/react.svg";
-import { dashboard_data } from "../mock";
 
 const { Title } = Typography;
 
+const loadFunction = () => {
+    return apiSearch({
+        url: "http://localhost:3000/api/report/overview"
+    })
+}
 const items = [
     {
         name: "Customer",
-        key: "Customer",
+        key: "customer",
         label: ["Khách hàng"],
-        url: "http://localhost:3000/api/customers/list",
         background: "#7320be"
     },
     {
         name: "Order",
-        key: "Order",
+        key: "order",
         label: ["Đơn hàng"],
-        url: "http://localhost:3000/api/orders/list",
         background: "#2b790e"
     },
     {
         name: "User",
-        key: "User",
+        key: "user",
         label: ["Nhân viên"],
-        url: "http://localhost:3000/api/users/list",
         background: "#0f76e0"
     },
     {
         name: "Driver",
-        key: "Driver",
+        key: "driver",
         label: ["Tài xế"],
-        url: "http://localhost:3000/api/drivers/list",
         background: "#1cdff2"
     },
     {
         name: "Truck",
-        key: "Truck",
+        key: "truck",
         label: ["Xe tải"],
-        url: "http://localhost:3000/api/trucks/list",
         background: "#e99f17"
     },
     {
-        name: "UnavaiableTruck",
-        key: "Truck",
-        label: ["Xe tải", " đang bảo dưỡng"],
-        url: "http://localhost:3000/api/trucks/list?status=2",
+        name: "Truck",
+        key: "truck_unavailable",
+        label: ["Xe tải", "đang bảo dưỡng"],
         background: "#dc5c11"
     },
 ]
+
 const Dashboard = ({ setCurrent }) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({})
 
     useEffect(() => {
-        setData(dashboard_data);
-        // items.forEach((value, index) => {
-        //     fetch(value.url)
-        //         .then(res => {
-        //             if (res.ok) return res.json();
-        //         })
-        //         .then(res => {
-        //             const { totalCount } = res;
-        //             setData(prevValue => {
-        //                 return {
-        //                     ...prevValue,
-        //                     [value.name]: totalCount
-        //                 }
-        //             })
-        //         })
-        //         .catch(e => { console.log(e) });
-        // })
+        setLoading(true);
+        loadFunction()
+            .then((res) => {
+                const { totalCount } = res;
+                setData(totalCount);
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }, [])
 
     return (
@@ -94,7 +88,7 @@ const Dashboard = ({ setCurrent }) => {
                         borderRadius: "20px"
 
                     }}
-                    onClick={() => setCurrent(value.key)}
+                    onClick={() => setCurrent(value.name)}
                 >
                     <Flex
                         vertical={false}
@@ -102,11 +96,11 @@ const Dashboard = ({ setCurrent }) => {
                         align="center"
                     >
                         <Flex vertical >
-                            <Title level={3} style={{ color: "white" }}>
-                                {data[value.name] || 0}
+                            <Title level={2} style={{ color: "white" }}>
+                                {data[value["key"]] || 0}
                             </Title>
                             <Title level={4} style={{ color: "white" }}>
-                                {value.label.map((line, index) => (
+                                {value["label"].map((line, index) => (
                                     <Fragment key={index}>
                                         {line}
                                         <br />

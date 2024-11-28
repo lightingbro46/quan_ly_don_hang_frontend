@@ -100,49 +100,112 @@ const revenue_data = {
         {
             id: 1,
             key: "Doanh thu bán hàng và cung cấp dịch vụ",
-            value: 150000000
+            value: 1656626843
         },
         {
             id: 2,
             key: "Các khoản giảm trừ doanh thu",
-            value: 21000000
+            value: 0
         },
         {
             id: 3,
             key: "Giá vốn hàng bán",
-            value: 5000000
+            value: 1372427559
         },
         {
             id: 4,
             key: "Lợi nhuận gộp về bán hàng và cung cấp dịch vụ",
-            value: 120000000
+            value: 284199284
         },
         {
             id: 5,
             key: "Thuế thu nhập doanh nghiệp",
-            value: 12000000
+            value: 56839856
         },
         {
             id: 6,
             key: "Lợi nhuận sau thuế thu nhập doanh nghiệp",
-            value: 2000000
+            value: 227359427
         },
     ]
 }
 
 const award_data = {
-    totalCount: 2,
-    results: [{
-        id: 1,
-        name: "Nguyễn Văn A",
-        birthday: "1996/10/1",
-        delivers: 10
-    }, {
-        id: 2,
-        name: "Nguyễn Văn B",
-        birthday: "1998/12/11",
-        delivers: 25
-    }]
+    totalCount: 12,
+    results: [
+        {
+            id: 1,
+            name: "Nguyễn Văn Hùng",
+            identification: "012345678901",
+            delivers: 10
+        },
+        {
+            id: 2,
+            name: "Trần Văn Minh",
+            identification: "123456789012",
+            delivers: 21
+        },
+        {
+            id: 3,
+            name: "Phạm Hữu Tài",
+            identification: "234567890123",
+            delivers: 24
+        },
+        {
+            id: 4,
+            name: "Lê Quốc Thắng",
+            identification: "345678901234",
+            delivers: 11
+        },
+        {
+            id: 5,
+            name: "Hoàng Văn Tuấn",
+            identification: "456789012345",
+            delivers: 12
+        },
+        {
+            id: 6,
+            name: "Đỗ Anh Dũng",
+            identification: "567890123456",
+            delivers: 23
+        },
+        {
+            id: 7,
+            name: "Bùi Ngọc Phát",
+            identification: "678901234567",
+            delivers: 19
+        },
+        {
+            id: 8,
+            name: "Nguyễn Văn Phúc",
+            identification: "789012345678",
+            delivers: 16
+        },
+        {
+            id: 9,
+            name: "Trần Thanh Sơn",
+            identification: "890123456789",
+            delivers: 22
+        },
+        {
+            id: 10,
+            name: "Lý Hữu Đạt",
+            identification: "901234567890",
+            delivers: 25
+        },
+        {
+            id: 11,
+            name: "Phạm Văn Thành",
+            identification: "112345678901",
+            delivers: 23
+        },
+        {
+            id: 12,
+            name: "Lê Minh Hiếu",
+            identification: "223456789012",
+            delivers: 11
+        },
+    ]
 }
 
 const timeline_driver = {
@@ -166,7 +229,7 @@ const timeline_driver = {
         status: 1,
         deliver_status: 2,
         payment_status: 1
-    },{
+    }, {
         id: 2,
         customer_id: "1",
         customer_name: "Nguyễn Văn A",
@@ -209,7 +272,7 @@ const timeline_truck = {
         status: 1,
         deliver_status: 2,
         payment_status: 1
-    },{
+    }, {
         id: 2,
         customer_id: "1",
         customer_name: "Nguyễn Văn A",
