@@ -10,21 +10,21 @@ import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineDriverModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/list`,
         queryParams
     });
 }
 
-const getFunction = (id) => {
+const getDetailFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/detail`,
         queryParams: { id }
     });
 }
 
-const createFunction = (values) => {
+const createDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/add`,
         method: "POST",
@@ -32,7 +32,7 @@ const createFunction = (values) => {
     });
 }
 
-const updateFunction = (values) => {
+const updateDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/update`,
         method: "POST",
@@ -41,7 +41,7 @@ const updateFunction = (values) => {
     });
 }
 
-const deleteFunction = (id) => {
+const deleteDataFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/delete`,
         queryParams: { id }
@@ -96,7 +96,7 @@ const Driver = () => {
 
 
     const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
+        handleActionCallback(createDataFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -105,7 +105,7 @@ const Driver = () => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
+        handleActionCallback(updateDataFunction, values)
             .then(() => {
                 setInputModalData({})
                 setIsUpdateModalVisible(false);
@@ -115,7 +115,7 @@ const Driver = () => {
     };
 
     const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
+        handleActionCallback(deleteDataFunction, id)
             .then(() => {
                 triggerReload();
             }).catch(e => { })
@@ -462,7 +462,7 @@ const Driver = () => {
             />
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>

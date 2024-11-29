@@ -9,21 +9,21 @@ import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineTruckModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
         queryParams
     });
 }
 
-const getFunction = (id) => {
+const getDetailFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/detail`,
         queryParams: { id }
     });
 }
 
-const createFunction = (values) => {
+const createDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/add`,
         method: "POST",
@@ -31,7 +31,7 @@ const createFunction = (values) => {
     });
 }
 
-const updateFunction = (values) => {
+const updateDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/update`,
         method: "POST",
@@ -40,7 +40,7 @@ const updateFunction = (values) => {
     });
 }
 
-const deleteFunction = (id) => {
+const deleteDataFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/delete`,
         queryParams: { id }
@@ -91,7 +91,7 @@ const Truck = () => {
     }
 
     const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
+        handleActionCallback(createDataFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -100,7 +100,7 @@ const Truck = () => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
+        handleActionCallback(updateDataFunction, values)
             .then(() => {
                 setInputModalData({});
                 setIsUpdateModalVisible(false);
@@ -110,7 +110,7 @@ const Truck = () => {
     };
 
     const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
+        handleActionCallback(deleteDataFunction, id)
             .then(() => {
                 triggerReload();
             }).catch(e => { console.log(e) })
@@ -256,7 +256,7 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tên xe tải"/>
+                <Input placeholder="Vui lòng nhập tên xe tải" />
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
@@ -268,7 +268,7 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập biển số xe"/>
+                <Input placeholder="Vui lòng nhập biển số xe" />
             </Form.Item>
             <Form.Item
                 label="Loại xe"
@@ -324,7 +324,7 @@ const Truck = () => {
                     },
                 ]}
             >
-                <Input placeholder="Vui lòng nhập tên xe tải"/>
+                <Input placeholder="Vui lòng nhập tên xe tải" />
             </Form.Item>
             <Form.Item
                 label="Biển số xe"
@@ -408,7 +408,7 @@ const Truck = () => {
             />
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>

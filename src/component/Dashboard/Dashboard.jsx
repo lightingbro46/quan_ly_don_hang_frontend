@@ -7,7 +7,7 @@ import logo from "../../assets/images/react.svg";
 
 const { Title } = Typography;
 
-const loadFunction = () => {
+const loadingDataFunction = () => {
     return apiSearch({
         url: "http://localhost:3000/api/report/overview"
     })
@@ -57,7 +57,7 @@ const Dashboard = ({ setCurrent }) => {
 
     useEffect(() => {
         setLoading(true);
-        loadFunction()
+        loadingDataFunction()
             .then((res) => {
                 const { totalCount } = res;
                 setData(totalCount);

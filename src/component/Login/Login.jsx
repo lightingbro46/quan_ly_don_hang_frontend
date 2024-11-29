@@ -12,7 +12,7 @@ const loginFunction = (values) => {
         bodyParams: values
     })
 }
-const getFunction = (queryParams) => {
+const getDetailFunction = (queryParams) => {
     return apiSearch({
         url: "http://localhost:3000/api/users/detail",
         queryParams

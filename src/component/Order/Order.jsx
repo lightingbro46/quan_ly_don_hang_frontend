@@ -12,21 +12,21 @@ import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const { RangePicker } = DatePicker;
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return apiSearch({
         url: 'http://localhost:3000/api/orders/list',
         queryParams
     });
 }
 
-const getFunction = (id) => {
+const getDetailFunction = (id) => {
     return apiSearch({
         url: "http://localhost:3000/api/orders/detail",
         queryParams: { id }
     });
 }
 
-const createFunction = (values) => {
+const createDataFunction = (values) => {
     return apiSearch({
         url: "http://localhost:3000/api/orders/add",
         method: "POST",
@@ -34,7 +34,7 @@ const createFunction = (values) => {
     });
 }
 
-const updateFunction = (values) => {
+const updateDataFunction = (values) => {
     return apiSearch({
         url: "http://localhost:3000/api/orders/update",
         method: "POST",
@@ -43,7 +43,7 @@ const updateFunction = (values) => {
     })
 }
 
-const deleteFunction = (id) => {
+const deleteDataFunction = (id) => {
     return apiSearch({
         url: "http://localhost:3000/api/orders/delete",
         queryParams: { id }
@@ -249,7 +249,7 @@ const Order = ({ profile }) => {
         values.start_date = dayjs(values["deliver_time"][0]).format("YYYY-MM-DD");
         values.end_date = dayjs(values["deliver_time"][1]).format("YYYY-MM-DD");
         values.user_id = profile.id;
-        handleActionCallback(createFunction, values)
+        handleActionCallback(createDataFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -258,7 +258,7 @@ const Order = ({ profile }) => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
+        handleActionCallback(updateDataFunction, values)
             .then(() => {
                 setInputModalData({});
                 setIsUpdateModalVisible(false);
@@ -268,7 +268,7 @@ const Order = ({ profile }) => {
     };
 
     const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
+        handleActionCallback(deleteDataFunction, id)
             .then(() => {
                 triggerReload();
             }).catch(e => { })
@@ -284,7 +284,7 @@ const Order = ({ profile }) => {
         },
         {
             title: "Khách hàng",
-            dataIndex: "customer_name",
+            dataIndex: "customer.name",
             key: "customer_name",
             width: "10%",
             fixed: 'left',
@@ -329,13 +329,13 @@ const Order = ({ profile }) => {
         },
         {
             title: "Xe tải",
-            dataIndex: "truck_license_plate",
+            dataIndex: "truck.license_plate",
             key: "truck_license_plate",
             width: "10%",
         },
         {
             title: "Tài xế",
-            dataIndex: "driver_name",
+            dataIndex: "driver.name",
             key: "driver_name",
             width: "10%",
         },
@@ -484,7 +484,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionCustomerFunction}
+                    loadingDataFunction={loadOptionCustomerFunction}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -524,7 +524,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionCostFunction}
+                    loadingDataFunction={loadOptionCostFunction}
                     labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
@@ -596,13 +596,13 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadFunction={loadOptionTruckFunction}
+                    loadingDataFunction={loadOptionTruckFunction}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
                     }}
-                    labelInKeys={["license_plate"]}
+                    labelInKeys={["name", "license_plate"]}
                     placeholder="Vui lòng chọn xe tải"
                 />
             </Form.Item>
@@ -618,7 +618,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadFunction={loadOptionDriverFunction}
+                    loadingDataFunction={loadOptionDriverFunction}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -701,7 +701,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionCustomerFunction}
+                    loadingDataFunction={loadOptionCustomerFunction}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -741,7 +741,7 @@ const Order = ({ profile }) => {
             // ]}
             >
                 <SearchInput
-                    loadFunction={loadOptionCostFunction}
+                    loadingDataFunction={loadOptionCostFunction}
                     labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
@@ -813,7 +813,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadFunction={loadOptionTruckFunction}
+                    loadingDataFunction={loadOptionTruckFunction}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
@@ -835,7 +835,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadFunction={loadOptionDriverFunction}
+                    loadingDataFunction={loadOptionDriverFunction}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -919,7 +919,7 @@ const Order = ({ profile }) => {
             </UpdateModal>
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>

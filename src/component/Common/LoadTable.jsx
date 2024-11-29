@@ -4,7 +4,7 @@ import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseOutlined } from "@ant-design/icons";
 import qs from 'qs';
 
-const LoadTable = ({ columns, loadFunction, reload }) => {
+const LoadTable = ({ columns, loadingDataFunction, preProcessingFunction }) => {
     // const [searchText, setSearchText] = useState('');
     // const [searchedColumn, setSearchedColumn] = useState('');
     // const searchInput = useRef(null);
@@ -125,16 +125,18 @@ const LoadTable = ({ columns, loadFunction, reload }) => {
         },
     });
 
-    const getParams = (params) => ({
+    const getTableParams = (params) => ({
         results: params.pagination?.pageSize,
         page: params.pagination?.current,
         ...params,
     });
 
-    const fetchData = () => {
+    const fetchingData = () => {
         setLoading(true);
-        loadFunction(qs.stringify(getParams(tableParams)))
+        loadingDataFunction(qs.stringify(getTableParams(tableParams)))
             .then(({ totalCount, results }) => {
+                if (preProcessingFunction)
+                    results = preProcessingFunction(results);
                 setData(results);
                 setLoading(false);
                 setTableParams({
@@ -151,13 +153,12 @@ const LoadTable = ({ columns, loadFunction, reload }) => {
             })
     }
 
-    useEffect(fetchData, [
+    useEffect(fetchingData, [
         tableParams.pagination?.current,
         tableParams.pagination?.pageSize,
         tableParams?.sortOrder,
         tableParams?.sortField,
         JSON.stringify(tableParams.filters),
-        reload
     ]);
 
     const handleTableChange = (pagination, filters, sorter) => {

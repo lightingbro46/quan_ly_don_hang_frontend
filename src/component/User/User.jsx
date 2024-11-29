@@ -9,21 +9,21 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/users/list`,
         queryParams
     });
 }
 
-const getFunction = (id) => {
+const getDetailFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/users/detail`,
         queryParams: { id }
     });
 }
 
-const createFunction = (values) => {
+const createDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/users/add`,
         method: "POST",
@@ -31,7 +31,7 @@ const createFunction = (values) => {
     });
 }
 
-const updateFunction = (values) => {
+const updateDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/users/update`,
         method: "POST",
@@ -40,7 +40,7 @@ const updateFunction = (values) => {
     });
 }
 
-const deleteFunction = (id) => {
+const deleteDataFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/users/delete`,
         queryParams: { id }
@@ -97,7 +97,7 @@ const User = () => {
     }
 
     const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
+        handleActionCallback(createDataFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -106,7 +106,7 @@ const User = () => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
+        handleActionCallback(updateDataFunction, values)
             .then(() => {
                 setInputModalData({});
                 setIsUpdateModalVisible(false);
@@ -116,7 +116,7 @@ const User = () => {
     };
 
     const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
+        handleActionCallback(deleteDataFunction, id)
             .then(() => {
                 triggerReload();
             }).catch(e => { })
@@ -609,7 +609,7 @@ const User = () => {
             </UpdateModal>
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>

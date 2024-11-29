@@ -7,21 +7,21 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/costs/list`,
         queryParams
     });
 }
 
-const getFunction = (id) => {
+const getDetailFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/costs/detail`,
         queryParams: { id }
     });
 }
 
-const createFunction = (values) => {
+const createDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/costs/add`,
         method: "POST",
@@ -29,7 +29,7 @@ const createFunction = (values) => {
     });
 }
 
-const updateFunction = (values) => {
+const updateDataFunction = (values) => {
     return apiSearch({
         url: `http://localhost:3000/api/costs/update`,
         method: "POST",
@@ -38,7 +38,7 @@ const updateFunction = (values) => {
     });
 }
 
-const deleteFunction = (id) => {
+const deleteDataFunction = (id) => {
     return apiSearch({
         url: `http://localhost:3000/api/costs/delete`,
         queryParams: { id }
@@ -142,7 +142,7 @@ const Cost = () => {
     ]
 
     const onCreateSubmit = (values) => {
-        handleActionCallback(createFunction, values)
+        handleActionCallback(createDataFunction, values)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -151,7 +151,7 @@ const Cost = () => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateFunction, values)
+        handleActionCallback(updateDataFunction, values)
             .then(() => {
                 setIsUpdateModalVisible(false);
                 formUpdate.resetFields();
@@ -160,7 +160,7 @@ const Cost = () => {
     };
 
     const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteFunction, id)
+        handleActionCallback(deleteDataFunction, id)
             .then(() => {
                 triggerReload();
             }).catch(e => { console.log(e) })
@@ -239,7 +239,7 @@ const Cost = () => {
             </Form.Item>
         </Form>
     );
-    
+
     const updateFormList = (
         <Form
             form={formUpdate}
@@ -345,7 +345,7 @@ const Cost = () => {
             </UpdateModal>
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>

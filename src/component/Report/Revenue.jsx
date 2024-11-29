@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 
-const loadFunction = (queryParams) => {
+const loadingDataFunction = (queryParams) => {
     return new Promise((resolve, reject) => resolve(revenue_data))
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
@@ -62,7 +62,7 @@ const Revenue = () => {
             <Space />
             <LoadTable
                 columns={columns}
-                loadFunction={loadFunction}
+                loadingDataFunction={loadingDataFunction}
                 reload={reload}
             />
         </>
