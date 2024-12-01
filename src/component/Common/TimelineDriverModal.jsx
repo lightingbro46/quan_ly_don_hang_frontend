@@ -15,7 +15,7 @@ import { timeline_driver, driver_data } from "../mock";
 
 const { RangePicker } = DatePicker;
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return new Promise(resolve => resolve(timeline_driver));
     return apiSearch({
         url: "http://localhost:3000/api/orders/list",
@@ -257,7 +257,7 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
                     <Button type="primary">Lọc</Button>
                 </Form.Item>
             </Form>
-            <LoadTable columns={columns} loadingDataFunction={loadingDataFunction} reload={reload} />
+            <LoadTable columns={columns} loadDataForTableFunction={loadDataForTableFunction} reload={reload} />
         </Modal>
     )
 }

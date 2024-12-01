@@ -10,7 +10,7 @@ import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineDriverModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/drivers/list`,
         queryParams
@@ -462,7 +462,7 @@ const Driver = () => {
             />
             <LoadTable
                 columns={columns}
-                loadingDataFunction={loadingDataFunction}
+                loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
             />
         </>

@@ -7,7 +7,7 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/customers/list`,
         queryParams
@@ -390,7 +390,7 @@ const Customer = () => {
             </UpdateModal>
             <LoadTable
                 columns={columns}
-                loadingDataFunction={loadingDataFunction}
+                loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
             />
         </>

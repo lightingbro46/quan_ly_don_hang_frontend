@@ -12,7 +12,7 @@ import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const { RangePicker } = DatePicker;
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return apiSearch({
         url: 'http://localhost:3000/api/orders/list',
         queryParams
@@ -484,7 +484,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadingDataFunction={loadOptionCustomerFunction}
+                    loadDataForTableFunction={loadOptionCustomerFunction}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -524,7 +524,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadingDataFunction={loadOptionCostFunction}
+                    loadDataForTableFunction={loadOptionCostFunction}
                     labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
@@ -596,7 +596,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadingDataFunction={loadOptionTruckFunction}
+                    loadDataForTableFunction={loadOptionTruckFunction}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
@@ -618,7 +618,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadingDataFunction={loadOptionDriverFunction}
+                    loadDataForTableFunction={loadOptionDriverFunction}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -701,7 +701,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    loadingDataFunction={loadOptionCustomerFunction}
+                    loadDataForTableFunction={loadOptionCustomerFunction}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -741,7 +741,7 @@ const Order = ({ profile }) => {
             // ]}
             >
                 <SearchInput
-                    loadingDataFunction={loadOptionCostFunction}
+                    loadDataForTableFunction={loadOptionCostFunction}
                     labelInKeys={["province", "arrival"]}
                     placeholder="Vui lòng chọn tuyến đường"
                 />
@@ -813,7 +813,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadingDataFunction={loadOptionTruckFunction}
+                    loadDataForTableFunction={loadOptionTruckFunction}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
@@ -835,7 +835,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     defaultActiveFirstOption={true}
-                    loadingDataFunction={loadOptionDriverFunction}
+                    loadDataForTableFunction={loadOptionDriverFunction}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -919,7 +919,7 @@ const Order = ({ profile }) => {
             </UpdateModal>
             <LoadTable
                 columns={columns}
-                loadingDataFunction={loadingDataFunction}
+                loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
             />
         </>

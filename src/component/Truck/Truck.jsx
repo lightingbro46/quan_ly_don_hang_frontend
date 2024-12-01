@@ -9,7 +9,7 @@ import LoadTable from "../Common/LoadTable";
 import TimelineModal from "../Common/TimelineTruckModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
         queryParams
@@ -408,7 +408,7 @@ const Truck = () => {
             />
             <LoadTable
                 columns={columns}
-                loadingDataFunction={loadingDataFunction}
+                loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
             />
         </>

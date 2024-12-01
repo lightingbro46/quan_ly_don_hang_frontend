@@ -10,7 +10,7 @@ import { award_data } from "../mock";
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 
-const loadingDataFunction = (queryParams) => {
+const loadDataForTableFunction = (queryParams) => {
     return new Promise((resolve, reject) => resolve(award_data))
     return apiSearch({
         url: `http://localhost:3000/api/trucks/list`,
@@ -85,7 +85,7 @@ const Award = () => {
             <Space />
             <LoadTable
                 columns={columns}
-                loadingDataFunction={loadingDataFunction}
+                loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
             />
         </>

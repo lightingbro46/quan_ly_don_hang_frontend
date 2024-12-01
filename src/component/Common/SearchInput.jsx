@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo } from "react";
 import { Select, Spin, Empty } from "antd";
 
-const SearchInput = ({ loadingDataFunction, extraParams = {}, labelInKeys, value, onChange, ...props }) => {
+const SearchInput = ({ loadDataForTableFunction, extraParams = {}, labelInKeys, value, onChange, ...props }) => {
     const [options, setOptions] = useState([]);
     const [fetching, setFetching] = useState(false);
 
@@ -17,7 +17,7 @@ const SearchInput = ({ loadingDataFunction, extraParams = {}, labelInKeys, value
         currentValue = string;
         console.log("curr", currentValue)
         const fetch = () => {
-            loadingDataFunction({ q: string, ...extraParams })
+            loadDataForTableFunction({ q: string, ...extraParams })
                 .then(res => {
                     if (currentValue == string) {
                         console.log(res.results)
