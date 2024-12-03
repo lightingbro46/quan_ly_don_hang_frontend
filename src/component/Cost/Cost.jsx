@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Space, Form, Input, InputNumber, Tooltip } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Space, Form, Input, InputNumber, Tooltip, Flex, Button } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"
 import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
@@ -48,7 +48,7 @@ const deleteDataFunction = (id) => {
 const Cost = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-    const [initUpdateModalData, setInitUpdateModalData] = useState({});
+    const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
     const triggerReload = () => setReload((prev) => !prev);
@@ -56,12 +56,42 @@ const Cost = () => {
     const [formCreate] = Form.useForm();
     const [formUpdate] = Form.useForm();
 
+    const showCreateModal = () => {
+        setIsCreateModalVisible(true);
+    }
+
     const showUpdateModal = (record) => {
         console.log(record)
         formUpdate.setFieldsValue(record);
-        setInitUpdateModalData(record);
+        setInputModalData(record);
         setIsUpdateModalVisible(true);
     }
+
+    const onCreateSubmit = (values) => {
+        handleActionCallback(createDataFunction, values)
+            .then(() => {
+                setIsCreateModalVisible(false);
+                formCreate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onUpdateSubmit = (values) => {
+        handleActionCallback(updateDataFunction, values)
+            .then(() => {
+                setInputModalData({})
+                setIsUpdateModalVisible(false);
+                formUpdate.resetFields();
+                triggerReload();
+            }).catch(e => { })
+    };
+
+    const onDeleteSubmit = (id) => {
+        handleActionCallback(deleteDataFunction, id)
+            .then(() => {
+                triggerReload();
+            }).catch(e => { })
+    };
 
     const columns = [
         {
@@ -140,31 +170,6 @@ const Cost = () => {
             fixed: "right"
         },
     ]
-
-    const onCreateSubmit = (values) => {
-        handleActionCallback(createDataFunction, values)
-            .then(() => {
-                setIsCreateModalVisible(false);
-                formCreate.resetFields();
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
-
-    const onUpdateSubmit = (values) => {
-        handleActionCallback(updateDataFunction, values)
-            .then(() => {
-                setIsUpdateModalVisible(false);
-                formUpdate.resetFields();
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
-
-    const onDeleteSubmit = (id) => {
-        handleActionCallback(deleteDataFunction, id)
-            .then(() => {
-                triggerReload();
-            }).catch(e => { console.log(e) })
-    };
 
     const createFormList = (
         <Form
@@ -264,7 +269,7 @@ const Cost = () => {
                     },
                 ]}
             >
-                <Input disabled />
+                <Input readOnly />
             </Form.Item>
             <Form.Item
                 label="Tỉnh"
@@ -327,6 +332,17 @@ const Cost = () => {
 
     return (
         <>
+            <Flex justify="flex-end" align="center">
+                <Button
+                    style={{
+                        marginBottom: "16px",
+                    }}
+                    type="default"
+                    onClick={() => showCreateModal()}
+                >
+                    <PlusOutlined /><span>Thêm mới</span>
+                </Button>
+            </Flex>
             <CreateModal
                 name="chi phí"
                 isModalVisible={isCreateModalVisible}

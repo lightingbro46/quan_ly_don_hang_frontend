@@ -418,7 +418,7 @@ const User = () => {
                     },
                 ]}
             >
-                <Input disabled />
+                <Input readOnly />
             </Form.Item>
             <Form.Item
                 label="Tên nhân viên"

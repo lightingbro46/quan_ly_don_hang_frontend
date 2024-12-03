@@ -637,7 +637,7 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input disabled placeholder="Chi phí được tính dựa trên tuyến đường" />
+                <Input readOnly placeholder="Chi phí được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Giá thành"
@@ -649,7 +649,7 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
+                <Input readOnly placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Thanh toán"
@@ -688,7 +688,7 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input disabled />
+                <Input readOnly />
             </Form.Item>
             <Form.Item
                 label="Tên khách hàng"
@@ -854,7 +854,7 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input disabled placeholder="Chi phí được tính dựa trên tuyến đường" />
+                <Input readOnly placeholder="Chi phí được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Giá thành"
@@ -866,7 +866,7 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input disabled placeholder="Giá thành được tính dựa trên tuyến đường" />
+                <Input readOnly placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Trạng thái"

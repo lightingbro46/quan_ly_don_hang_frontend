@@ -284,7 +284,7 @@ const Customer = () => {
                     },
                 ]}
             >
-                <Input disabled />
+                <Input readOnly />
             </Form.Item>
             <Form.Item
                 label="Tên khách hàng"

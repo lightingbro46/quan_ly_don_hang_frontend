@@ -4,7 +4,7 @@ import Highlighter from 'react-highlight-words';
 import { SearchOutlined, CloseOutlined } from "@ant-design/icons";
 import qs from 'qs';
 
-const LoadTable = ({ columns, loadDataForTableFunction, preProcessingFunction }) => {
+const LoadTable = ({ columns, loadDataForTableFunction, preProcessingFunction, reload }) => {
     // const [searchText, setSearchText] = useState('');
     // const [searchedColumn, setSearchedColumn] = useState('');
     // const searchInput = useRef(null);
@@ -159,6 +159,7 @@ const LoadTable = ({ columns, loadDataForTableFunction, preProcessingFunction })
         tableParams?.sortOrder,
         tableParams?.sortField,
         JSON.stringify(tableParams.filters),
+        reload
     ]);
 
     const handleTableChange = (pagination, filters, sorter) => {
