@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { DatePicker, Select, Space, Typography, Button, Form, Table, Flex } from "antd";
 import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
 
-import { apiSearch, handleActionCallback } from "../Common/Utils";
-
 import dayjs from "dayjs";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
 dayjs.extend(quarterOfYear);
+
+import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -24,14 +24,11 @@ const Revenue = () => {
     const [period, setPeriod] = useState(1);
     const [data, setData] = useState([]);
 
-    const [reload, setReload] = useState(false);
-    const triggerReload = () => setReload((prev) => !prev);
-
     const onFormChange = (value) => {
         console.log("onFormChange", value);
         setIsExported(false);
         if (value.period) {
-            form.resetFields(["month", "year", "range"])
+            form.resetFields(["month", "quarter", "year", "range"])
             setPeriod(value.period);
         }
     }
