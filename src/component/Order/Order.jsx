@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Flex, Button } from "antd";
+import { Space, Form, Input, Select, Tooltip, Tag, DatePicker, Flex, Button, InputNumber } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined } from "@ant-design/icons"
 import dayjs from "dayjs";
 
@@ -65,11 +65,25 @@ const loadOptionTruckFunction = (bodyParams) => {
     })
 }
 
+const getTruckDetail = (queryParams) => {
+    return apiSearch({
+        url: "http://localhost:3000/api/trucks/detail",
+        queryParams
+    })
+}
+
 const loadOptionDriverFunction = (bodyParams) => {
     return apiSearch({
         url: "http://localhost:3000/api/drivers/available",
         method: "POST",
         bodyParams
+    })
+}
+
+const getDriverDetail = (queryParams) => {
+    return apiSearch({
+        url: "http://localhost:3000/api/drivers/detail",
+        queryParams
     })
 }
 
@@ -83,6 +97,13 @@ const loadOptionCostFunction = (queryParams) => {
 const loadOptionCustomerFunction = (queryParams) => {
     return apiSearch({
         url: "http://localhost:3000/api/customers/list",
+        queryParams
+    })
+}
+
+const getCustomerDetail = (queryParams) => {
+    return apiSearch({
+        url: "http://localhost:3000/api/customers/detail",
         queryParams
     })
 }
@@ -167,7 +188,7 @@ const Order = ({ profile }) => {
     }
 
     const onCreateValuesChange = (value) => {
-        console.log("Change", value)
+        console.log("onCreateValuesChange", value)
         if (value["deliver_time"]) {
             setInputModalData(pre => ({
                 ...pre,
@@ -179,14 +200,8 @@ const Order = ({ profile }) => {
                 .then((res) => {
                     let data = res["results"][0];
                     formCreate.setFieldsValue({
-                        pricing: new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                        }).format(data["pricing"]),
-                        tolls: new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                        }).format(data["tolls"]),
+                        pricing: data["pricing"],
+                        tolls: data["tolls"],
                         payment_status: paymentStatusOptions[0]["value"],
                     })
                     setInputModalData(pre => ({
@@ -207,6 +222,8 @@ const Order = ({ profile }) => {
     }
 
     const onUpdateValuesChange = (value) => {
+        console.log("onUpdateValuesChange", value)
+
         if (value["deliver_time"]) {
             setInputModalData(pre => ({
                 ...pre,
@@ -218,15 +235,9 @@ const Order = ({ profile }) => {
                 .then((res) => {
                     let data = res["results"][0];
                     formUpdate.setFieldsValue({
-                        pricing: new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                        }).format(data["pricing"]),
-                        tolls: new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                        }).format(data["tolls"]),
-                        payment_status: paymentStatusOptions[0]["value"]
+                        pricing: data["pricing"],
+                        tolls: data["tolls"],
+                        payment_status: paymentStatusOptions[0]["value"],
                     })
                     setInputModalData(pre => ({
                         ...pre,
@@ -246,10 +257,8 @@ const Order = ({ profile }) => {
     }
 
     const onCreateSubmit = (values) => {
-        values.start_date = dayjs(values["deliver_time"][0]).format("YYYY-MM-DD");
-        values.end_date = dayjs(values["deliver_time"][1]).format("YYYY-MM-DD");
-        values.user_id = profile.id;
-        handleActionCallback(createDataFunction, values)
+        inputModalData.user_id = profile.id;
+        handleActionCallback(createDataFunction, inputModalData)
             .then(() => {
                 setIsCreateModalVisible(false);
                 formCreate.resetFields();
@@ -258,7 +267,7 @@ const Order = ({ profile }) => {
     };
 
     const onUpdateSubmit = (values) => {
-        handleActionCallback(updateDataFunction, values)
+        handleActionCallback(updateDataFunction, inputModalData)
             .then(() => {
                 setInputModalData({});
                 setIsUpdateModalVisible(false);
@@ -366,7 +375,7 @@ const Order = ({ profile }) => {
             render: (status) => (
                 <>
                     {(status == orderStatusOptions[0]["value"]) && (
-                        <Tag color="default">
+                        <Tag color="processing">
                             {orderStatusOptions[0]["label"]}
                         </Tag>
                     )}
@@ -485,6 +494,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     loadDataForTableFunction={loadOptionCustomerFunction}
+                    getDetailFunction={getCustomerDetail}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -597,6 +607,7 @@ const Order = ({ profile }) => {
                 <SearchInput
                     defaultActiveFirstOption={true}
                     loadDataForTableFunction={loadOptionTruckFunction}
+                    getDetailFunction={getTruckDetail}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
@@ -617,8 +628,8 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    defaultActiveFirstOption={true}
                     loadDataForTableFunction={loadOptionDriverFunction}
+                    getDetailFunction={getDriverDetail}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -637,7 +648,12 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input readOnly placeholder="Chi phí được tính dựa trên tuyến đường" />
+                <InputNumber
+                    readOnly
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Chi phí được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Giá thành"
@@ -649,7 +665,12 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input readOnly placeholder="Giá thành được tính dựa trên tuyến đường" />
+                <InputNumber
+                    readOnly
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Thanh toán"
@@ -702,6 +723,7 @@ const Order = ({ profile }) => {
             >
                 <SearchInput
                     loadDataForTableFunction={loadOptionCustomerFunction}
+                    getDetailFunction={getCustomerDetail}
                     labelInKeys={["name", "phone_number"]}
                     placeholder="Vui lòng chọn khách hàng"
                 />
@@ -812,8 +834,8 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    defaultActiveFirstOption={true}
                     loadDataForTableFunction={loadOptionTruckFunction}
+                    getDetailFunction={getTruckDetail}
                     extraParams={{
                         cat_id: inputModalData["cat_id"],
                         start_date: inputModalData["start_date"],
@@ -834,8 +856,8 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <SearchInput
-                    defaultActiveFirstOption={true}
                     loadDataForTableFunction={loadOptionDriverFunction}
+                    getDetailFunction={getDriverDetail}
                     extraParams={{
                         start_date: inputModalData["start_date"],
                         end_date: inputModalData["end_date"],
@@ -854,7 +876,12 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input readOnly placeholder="Chi phí được tính dựa trên tuyến đường" />
+                <InputNumber
+                    readOnly
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Chi phí được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Giá thành"
@@ -866,7 +893,12 @@ const Order = ({ profile }) => {
                     },
                 ]}
             >
-                <Input readOnly placeholder="Giá thành được tính dựa trên tuyến đường" />
+                <InputNumber
+                    readOnly
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                    addonAfter="₫"
+                    placeholder="Giá thành được tính dựa trên tuyến đường" />
             </Form.Item>
             <Form.Item
                 label="Trạng thái"

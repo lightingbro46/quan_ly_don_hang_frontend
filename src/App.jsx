@@ -34,7 +34,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    setCurrent(MenuItems[6].key);
+    setCurrent(MenuItems[1].key);
   }, [profile]);
   // useEffect(() => {
   //   let items = [{

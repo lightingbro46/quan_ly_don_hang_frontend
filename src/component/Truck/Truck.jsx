@@ -6,7 +6,7 @@ import CreateModal from "../Common/CreateModal";
 import UpdateModal from "../Common/UpdateModal";
 import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
-import TimelineModal from "../Common/TimelineTruckModal";
+import TimelineModal from "./TimelineTruckModal";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
 const loadDataForTableFunction = (queryParams) => {

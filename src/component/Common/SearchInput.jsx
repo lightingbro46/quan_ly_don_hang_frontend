@@ -1,12 +1,33 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Select, Spin, Empty } from "antd";
 
-const SearchInput = ({ loadDataForTableFunction, extraParams = {}, labelInKeys, value, onChange, ...props }) => {
+const SearchInput = ({ loadDataForTableFunction, getDetailFunction, extraParams = {}, labelInKeys, value, onChange, ...props }) => {
     const [options, setOptions] = useState([]);
     const [fetching, setFetching] = useState(false);
 
     let timeout;
     let currentValue;
+
+    useEffect(() => {
+        if (value && getDetailFunction) {
+            setFetching(true);
+            console.log("getDetailFunction", value)
+            getDetailFunction({ id: value })
+                .then(res => {
+                    console.log(res)
+                    setOptions([{
+                        value: res["id"],
+                        label: `${labelInKeys.reduce((acc, cur) => (acc === "" ? res[cur] : (acc + " - " + res[cur])), "")}`,
+                    }]);
+                })
+                .catch(e => {
+                    setOptions([]);
+                })
+                .finally(() => {
+                    setFetching(false);
+                })
+        }
+    }, [value]);
 
     const fetchData = (string) => {
         setFetching(true);
