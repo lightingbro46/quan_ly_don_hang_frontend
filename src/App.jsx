@@ -27,6 +27,7 @@ message.config({
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
   const [current, setCurrent] = useState(MenuItems[0].key);
+  const [breadcrumb, setBreadcrumb] = useState();
   const [profile, setProfile] = useState({
     id: 1,
     fullname: "Nguyễn Văn A",
@@ -34,32 +35,36 @@ const App = () => {
   });
 
   useEffect(() => {
-    setCurrent(MenuItems[1].key);
-  }, [profile]);
-  // useEffect(() => {
-  //   let items = [{
-  //     href: "",
-  //     title: <HomeOutlined />
-  //   }]
+    let items = [{
+      title: <HomeOutlined />
+    }]
 
-  //   if (current.length >= 1)
-  //     items.push({
-  //       href: "",
-  //       title: MenuItems.find((val) => val.key == current[0])["label"]
-  //     })
+    let labelPath = [];
+    console.log("current", current)
+    MenuItems.forEach(val1 => {
+      console.log("val1", val1);
+      if (val1.key == current) {
+        labelPath.push({
+          title: val1.label
+        });
+      } else if (val1.children && val1.children.length > 0) {
+        val1.children.forEach(val2 => {
+          console.log("val2", val2);
+          if (val2.key == current) {
+            labelPath.push({
+              title: val1.label
+            });
+            labelPath.push({
+              title: val2.label
+            });
+          }
+        })
+      }
+    })
 
-  //   if (current.length == 2) {
-  //     items.push({
-  //       href: "",
-  //       title: MenuItems.find((val) => val.key == current[0])["label"]
-  //     })
-  //     items.push({
-  //       href: "",
-  //       title: MenuItems.find((val) => val.key == current[0])["label"]
-  //     })
-  //   }
-  //   setBreadcrumb(items);
-  // }, [current])
+    items.push(...labelPath);
+    setBreadcrumb(items);
+  }, [current])
 
   return (
     <>
@@ -80,12 +85,12 @@ const App = () => {
                 overflow: "initial",
               }}
             >
-              {/* <Breadcrumb
+              <Breadcrumb
                 style={{
                   margin: "16px 0",
                 }}
                 items={breadcrumb}
-              /> */}
+              />
               <div
                 style={{
                   padding: "24px",
