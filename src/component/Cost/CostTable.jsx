@@ -3,9 +3,10 @@ import { Space, Tooltip, } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import CustomTable from "../Common/CustomTable";
+import { onClickDeleteButton } from "./CostForm";
 import { apiSearch } from "../Common/Utils";
 
-const columnsTable = ({ showUpdateModal, showDeleteModal }) =>
+const columnsTable = ({ onClickUpdateButton, onClickDeleteButton }) =>
     [
         {
             title: "ID",
@@ -54,12 +55,12 @@ const columnsTable = ({ showUpdateModal, showDeleteModal }) =>
             render: (_, record) => (
                 <Space size="middle">
                     <Tooltip placement="topLeft" title="Cập nhật">
-                        <a onClick={() => showUpdateModal(record["id"])}>
+                        <a onClick={() => onClickUpdateButton(record)}>
                             <EditOutlined />
                         </a>
                     </Tooltip>
                     <Tooltip placement="top" title="Xoá">
-                        <a onClick={() => showDeleteModal(record["id"])}>
+                        <a onClick={() => onClickDeleteButton(record)}>
                             <DeleteOutlined />
                         </a>
                     </Tooltip>
@@ -78,13 +79,8 @@ const getDataForTableFunc = (values) => {
 }
 
 const CostTable = ({ setOpen, setInputData }) => {
-    const showUpdateModal = (record) => {
-        setInputData({ id: record["id"] });
-        setOpen(true);
-    }
-
-    const showDeleteModal = (record) => {
-        setInputData({ id: record["id"], isDelete: true });
+    const onClickUpdateButton = (record) => {
+        setInputData({ id: record["id"], record: record });
         setOpen(true);
     }
 
@@ -92,7 +88,7 @@ const CostTable = ({ setOpen, setInputData }) => {
 
     return (
         <CustomTable
-            columnsTable={columnsTable({ showUpdateModal, showDeleteModal })}
+            columnsTable={columnsTable({ onClickUpdateButton, onClickDeleteButton })}
             getDataForTableFunc={getDataForTableFunc}
             handlePreProcess={handlePreProcess}
         />

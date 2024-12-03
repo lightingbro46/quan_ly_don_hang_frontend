@@ -88,7 +88,6 @@ export default FormInModal;
 const { confirm } = Modal;
 
 const showDeleteConfirms = ({
-    id,
     record,
     contentConfirm,
     deleteDataFunc,

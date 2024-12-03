@@ -36,6 +36,7 @@ const CustomTable = ({
 
     return (
         <Table
+            columns={columnsTable}
             rowKey="id"
             pagination={{
                 ...tableParams.pagination,

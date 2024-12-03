@@ -16,9 +16,9 @@ import Order from "./component/Order/Order";
 import Revenue from "./component/Report/Revenue";
 import Award from "./component/Report/Award";
 import User from "./component/User/User";
-// import Cost from "./component/Cost/Cost";
+import Cost from "./component/Cost/Cost";
 import LoginPage from "./component/Login/Login";
-import CostPage from "./component/Cost/CostPage";
+// import CostPage from "./component/Cost/CostPage";
 
 message.config({
   maxCount: 1
@@ -98,8 +98,8 @@ const App = () => {
                 {current == "Customer" && <Customer />}
                 {current == "Truck" && <Truck />}
                 {current == "Order" && <Order profile={profile} />}
-                {/* {current == "Cost" && <Cost />} */}
-                {current == "Cost" && <CostPage />}
+                {current == "Cost" && <Cost />}
+                {/* {current == "Cost" && <CostPage />} */}
                 {current == "Revenue" && <Revenue />}
                 {current == "Award" && <Award />}
                 {current == "User" && <User />}

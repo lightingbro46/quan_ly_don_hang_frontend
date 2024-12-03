@@ -80,7 +80,7 @@ const formItems = (id) => (
 
 const getDetailFunc = (id) =>
     apiSearch({
-        url: "https://localhost:3000/api/costs/detail",
+        url: "http://localhost:3000/api/costs/detail",
         queryParams: { id }
     })
 
@@ -106,41 +106,47 @@ const deleteDataFunc = (id) =>
         queryParams: { id },
     })
 
+const handlePreProcess = (values) => {
+    return values;
+}   
+
+const handlePostProcess = (values) => {
+    return values;
+}
+
 const contentConfirm = (record) => (
-    <Space size={"middle"} direction="vertical">
-        ID: {record["id"]}
-        Tỉnh: {record["province"]}
-        Điểm đến: {record["arrival"]}
+    <Space size={"small "} direction="vertical">
+        <p>ID: {record["id"]}</p>
+        <p>Tỉnh: {record["province"]}</p>
+        <p>Điểm đến: {record["arrival"]}</p>
     </Space>
 )
 
-const CostForm = ({ id, record, isDelete = false, open, setOpen }) => {
+const CostForm = ({ id, open, setOpen }) => {
     return (
-        <>
-            {!isDelete ?
-                (
-                    <FormInModal
-                        id={id}
-                        getDetailFunc={getDetailFunc}
-                        createDataFunc={createDataFunc}
-                        updateDataFunc={updateDataFunc}
-                        open={open}
-                        setOpen={setOpen}
-                    >
-                        {formItems(id)}
-                    </FormInModal>
-                )
-                : (
-                    showDeleteConfirms({
-                        id,
-                        record,
-                        contentConfirm,
-                        deleteDataFunc,
-                    })
-                )
-            }
-        </>
+        <FormInModal
+            id={id}
+            getDetailFunc={getDetailFunc}
+            createDataFunc={createDataFunc}
+            updateDataFunc={updateDataFunc}
+            handlePreProcess={handlePreProcess}
+            handlePostProcess={handlePostProcess}
+            open={open}
+            setOpen={setOpen}
+        >
+            {formItems(id)}
+        </FormInModal>
     )
 }
 
 export default CostForm;
+
+const onClickDeleteButton = (record) =>
+    showDeleteConfirms({
+        id: record["id"],
+        record,
+        contentConfirm,
+        deleteDataFunc
+    })
+
+export { onClickDeleteButton };

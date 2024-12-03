@@ -29,6 +29,7 @@ const CostPage = () => {
             </Flex>
             <CostForm
                 id={(inputData && inputData["id"]) ? inputData["id"] : null}
+                record={(inputData && inputData["record"]) ? inputData["record"] : null}
                 isDelete={inputData && inputData["isDelete"] ? inputData["isDelete"] : false}
                 open={open}
                 setOpen={setOpen}
