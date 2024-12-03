@@ -178,8 +178,9 @@ const LoadTable = ({ columns, loadDataForTableFunction, preProcessingFunction, r
 
     return (
         <Table
+            size='small'
             columns={columns}
-            rowKey={columns[0].dataIndex}
+            rowKey={"id"}
             pagination={tableParams.pagination}
             loading={loading}
             dataSource={data}

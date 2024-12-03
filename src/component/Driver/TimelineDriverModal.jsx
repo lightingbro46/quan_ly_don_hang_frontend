@@ -253,7 +253,7 @@ const TimelineModal = ({ isModalVisible, setIsModalVisible }) => {
                         rules={[
                             {
                                 required: true,
-                                message: "Vui lòng chọn thời gian vân chuyển!",
+                                message: "Vui lòng chọn thời gian!",
                             },
                         ]}
                         hidden={select != 5}

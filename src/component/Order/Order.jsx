@@ -346,7 +346,7 @@ const Order = ({ profile }) => {
             title: "Tài xế",
             dataIndex: "driver.name",
             key: "driver_name",
-            width: "10%",
+            width: "25%",
         },
         {
             title: "Giá thành",

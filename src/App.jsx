@@ -26,7 +26,8 @@ message.config({
 
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [current, setCurrent] = useState(MenuItems[0].key);
+  // const [current, setCurrent] = useState(MenuItems[0].key);
+  const [current, setCurrent] = useState("Revenue");
   const [breadcrumb, setBreadcrumb] = useState();
   const [profile, setProfile] = useState({
     id: 1,
@@ -40,16 +41,13 @@ const App = () => {
     }]
 
     let labelPath = [];
-    console.log("current", current)
     MenuItems.forEach(val1 => {
-      console.log("val1", val1);
       if (val1.key == current) {
         labelPath.push({
           title: val1.label
         });
       } else if (val1.children && val1.children.length > 0) {
         val1.children.forEach(val2 => {
-          console.log("val2", val2);
           if (val2.key == current) {
             labelPath.push({
               title: val1.label

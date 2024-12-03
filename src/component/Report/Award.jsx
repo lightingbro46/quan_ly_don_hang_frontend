@@ -5,15 +5,13 @@ import dayjs from "dayjs";
 
 import LoadTable from "../Common/LoadTable";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
-import { award_data } from "../mock";
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 
 const loadDataForTableFunction = (queryParams) => {
-    return new Promise((resolve, reject) => resolve(award_data))
     return apiSearch({
-        url: `http://localhost:3000/api/trucks/list`,
+        url: `http://localhost:3000/api/report/award`,
         queryParams
     });
 }
