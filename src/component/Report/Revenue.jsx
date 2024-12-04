@@ -30,7 +30,7 @@ const getMonthsUntilDate = (date) => {
 
     for (let i = 0; i <= selectedDate.month(); i++) {
         months.push({
-            month: startOfYear.add(i, 'month').format('MM/YYYY'),
+            month: startOfYear.add(i, 'month').format('MMM'),
             start_date: startOfYear.add(i, 'month').startOf("month").format('YYYY-MM-DD'),
             end_date: startOfYear.add(i, 'month').endOf("month").format('YYYY-MM-DD'),
         }); // Thêm tháng vào danh sách
@@ -102,6 +102,7 @@ const Revenue = () => {
     const [form] = Form.useForm();
     const [isExported, setIsExported] = useState(false);
     const [period, setPeriod] = useState(1);
+    const [year, setYear] = useState();
     const [data, setData] = useState([]);
     const [dataChart, setDataChart] = useState([]);
 
@@ -124,18 +125,22 @@ const Revenue = () => {
             case 1:
                 queryParams.start_date = dayjs(values.month).startOf("month").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.month).endOf("month").format('YYYY-MM-DD');
+                setYear(dayjs(values.month).format("YYYY"));
                 break;
             case 2:
                 queryParams.start_date = dayjs(values.quarter).startOf("quarter").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.quarter).endOf("quarter").format('YYYY-MM-DD');
+                setYear(dayjs(values.quarter).format("YYYY"));
                 break;
             case 3:
                 queryParams.start_date = dayjs(values.year).startOf("year").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.year).endOf("year").format('YYYY-MM-DD');
+                setYear(dayjs(values.year).format("YYYY"));
                 break;
             case 4:
                 queryParams.start_date = dayjs(values.range[0]).format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.range[1]).format('YYYY-MM-DD');
+                setYear(dayjs(values.range[1]).format("YYYY"));
                 break;
         }
         console.log(queryParams);
@@ -359,7 +364,7 @@ const Revenue = () => {
                     </Flex>
                     <Flex flex={1}>
                         {console.log(dataComboChartTemplate(dataChart))}
-                        <Chart type="bar" data={dataComboChartTemplate(dataChart)} options={optionsComboChart()} />;
+                        <Chart type="bar" data={dataComboChartTemplate(dataChart)} options={optionsComboChart(year)} />;
                     </Flex>
                 </Flex>
             )}
