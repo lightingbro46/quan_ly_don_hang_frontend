@@ -19,6 +19,7 @@ import User from "./component/User/User";
 import Cost from "./component/Cost/Cost";
 import LoginPage from "./component/Login/Login";
 // import CostPage from "./component/Cost/CostPage";
+import Invoice from "./component/Common/Invoice";
 
 message.config({
   maxCount: 1
@@ -65,6 +66,7 @@ const App = () => {
 
   return (
     <>
+      <Invoice/>
       {(!profile) && (<LoginPage setProfile={setProfile} />)}
       {(profile) && (
         <Layout
