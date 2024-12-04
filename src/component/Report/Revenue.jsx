@@ -5,10 +5,15 @@ import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
 dayjs.extend(quarterOfYear);
+import 'dayjs/locale/vi';
+dayjs.locale('vi');
+
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart } from 'react-chartjs-2';
+ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 import { apiSearch, handleActionCallback } from "../Common/Utils";
 
-const { Title } = Typography;
 const { RangePicker } = DatePicker;
 
 const loadDataFunction = (queryParams) => {
@@ -18,11 +23,87 @@ const loadDataFunction = (queryParams) => {
     });
 }
 
+const getMonthsUntilDate = (date) => {
+    const selectedDate = dayjs(date); // Ngày được chọn
+    const startOfYear = selectedDate.startOf('year'); // Ngày đầu tiên của năm
+    const months = [];
+
+    for (let i = 0; i <= selectedDate.month(); i++) {
+        months.push({
+            month: startOfYear.add(i, 'month').format('MM/YYYY'),
+            start_date: startOfYear.add(i, 'month').startOf("month").format('YYYY-MM-DD'),
+            end_date: startOfYear.add(i, 'month').endOf("month").format('YYYY-MM-DD'),
+        }); // Thêm tháng vào danh sách
+    }
+
+    return months;
+}
+
+const dataChartTemplate = (data) => ({
+    labels: data.map(val => val.label),
+    datasets: [
+        {
+            type: 'bar',
+            label: 'Doanh thu',
+            data: data.map(val => val.revenue),
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            yAxisID: 'y',
+            borderWidth: 1,
+        },
+        {
+            type: 'bar',
+            label: 'Giá vốn',
+            data: data.map(val => val.cost),
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            yAxisID: 'y',
+            borderWidth: 1,
+        },
+        {
+            type: 'line',
+            label: 'Lợi nhuận sau thuế',
+            data: data.map(val => val.profitAfterTax),
+            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 1)',
+            tension: 0.4,
+            yAxisID: 'y'
+        },
+    ]
+});
+
+const options = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Biểu đồ doanh thu, chi phí, lợi nhuận qua các tháng',
+        },
+    },
+    scales: {
+        y: {
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Đồng',
+            }
+        },
+        x: {
+            title: {
+                display: true,
+                text: 'Tháng'
+            }
+        }
+    }
+};
+
 const Revenue = () => {
     const [form] = Form.useForm();
     const [isExported, setIsExported] = useState(false);
     const [period, setPeriod] = useState(1);
     const [data, setData] = useState([]);
+    const [dataChart, setDataChart] = useState([]);
 
     const onFormChange = (value) => {
         console.log("onFormChange", value);
@@ -58,14 +139,50 @@ const Revenue = () => {
                 break;
         }
         console.log(queryParams);
-        handleActionCallback(loadDataFunction, queryParams)
-            .then(res => {
-                setData(res);
-                setIsExported(true);
-            })
-            .catch(e => {
-                console.log(e);
-                setData([]);
+        let p = [];
+        p.push(new Promise((resolve, reject) => {
+            handleActionCallback(loadDataFunction, queryParams)
+                .then(res => setData(res))
+                .catch(e => setData([]))
+                .finally(resolve);
+        }))
+
+        let months = getMonthsUntilDate(queryParams.end_date);
+
+        months.forEach((val, idx) => {
+            p.push(new Promise((resolve, reject) => {
+                let query = {
+                    period: 1,
+                    start_date: val.start_date,
+                    end_date: val.end_date,
+                }
+                console.log(query)
+                handleActionCallback(loadDataFunction, query)
+                    .then(res => {
+                        let item = {
+                            label: val.month,
+                            revenue: res[0].value,
+                            cost: res[2].value,
+                            profitAfterTax: res[5].value,
+                        }
+                        setDataChart(pre => {
+                            pre[idx] = item;
+                            return pre;
+                        })
+                    })
+                    .catch(e => {
+                        console.log(e);
+                        setDataChart(pre => {
+                            pre[idx] = {};
+                            return pre;
+                        })
+                    })
+                    .finally(resolve);
+            }))
+        })
+
+        Promise.all(p)
+            .then(() => {
                 setIsExported(true);
             })
     }
@@ -103,7 +220,7 @@ const Revenue = () => {
 
     return (
         <>
-            <Title level={4} style={{ marginBlockStart: 0 }} >Báo cáo doanh thu, chi phí</Title>
+            <Typography.Title level={4} style={{ marginBlockStart: 0 }} >Báo cáo doanh thu, chi phí</Typography.Title>
             <Form
                 form={form}
                 layout="horizontal"
@@ -226,18 +343,24 @@ const Revenue = () => {
                 </Form.Item>
             </Form>
             {(isExported) && (
-                <Flex>
-                    <Table
-                        size="small"
-                        style={{
-                            width: 600
-                        }}
-                        columns={columns}
-                        rowKey={"id"}
-                        dataSource={data}
-                        pagination={false}
-                        bordered
-                    />
+                <Flex gap="middle" vertical={false}>
+                    <Flex flex={1}>
+                        <Table
+                            size="small"
+                            style={{
+                                width: 600
+                            }}
+                            columns={columns}
+                            rowKey={"id"}
+                            dataSource={data}
+                            pagination={false}
+                            bordered
+                        />
+                    </Flex>
+                    <Flex flex={1}>
+                        {console.log(dataChartTemplate(dataChart))}
+                        <Chart type="bar" data={dataChartTemplate(dataChart)} options={options} />;
+                    </Flex>
                 </Flex>
             )}
         </>

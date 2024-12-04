@@ -26,9 +26,13 @@ message.config({
 
 const App = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [current, setCurrent] = useState(MenuItems[0].key);
+  const [current, setCurrent] = useState("Revenue");
   const [breadcrumb, setBreadcrumb] = useState();
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState({
+    fullname: "Anh",
+    is_admin: true,
+    id:1
+  });
 
   useEffect(() => {
     let items = [{
