@@ -39,7 +39,7 @@ const getMonthsUntilDate = (date) => {
     return months;
 }
 
-const dataChartTemplate = (data) => ({
+const dataComboChartTemplate = (data) => ({
     labels: data.map(val => val.label),
     datasets: [
         {
@@ -70,7 +70,7 @@ const dataChartTemplate = (data) => ({
     ]
 });
 
-const options = {
+const optionsComboChart = (year) => ({
     responsive: true,
     plugins: {
         legend: {
@@ -78,7 +78,7 @@ const options = {
         },
         title: {
             display: true,
-            text: 'Biểu đồ doanh thu, chi phí, lợi nhuận qua các tháng',
+            text: 'Biểu đồ doanh thu, chi phí, lợi nhuận sau thuế qua các tháng năm ' + year,
         },
     },
     scales: {
@@ -96,7 +96,7 @@ const options = {
             }
         }
     }
-};
+});
 
 const Revenue = () => {
     const [form] = Form.useForm();
@@ -358,8 +358,8 @@ const Revenue = () => {
                         />
                     </Flex>
                     <Flex flex={1}>
-                        {console.log(dataChartTemplate(dataChart))}
-                        <Chart type="bar" data={dataChartTemplate(dataChart)} options={options} />;
+                        {console.log(dataComboChartTemplate(dataChart))}
+                        <Chart type="bar" data={dataComboChartTemplate(dataChart)} options={optionsComboChart()} />;
                     </Flex>
                 </Flex>
             )}
