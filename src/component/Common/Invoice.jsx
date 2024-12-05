@@ -131,79 +131,46 @@ const generateInvoice = () => {
     doc.text('(Note):', 26, 170);
 
     let headers = [
-        {
-            id: "id",
-            name: "id",
-            prompt: "id",
-            width: 17,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "description",
-            name: "description",
-            prompt: "description",
-            width: 100,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "unit",
-            name: "unit",
-            prompt: "unit",
-            width: 28,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "quantity",
-            name: "quantity",
-            prompt: "quantity",
-            width: 30,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "price",
-            name: "price",
-            prompt: "price",
-            width: 38,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "amount",
-            name: "amount",
-            prompt: "amount",
-            width: 38,
-            align: "center",
-            padding: 0
-        },
+        ["STT (No.)", "Tên hàng hóa, dịch vụ (Description)", "ĐVT (Unit)", "Số lượng (Quantity)", "Đơn giá (Unit price)", "Thành tiền (Amount)"],
     ];
 
-    let data = [{
-        id: "1",
-        description: "Cước vận chuyển đường bộ",
-        unit: "Cont 40",
-        quantity: "1",
-        price: "1.000.000",
-        amount: "1.000.000"
-    }]
+    let data = [
+        ["1", "Cước vận chuyển đường bộ", "Cont 40", "1", "1.000.000", "1.000.000"],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+    ]
     // Bảng chi tiết hàng hóa
     doc.table(10, 180, data, headers, {
-        fontSize: 12,
-        headerBackgroundColor: 'white'
+        autoSize: true,
+        fontSize: 10,
+        padding: 5,
+        border: 1,
+        styles: {
+            halign: 'center', // Canh giữa nội dung
+            valign: 'middle', // Canh giữa nội dung theo chiều dọc
+        },
     });
 
     // Tổng tiền
-    // doc.text('Cộng tiền hàng (Total amount): 1.000.000', 20, 140);
+
+    // doc.text(' (Total amount): 1.000.000', 20, 140);
     // doc.text('Thuế suất GTGT (VAT rate): 10%', 20, 145);
     // doc.text('Tiền thuế GTGT (VAT amount): 100.000', 20, 150);
     // doc.text('Tổng cộng tiền thanh toán (Total payment): 1.100.000', 20, 155);
 
     // Chữ ký
-    // doc.text('Người mua hàng (Buyer):', 20, 170);
-    // doc.text('Người bán hàng (Seller):', 150, 170);
+    doc.setFont('TimesNewRoman', "bold");
+    doc.text('Người mua hàng', 30, 250);
+    doc.setFont('TimesNewRoman', "italic");
+    doc.text('(Buyer)', 61, 250);
+
+    doc.setFont('TimesNewRoman', "bold");
+    doc.text('Người bán hàng', 140, 250);
+    doc.setFont('TimesNewRoman', "italic");
+    doc.text('(Seller)', 170, 250);
 
     // Lưu file PDF
     // doc.save('HoaDon.pdf');
