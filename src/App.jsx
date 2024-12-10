@@ -66,7 +66,7 @@ const App = () => {
 
   return (
     <>
-      <Invoice/>
+      {/* <Invoice/> */}
       {(!profile) && (<LoginPage setProfile={setProfile} />)}
       {(profile) && (
         <Layout

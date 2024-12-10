@@ -253,21 +253,27 @@ const generateInvoice = () => {
             amount: " "
         }
     ]
-    doc.table(marginLeft, marginTop, dataTable, headerTable, { headerBackgroundColor: "white" });
+    doc.table(marginLeft, marginTop, dataTable, headerTable, {
+        headerBackgroundColor: "white",
+        fontSize: 12,
+        rowHeight: 10
+    });
 
     // Tổng tiền
-
+    marginTop += lineHeight * 4;
+    doc.rect(10, marginTop, 153, 10);
 
     // Chữ ký
-    // doc.setFont('TimesNewRoman', "bold");
-    // doc.text('Người mua hàng', 30, 250);
-    // doc.setFont('TimesNewRoman', "italic");
-    // doc.text('(Buyer)', 61, 250);
+    marginTop += lineHeight
+    doc.setFont('TimesNewRoman', "bold");
+    doc.text('Người mua hàng', 30, marginTop);
+    doc.setFont('TimesNewRoman', "italic");
+    doc.text('(Buyer)', 61, marginTop);
 
-    // doc.setFont('TimesNewRoman', "bold");
-    // doc.text('Người bán hàng', 140, 250);
-    // doc.setFont('TimesNewRoman', "italic");
-    // doc.text('(Seller)', 170, 250);
+    doc.setFont('TimesNewRoman', "bold");
+    doc.text('Người bán hàng', 140, marginTop);
+    doc.setFont('TimesNewRoman', "italic");
+    doc.text('(Seller)', 170, marginTop);
 
     // Lưu file PDF
     // doc.save('HoaDon.pdf');
