@@ -574,7 +574,7 @@ const Order = ({ profile }) => {
                 ]}
             >
                 <RangePicker
-                    format="DD/MM/YYYY"
+                    format="DD/MM/YYYY HH:mm:ss"
                     placeholder={["Ngày nhận hàng", "Ngày trả hàng"]}
                     id={{ start: "start_date", end: "end_date" }}
                 />

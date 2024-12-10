@@ -78,7 +78,7 @@ const optionsComboChart = (year) => ({
         },
         title: {
             display: true,
-            text: 'Biểu đồ doanh thu, chi phí, lợi nhuận sau thuế qua các tháng năm ' + year,
+            text: 'Biểu đồ doanh thu, chi phí và lợi nhuận sau thuế qua các tháng năm ' + year,
         },
     },
     scales: {
