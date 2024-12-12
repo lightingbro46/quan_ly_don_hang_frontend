@@ -61,7 +61,7 @@ const dataComboChartTemplate = (data) => ({
         {
             type: 'line',
             label: 'Lợi nhuận sau thuế',
-            data: data.map(val => val.profitAfterTax),
+            data: data.map(val => val.profitsAfterTax),
             borderColor: 'rgba(54, 162, 235, 1)',
             backgroundColor: 'rgba(54, 162, 235, 1)',
             tension: 0.4,
@@ -147,7 +147,7 @@ const Revenue = () => {
         let p = [];
         p.push(new Promise((resolve, reject) => {
             handleActionCallback(loadDataFunction, queryParams)
-                .then(res => setData(res))
+                .then(res => setData(res.report))
                 .catch(e => setData([]))
                 .finally(resolve);
         }))
@@ -166,10 +166,11 @@ const Revenue = () => {
                     .then(res => {
                         let item = {
                             label: val.month,
-                            revenue: res[0].value,
-                            cost: res[2].value,
-                            profitAfterTax: res[5].value,
+                            revenue: res.data.revenue,
+                            cost: res.data.cost,
+                            profitsAfterTax: res.data.profitsAfterTax,
                         }
+                        console.log(item);
                         setDataChart(pre => {
                             pre[idx] = item;
                             return pre;
@@ -349,7 +350,7 @@ const Revenue = () => {
             </Form>
             {(isExported) && (
                 <Flex gap="middle" vertical={false}>
-                    <Flex flex={1}>
+                    <Flex flex={1} style={{marginBlockStart: "64px"}}>
                         <Table
                             size="small"
                             style={{
@@ -363,7 +364,6 @@ const Revenue = () => {
                         />
                     </Flex>
                     <Flex flex={1}>
-                        {console.log(dataComboChartTemplate(dataChart))}
                         <Chart type="bar" data={dataComboChartTemplate(dataChart)} options={optionsComboChart(year)} />;
                     </Flex>
                 </Flex>

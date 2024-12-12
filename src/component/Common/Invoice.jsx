@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'antd';
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import TimesNewRoman from '../../assets/fonts/TimesNewRoman';
 import TimesNewRomanBold from '../../assets/fonts/TimesNewRomanBold';
 import TimesNewRomanBoldItalic from '../../assets/fonts/TimesNewRomanBoldItalic';
@@ -152,128 +153,82 @@ const generateInvoice = () => {
     // Bảng chi tiết hàng hóa
     marginTop += lineHeight;
 
-    var headerTable = [
-        {
-            id: "id",
-            name: "id",
-            prompt: "STT",
-            width: 20,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "description",
-            name: "description",
-            prompt: "Tên hàng hoá, dịch vụ",
-            width: 80,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "unit",
-            name: "unit",
-            prompt: "ĐVT",
-            width: 30,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "quantity",
-            name: "quantity",
-            prompt: "Số lượng",
-            width: 30,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "unit_price",
-            name: "unit_price",
-            prompt: "Đơn giá",
-            width: 45,
-            align: "center",
-            padding: 0
-        },
-        {
-            id: "amount",
-            name: "amount",
-            prompt: "Thành tiền",
-            width: 45,
-            align: "center",
-            padding: 0
-        }
+    // Dữ liệu bảng
+    const header = [[["STT", "(No.)"], ["Tên hàng hoá, dịch vụ", "(Description)"], ["ĐVT", "(Unit)"], ["Số lượng", "(Quantity)"], ["Đơn giá", "(Unit price)"], ["Thành tiền", "(Amount)"]]]
+    const data = [
+        ['1', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
+        ['2', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
+        ['3', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
+        ['4', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
+        ['5', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
+        ['6', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
     ];
 
-    let dataTable = [
-        {
-            id: "1",
-            description: "Cước vận chuyển đường bộ",
-            unit: "Cont 40",
-            quantity: "1",
-            unit_price: "1.000.000",
-            amount: "1.000.000",
+    // Tạo bảng với header tùy chỉnh
+    doc.autoTable({
+        head: header,
+        body: data,
+        theme: "plain",
+        startY: marginTop,
+        margin: { left: 10, right: 10 },
+        styles: {
+            halign: "center",
+            valign: "middle",
+            lineHeight: lineHeight,
+            font: "TimesNewRoman",
+            fontStyle: "normal",
+            fontSize: 12,
+            textColor: [0, 0, 0],
+            lineWidth: 0.2,
+            lineColor: [0, 0, 0],
         },
-        {
-            id: " ",
-            description: " ",
-            unit: " ",
-            quantity: " ",
-            unit_price: " ",
-            amount: " "
+        headStyles: {
+            fillColor: [255, 255, 255],
+            fontStyle: "bold",
         },
-        {
-            id: " ",
-            description: " ",
-            unit: " ",
-            quantity: " ",
-            unit_price: " ",
-            amount: " "
+        didDrawCell: function (data) {
+            const { cell, section, column } = data;
+            if (section === 'head') {
+                console.log(cell)
+                const { x, y, width, height, raw } = cell;
+
+                // Vẽ nội dung tùy chỉnh
+                const title = raw[0];
+                const subtitle = raw[1];
+                const padding = 2; // Khoảng cách padding trong ô
+
+                // Dòng đầu tiên (font 1)
+                doc.setFont('TimesNewRoman', 'bold');
+                doc.text(title, x + padding, y + lineHeight);
+
+                // Dòng thứ hai (font 2)
+                doc.setFont('TimesNewRoman', 'italic');
+                doc.setFontSize(12);
+                doc.text(subtitle, x + padding, y + lineHeight + 2); // Cách dòng đầu 5 đơn vị
+
+                // Loại bỏ nội dung mặc định
+                data.cell.text = [];
+            } else if (section == "body") {
+
+            }
         },
-        {
-            id: " ",
-            description: " ",
-            unit: " ",
-            quantity: " ",
-            unit_price: " ",
-            amount: " "
-        },
-        {
-            id: " ",
-            description: " ",
-            unit: " ",
-            quantity: " ",
-            unit_price: " ",
-            amount: " "
-        },
-        {
-            id: " ",
-            description: " ",
-            unit: " ",
-            quantity: " ",
-            unit_price: " ",
-            amount: " "
-        }
-    ]
-    doc.table(marginLeft, marginTop, dataTable, headerTable, {
-        headerBackgroundColor: "white",
-        fontSize: 12,
-        rowHeight: 10
     });
 
     // Tổng tiền
-    marginTop += lineHeight * 4;
-    doc.rect(10, marginTop, 153, 10);
+    // marginTop += lineHeight * 4;
+    // doc.rect(10, marginTop, 153, 10);
 
     // Chữ ký
-    marginTop += lineHeight
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Người mua hàng', 30, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Buyer)', 61, marginTop);
+    // marginTop += lineHeight
+    // doc.setFont('TimesNewRoman', "bold");
+    // doc.text('Người mua hàng', 30, marginTop);
+    // doc.setFont('TimesNewRoman', "italic");
+    // doc.text('(Buyer)', 61, marginTop);
 
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Người bán hàng', 140, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Seller)', 170, marginTop);
+    // doc.setFont('TimesNewRoman', "bold");
+    // doc.text('Người bán hàng', 140, marginTop);
+    // doc.setFont('TimesNewRoman', "italic");
+    // doc.text('(Seller)', 170, marginTop);
 
     // Lưu file PDF
     // doc.save('HoaDon.pdf');
