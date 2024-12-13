@@ -204,7 +204,7 @@ const generateInvoice = () => {
                 // Dòng thứ hai (font 2)
                 doc.setFont('TimesNewRoman', 'italic');
                 doc.setFontSize(12);
-                doc.text(subtitle, x + padding, y + lineHeight + 2); // Cách dòng đầu 5 đơn vị
+                doc.text(subtitle, x + padding, y + lineHeight + 7); // Cách dòng đầu 5 đơn vị
 
                 // Loại bỏ nội dung mặc định
                 data.cell.text = [];
