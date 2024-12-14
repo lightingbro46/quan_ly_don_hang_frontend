@@ -1,240 +1,138 @@
 import { useState } from 'react';
 import { Button } from 'antd';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import TimesNewRoman from '../../assets/fonts/TimesNewRoman';
-import TimesNewRomanBold from '../../assets/fonts/TimesNewRomanBold';
-import TimesNewRomanBoldItalic from '../../assets/fonts/TimesNewRomanBoldItalic';
-import TimesNewRomanItalic from '../../assets/fonts/TimesNewRomanItalic';
+import { PDFDocument, rgb } from "pdf-lib";
+import fontkit from '@pdf-lib/fontkit';
 
-const generateInvoice = () => {
-    const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: "mm",
-        format: "a4",
-    });
+const fetchEmbedFont = async (pdfDoc) => {
+    pdfDoc.registerFontkit(fontkit)
+    const timesUrl = "/fonts/times.ttf";
+    const timesBytes = await fetch(timesUrl).then(res => res.arrayBuffer());
+    const timesFont = await pdfDoc.embedFont(timesBytes);
+    const timesbdUrl = "/fonts/timesbd.ttf";
+    const timesbdBytes = await fetch(timesbdUrl).then(res => res.arrayBuffer());
+    const timesbdFont = await pdfDoc.embedFont(timesbdBytes);
+    const timesbiUrl = "/fonts/timesbi.ttf";
+    const timesbiBytes = await fetch(timesbiUrl).then(res => res.arrayBuffer());
+    const timesbiFont = await pdfDoc.embedFont(timesbiBytes);
+    const timesiUrl = "/fonts/timesi.ttf";
+    const timesiBytes = await fetch(timesiUrl).then(res => res.arrayBuffer());
+    const timesiFont = await pdfDoc.embedFont(timesiBytes);
+    return {
+        timesFont,
+        timesbdFont,
+        timesbiFont,
+        timesiFont
+    }
+}
 
-    doc.addFileToVFS('times.ttf', TimesNewRoman);
-    doc.addFont('times.ttf', 'TimesNewRoman', 'normal');
-    doc.addFileToVFS('timesbd.ttf', TimesNewRomanBold);
-    doc.addFont('timesbd.ttf', 'TimesNewRoman', 'bold');
-    doc.addFileToVFS('timesi.ttf', TimesNewRomanItalic);
-    doc.addFont('timesi.ttf', 'TimesNewRoman', 'italic');
-    doc.addFileToVFS('timesbi.ttf', TimesNewRomanBoldItalic);
-    doc.addFont('timesbi.ttf', 'TimesNewRoman', 'bolditalic');
-
-    let marginTop = 10;
-    let marginLeft = 10;
-    let lineHeight = 7;
-    // Tiêu đề
-    doc.setFont('TimesNewRoman', "bold");
-    doc.setFontSize(16);
-    doc.text('HÓA ĐƠN GIÁ TRỊ GIA TĂNG', 70, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "italic");
-    doc.setFontSize(12);
-    doc.text('(VAT INVOICE)', 95, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('Ngày (date): 25 tháng (month) 11 năm (year) 2024', 65, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Mã hóa đơn:', 160, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('123', 185, marginTop);
-
-    // Phân chia
-    marginTop += lineHeight;
-    doc.setLineWidth(0.2);
-    doc.line(marginLeft, marginTop, 200, marginTop);
-
-    // Thông tin đơn vị bán hàng
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Đơn vị bán hàng', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Issued):', 41, marginTop);
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('CÔNG TY TNHH ĐẦU TƯ THƯƠNG MẠI VẬN TẢI KHÁNH TOÀN', 58, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Mã số thuế', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Tax code):', 31, marginTop);
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('0201646160', 52, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Địa chỉ', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Address):', 24, marginTop);
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Số 15 Đường Trung Lực, Phường Đằng Lâm, Quận Hải An, TP. Hải Phòng, Việt Nam', 43, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Điện thoại', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Phone number):', 30, marginTop);
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('02253859969', 60, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Số tài khoản', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Account No.):', 34, marginTop);
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('22662688', 60, marginTop);
-    doc.text('Tại Ngân hàng ACB chi nhánh Hải Phòng', 90, marginTop);
-
-    // Phân chia
-    marginTop += lineHeight;
-    doc.setLineWidth(0.2);
-    doc.line(marginLeft, marginTop, 200, marginTop);
-
-    // Thông tin người mua hàng
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Họ tên người mua hàng', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Buyer name):', 54, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('Nguyễn Văn A', 80, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Tên đơn vị', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Company name):', 31, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('Công ty TNHH A', 63, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Mã số thuế', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Tax code):', 31, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('222222222', 52, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Địa chỉ', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Address):', 24, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('112 Tran Phu, Hà Đông', 43, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Hình thức thanh toán', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Payment method):', 50, marginTop);
-    doc.setFont('TimesNewRoman', "normal");
-    doc.text('TM/CK', 84, marginTop);
-
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Số tài khoản', 115, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Account No.):', 139, marginTop);
-
-    marginTop += lineHeight;
-    doc.setFont('TimesNewRoman', "bold");
-    doc.text('Ghi chú', marginLeft, marginTop);
-    doc.setFont('TimesNewRoman', "italic");
-    doc.text('(Note):', 26, marginTop);
-
-    // Bảng chi tiết hàng hóa
-    marginTop += lineHeight;
-
-    // Dữ liệu bảng
-    const header = [[["STT", "(No.)"], ["Tên hàng hoá, dịch vụ", "(Description)"], ["ĐVT", "(Unit)"], ["Số lượng", "(Quantity)"], ["Đơn giá", "(Unit price)"], ["Thành tiền", "(Amount)"]]]
-    const data = [
-        ['1', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-        ['2', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-        ['3', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-        ['4', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-        ['5', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-        ['6', 'Cước vận chuyển đường bộ', 'Cont 40', '1', '1.000.000', '1.000.000'],
-    ];
-
-    // Tạo bảng với header tùy chỉnh
-    doc.autoTable({
-        head: header,
-        body: data,
-        theme: "plain",
-        startY: marginTop,
-        margin: { left: 10, right: 10 },
-        styles: {
-            halign: "center",
-            valign: "middle",
-            lineHeight: lineHeight,
-            font: "TimesNewRoman",
-            fontStyle: "normal",
-            fontSize: 12,
-            textColor: [0, 0, 0],
-            lineWidth: 0.2,
-            lineColor: [0, 0, 0],
-        },
-        headStyles: {
-            fillColor: [255, 255, 255],
-            fontStyle: "bold",
-        },
-        didDrawCell: function (data) {
-            const { cell, section, column } = data;
-            if (section === 'head') {
-                console.log(cell)
-                const { x, y, width, height, raw } = cell;
-
-                // Vẽ nội dung tùy chỉnh
-                const title = raw[0];
-                const subtitle = raw[1];
-                const padding = 2; // Khoảng cách padding trong ô
-
-                // Dòng đầu tiên (font 1)
-                doc.setFont('TimesNewRoman', 'bold');
-                doc.text(title, x + padding, y + lineHeight);
-
-                // Dòng thứ hai (font 2)
-                doc.setFont('TimesNewRoman', 'italic');
-                doc.setFontSize(12);
-                doc.text(subtitle, x + padding, y + lineHeight + 7); // Cách dòng đầu 5 đơn vị
-
-                // Loại bỏ nội dung mặc định
-                data.cell.text = [];
-            } else if (section == "body") {
-
+const generateInvoice = async () => {
+    const data = {
+        date: "25",
+        month: "01",
+        year: "2024",
+        orderCode: "11111",
+        buyerName: "Nguyễn Văn A",
+        companyName: "Công ty TNHH abc",
+        taxCode: "122121221",
+        address: "Hà Nội",
+        table: [
+            {
+                id: "1",
+                description: "Cước vận chuyển đường bộ",
+                unit: "Cont 40",
+                quantity: "1",
+                unitPrice: "1.000.000",
+                amount: "1.000.000"
+            },
+            {
+                id: "2",
+                description: "Cước vận chuyển đường bộ",
+                unit: "Cont 40",
+                quantity: "1",
+                unitPrice: "1.000.000",
+                amount: "1.000.000"
             }
-        },
-    });
+        ],
+        totalAmount: "1.000.000",
+        VATRate: "8",
+        VATAmount: "80.000",
+        totalPayment: "1.080.000",
+        amountInWords: "Một triệu đồng"
+    }
+    // Tải file PDF có sẵn
+    const invoiceUrl = "/tmp/invoice_template.pdf";
+    const pdfBytes = await fetch(invoiceUrl).then(res => res.arrayBuffer());
 
-    // Tổng tiền
-    // marginTop += lineHeight * 4;
-    // doc.rect(10, marginTop, 153, 10);
+    // Load PDF bằng pdf-lib
+    const pdfDoc = await PDFDocument.load(pdfBytes);
 
-    // Chữ ký
-    // marginTop += lineHeight
-    // doc.setFont('TimesNewRoman', "bold");
-    // doc.text('Người mua hàng', 30, marginTop);
-    // doc.setFont('TimesNewRoman', "italic");
-    // doc.text('(Buyer)', 61, marginTop);
+    const { timesFont, timesbdFont, timesbiFont, timesiFont } = await fetchEmbedFont(pdfDoc)
 
-    // doc.setFont('TimesNewRoman', "bold");
-    // doc.text('Người bán hàng', 140, marginTop);
-    // doc.setFont('TimesNewRoman', "italic");
-    // doc.text('(Seller)', 170, marginTop);
+    // Lấy trang đầu tiên
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
 
-    // Lưu file PDF
-    // doc.save('HoaDon.pdf');
+    const drawText = (text, x, y, align = "left") => {
+        const fontSize = 12;
+        const textColor = rgb(0, 0, 0);
+        const fontText = timesFont;
+        const textWidth = fontText.widthOfTextAtSize(text, fontSize);
+        let cordiX = x;
+        let cordiY = y;
+        switch (align) {
+            case "left":
+                cordiX = x;
+                break;
+            case "center":
+                cordiX = x - textWidth / 2;
+                break;
+            case "right":
+                cordiX = x - textWidth;
+                break;
+        }
+        firstPage.drawText(text, {
+            x: cordiX,
+            y: cordiY,
+            size: fontSize,
+            font: fontText,
+            color: textColor,
+        });
 
+    }
+
+    // Chèn text mới vào trang đầu
+    drawText(data.date, 239, 738);
+    drawText(data.month, 326, 738);
+    drawText(data.year, 396, 738);
+    drawText(data.orderCode, 500, 713);
+    drawText(data.buyerName, 232, 557);
+    drawText(data.companyName, 184, 531);
+    drawText(data.taxCode, 151, 506);
+    drawText(data.address, 127, 481);
+    let tableLine = 374;
+    const tableLineHeight = 21;
+    data.table.forEach((val, idx) => {
+        if (idx <= 6) {
+            drawText(val.id, 56, tableLine, "center");
+            drawText(val.description, 85, tableLine);
+            drawText(val.unit, 299, tableLine, "center");
+            drawText(val.quantity, 376, tableLine, "right");
+            drawText(val.unitPrice, 464, tableLine, "right");
+            drawText(val.amount, 552, tableLine, "right");
+            tableLine -= tableLineHeight;
+        }
+    })
+
+    drawText(data.totalAmount, 552, 246, "right");
+    drawText(data.VATRate, 210, 230, "right");
+    drawText(data.VATAmount, 552, 222, "right");
+    drawText(data.totalPayment, 552, 200, "right");
+    drawText(data.amountInWords, 250, 185);
+
+    // Lưu file PDF đã chỉnh sửa
+    const pdfBytesModified = await pdfDoc.save();
     // Tạo blob từ PDF
-    const pdfBlob = doc.output('blob');
+    const pdfBlob = new Blob([pdfBytesModified], { type: "application/pdf" });
 
     // Hiển thị PDF trong iframe
     const pdfUrl = URL.createObjectURL(pdfBlob);

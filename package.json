@@ -12,12 +12,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
+    "@pdf-lib/fontkit": "^1.1.1",
     "antd": "^5.22.1",
     "base64-js": "^1.5.1",
     "chart.js": "^4.4.7",
     "dayjs": "^1.11.13",
-    "jspdf": "^2.5.2",
-    "jspdf-autotable": "^3.8.4",
     "pdf-lib": "^1.17.1",
     "qs": "^6.13.1",
     "react": "^18.3.1",
