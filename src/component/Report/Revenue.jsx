@@ -143,7 +143,7 @@ const Revenue = () => {
                 setYear(dayjs(values.range[1]).format("YYYY"));
                 break;
         }
-        console.log(queryParams);
+
         let p = [];
         p.push(new Promise((resolve, reject) => {
             handleActionCallback(loadDataFunction, queryParams)
@@ -350,7 +350,7 @@ const Revenue = () => {
             </Form>
             {(isExported) && (
                 <Flex gap="middle" vertical={false}>
-                    <Flex flex={1} style={{marginBlockStart: "64px"}}>
+                    <Flex flex={1} style={{ marginBlockStart: "64px" }}>
                         <Table
                             size="small"
                             style={{

@@ -9,6 +9,8 @@ import showDeleteConfirm from "../Common/DeleteModal";
 import LoadTable from "../Common/LoadTable";
 import SearchInput from "../Common/SearchInput";
 import { apiSearch, handleActionCallback } from "../Common/Utils";
+import PDFViewer from "../Common/PDFViewer";
+import { invoiceTempUrl, editInvoice } from "./Invoice";
 
 const { RangePicker } = DatePicker;
 
@@ -108,10 +110,6 @@ const getCustomerDetail = (queryParams) => {
     })
 }
 
-const printInvoice = (value) => {
-
-}
-
 const orderStatusOptions = [
     {
         value: 1,
@@ -153,6 +151,7 @@ const paymentStatusOptions = [
 const Order = ({ profile }) => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+    const [isInvoiceModalVisible, setIsInvoiceModalVisible] = useState(false);
     const [inputModalData, setInputModalData] = useState({});
 
     const [reload, setReload] = useState(false);
@@ -185,6 +184,11 @@ const Order = ({ profile }) => {
         formUpdate.setFieldsValue(record);
         setInputModalData(record);
         setIsUpdateModalVisible(true);
+    }
+
+    const showInvoiceModal = (record) => {
+        setInputModalData(record);
+        setIsInvoiceModalVisible(true);
     }
 
     const onCreateValuesChange = (value) => {
@@ -454,7 +458,7 @@ const Order = ({ profile }) => {
                         </a>
                     </Tooltip>
                     <Tooltip placement="topRight" title="In hoá đơn">
-                        <a onClick={() => printInvoice(record)}>
+                        <a onClick={() => showInvoiceModal(record)}>
                             <PrinterOutlined />
                         </a>
                     </Tooltip>
@@ -953,6 +957,12 @@ const Order = ({ profile }) => {
                 columns={columns}
                 loadDataForTableFunction={loadDataForTableFunction}
                 reload={reload}
+            />
+            <PDFViewer
+                isModalVisible={isInvoiceModalVisible}
+                setIsModalVisible={setIsInvoiceModalVisible}
+                pdfTempUrl={invoiceTempUrl}
+                editPdfDoc={(params) => editInvoice({ record: inputModalData, ...params })}
             />
         </>
     )

@@ -19,7 +19,6 @@ import User from "./component/User/User";
 import Cost from "./component/Cost/Cost";
 import LoginPage from "./component/Login/Login";
 // import CostPage from "./component/Cost/CostPage";
-import Invoice from "./component/Common/Invoice";
 
 message.config({
   maxCount: 1
@@ -32,7 +31,7 @@ const App = () => {
   const [profile, setProfile] = useState({
     fullname: "Anh",
     is_admin: true,
-    id:1
+    id: 1
   });
 
   useEffect(() => {
@@ -66,7 +65,6 @@ const App = () => {
 
   return (
     <>
-      <Invoice/>
       {(!profile) && (<LoginPage setProfile={setProfile} />)}
       {(profile) && (
         <Layout

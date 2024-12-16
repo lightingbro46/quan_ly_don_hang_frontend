@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from 'antd';
+import { useState, forwardRef, useImperativeHandle } from 'react';
+import { Modal, Button } from 'antd';
 import { PDFDocument, rgb } from "pdf-lib";
 import fontkit from '@pdf-lib/fontkit';
 
@@ -25,7 +25,7 @@ const fetchEmbedFont = async (pdfDoc) => {
     }
 }
 
-const generateInvoice = async () => {
+const generateInvoice = async (callback) => {
     const data = {
         date: "25",
         month: "01",
@@ -129,29 +129,58 @@ const generateInvoice = async () => {
     drawText(data.totalPayment, 552, 200, "right");
     drawText(data.amountInWords, 250, 185);
 
-    // Lưu file PDF đã chỉnh sửa
+    // Lưu file PDF đã chỉnh sửa và Tạo blob từ PDF
     const pdfBytesModified = await pdfDoc.save();
-    // Tạo blob từ PDF
     const pdfBlob = new Blob([pdfBytesModified], { type: "application/pdf" });
 
     // Hiển thị PDF trong iframe
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    const iframe = document.getElementById('pdf-viewer');
-    iframe.src = pdfUrl;
+    callback(pdfUrl);
 }
 
-const Invoice = () => {
+const Invoice = forwardRef(({ inputData, ref }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [pdfUrl, setPdfUrl] = useState(null);
+
+    useImperativeHandle(ref, () => ({
+        showAlert: () => {
+            alert("Hello from Child Component!");
+        },
+    }));
+    
+    const showModal = () => {
+        generateInvoice((url) => {
+            setPdfUrl(url);
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
-        <div>
-            <Button type="primary" onClick={generateInvoice}>
-                Xuất Hóa Đơn
-            </Button>
+        <Modal
+            title="PDF Viewer"
+            open={isModalOpen}
+            centered
+            onOk={handleOk}
+            onCancel={handleCancel}
+            width={800}
+            footer={null}
+            destroyOnClose
+        >
             <iframe
                 id="pdf-viewer"
-                style={{ width: '100%', height: '720px', border: '1px solid #ccc', marginTop: '20px' }}
+                src={pdfUrl}
+                style={{ width: '100%', height: '90vh', border: '1px solid #ccc', objectFit: "contain" }}
             ></iframe>
-        </div>
+        </Modal>
     )
-}
+});
 
 export default Invoice;
