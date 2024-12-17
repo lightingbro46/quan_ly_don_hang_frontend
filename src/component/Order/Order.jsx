@@ -96,6 +96,13 @@ const loadOptionCostFunction = (queryParams) => {
     })
 }
 
+const getCostDetail = (queryParams) => {
+    return apiSearch({
+        url: "http://localhost:3000/api/costs/detail",
+        queryParams
+    })
+}
+
 const loadOptionCustomerFunction = (queryParams) => {
     return apiSearch({
         url: "http://localhost:3000/api/customers/list",
@@ -200,9 +207,10 @@ const Order = ({ profile }) => {
                 end_date: dayjs(value["deliver_time"][1]).format("YYYY-MM-DD")
             }))
         } else if (value["cost_id"]) {
-            loadOptionCostFunction({ id: value["cost_id"] })
+            getCostDetail({ id: value["cost_id"] })
                 .then((res) => {
-                    let data = res["results"][0];
+                    let data = res;
+                    console.log("set cost toll", data)
                     formCreate.setFieldsValue({
                         pricing: data["pricing"],
                         tolls: data["tolls"],
@@ -235,9 +243,9 @@ const Order = ({ profile }) => {
                 end_date: dayjs(value["deliver_time"][1]).format("YYYY-MM-DD")
             }))
         } else if (value["cost_id"]) {
-            loadOptionCostFunction({ id: value["cost_id"] })
+            getCostDetail({ id: value["cost_id"] })
                 .then((res) => {
-                    let data = res["results"][0];
+                    let data = res;
                     formUpdate.setFieldsValue({
                         pricing: data["pricing"],
                         tolls: data["tolls"],
