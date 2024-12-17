@@ -926,6 +926,19 @@ const Order = ({ profile }) => {
     )
     return (
         <>
+            {/* <Flex
+                vertical={false}
+                style={{
+                    width: "100%",
+                    height: "100%",
+                }}
+                align="flex-start"
+            >
+                <Flex >
+                    <Form>
+
+                    </Form>
+                </Flex> */}
             <Flex justify="flex-end" align="center">
                 <Button
                     style={{
@@ -937,6 +950,8 @@ const Order = ({ profile }) => {
                     <PlusOutlined /><span>Thêm mới</span>
                 </Button>
             </Flex>
+            {/* </Flex> */}
+
             <CreateModal
                 name="đơn hàng"
                 isModalVisible={isCreateModalVisible}

@@ -256,9 +256,9 @@ const Award = () => {
                         <Form.Item label={null} >
                             <Button type="primary" htmlType="submit" icon={<ExportOutlined />}>Xuất báo cáo</Button>
                         </Form.Item>
-                        <Form.Item label={null} hidden={!isExported} onClick={onClickPrint}>
-                            <Button type="primary" icon={<PrinterOutlined />}>In</Button>
-                        </Form.Item>
+                        {/* <Form.Item label={null} hidden={!isExported} onClick={onClickPrint}>
+                            <Button type="primary" icon={<PrinterOutlined />}>In báo cáo</Button>
+                        </Form.Item> */}
                     </Space>
                 </Form.Item>
             </Form>
