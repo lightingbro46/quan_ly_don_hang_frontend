@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { DatePicker, Select, Space, Typography, Button, Form, Table, Flex } from "antd";
 import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
 
@@ -13,6 +13,8 @@ import { Chart } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 import { apiSearch, handleActionCallback } from "../Common/Utils";
+import PDFViewer from "../Common/PDFViewer";
+import { editReport, reportTempUrl } from "./Report";
 
 const { RangePicker } = DatePicker;
 
@@ -103,12 +105,17 @@ const Revenue = () => {
     const [isExported, setIsExported] = useState(false);
     const [period, setPeriod] = useState(1);
     const [year, setYear] = useState();
+    const periodText = useRef("");
     const [data, setData] = useState([]);
     const [dataChart, setDataChart] = useState([]);
+    const [isReportModalVisible, setIsReportModalVisible] = useState(false);
+    const [inputModalData, setInputModalData] = useState({});
 
     const onFormChange = (value) => {
         console.log("onFormChange", value);
         setIsExported(false);
+        setDataChart([]);
+        setInputModalData({});
         if (value.period) {
             form.resetFields(["month", "quarter", "year", "range"])
             setPeriod(value.period);
@@ -126,28 +133,38 @@ const Revenue = () => {
                 queryParams.start_date = dayjs(values.month).startOf("month").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.month).endOf("month").format('YYYY-MM-DD');
                 setYear(dayjs(values.month).format("YYYY"));
+                periodText.current = `Tháng ${dayjs(values.month).format("MM")} Năm ${dayjs(values.month).format("YYYY")}`;
                 break;
             case 2:
                 queryParams.start_date = dayjs(values.quarter).startOf("quarter").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.quarter).endOf("quarter").format('YYYY-MM-DD');
                 setYear(dayjs(values.quarter).format("YYYY"));
+                periodText.current = `Quý ${dayjs(values.quarter).quarter()} Năm ${dayjs(values.month).format("YYYY")}`;
                 break;
             case 3:
                 queryParams.start_date = dayjs(values.year).startOf("year").format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.year).endOf("year").format('YYYY-MM-DD');
                 setYear(dayjs(values.year).format("YYYY"));
+                periodText.current = `Năm ${dayjs(values.year).format("YYYY")}`;
                 break;
             case 4:
                 queryParams.start_date = dayjs(values.range[0]).format('YYYY-MM-DD');
                 queryParams.end_date = dayjs(values.range[1]).format('YYYY-MM-DD');
                 setYear(dayjs(values.range[1]).format("YYYY"));
+                periodText.current = `Từ ngày ${dayjs(values.range[0]).format("DD-MM-YYYY")} đến ngày ${dayjs(values.range[1]).format("DD-MM-YYYY")}`;
                 break;
         }
 
         let p = [];
         p.push(new Promise((resolve, reject) => {
             handleActionCallback(loadDataFunction, queryParams)
-                .then(res => setData(res.report))
+                .then(res => {
+                    setData(res.report);
+                    setInputModalData({
+                        ...res.data,
+                        periodText: periodText.current
+                    })
+                })
                 .catch(e => setData([]))
                 .finally(resolve);
         }))
@@ -161,7 +178,6 @@ const Revenue = () => {
                     start_date: val.start_date,
                     end_date: val.end_date,
                 }
-                console.log(query)
                 handleActionCallback(loadDataFunction, query)
                     .then(res => {
                         let item = {
@@ -193,9 +209,8 @@ const Revenue = () => {
             })
     }
 
-    const onClickPrint = () => {
-        console.log("onClickPrint");
-        // export report
+    const showReportModal = () => {
+        setIsReportModalVisible(true);
     }
 
     const columns = [
@@ -342,8 +357,8 @@ const Revenue = () => {
                         <Form.Item label={null} >
                             <Button type="primary" htmlType="submit" icon={<ExportOutlined />}>Xuất báo cáo</Button>
                         </Form.Item>
-                        <Form.Item label={null} hidden={!isExported} onClick={onClickPrint}>
-                            <Button type="primary" icon={<PrinterOutlined />}>In</Button>
+                        <Form.Item label={null} hidden={!isExported} onClick={showReportModal}>
+                            <Button type="primary" icon={<PrinterOutlined />}>In báo cáo</Button>
                         </Form.Item>
                     </Space>
                 </Form.Item>
@@ -368,6 +383,12 @@ const Revenue = () => {
                     </Flex>
                 </Flex>
             )}
+            <PDFViewer
+                isModalVisible={isReportModalVisible}
+                setIsModalVisible={setIsReportModalVisible}
+                pdfTempUrl={reportTempUrl}
+                editPdfDoc={(params) => editReport({ record: inputModalData, ...params })}
+            />
         </>
     )
 }
