@@ -26,7 +26,7 @@ const LoginPage = ({ setProfile }) => {
         loginFunction(values)
             .then(res => {
                 message.success('Đăng nhập thành công!');
-                setProfile(res);
+                setProfile(res.user);
             })
             .catch(e => {
                 message.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin tài khoản.');
